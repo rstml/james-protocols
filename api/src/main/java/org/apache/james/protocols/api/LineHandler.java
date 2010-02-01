@@ -17,52 +17,19 @@
  * under the License.                                           *
  ****************************************************************/
 
-
-package org.apache.james.api.protocol;
-
-import java.io.IOException;
+package org.apache.james.protocols.api;
 
 /**
- * Session which supports TLS 
- * 
- *
+ * Custom line handlers must implement this interface
  */
-public interface TLSSupportedSession extends ProtocolSession{
+public interface LineHandler<Session extends ProtocolSession> {
+     
     /**
-     * Returns the user name associated with this interaction.
-     *
-     * @return the user name
-     */
-    String getUser();
-
-    /**
-     * Sets the user name associated with this interaction.
-     *
-     * @param user the user name
-     */
-    void setUser(String user);
-    
-
-  
-	/**
-	 * Return true if StartTLS is supported by the configuration
-	 * 
-	 * @return supported
-	 */
-    boolean isStartTLSSupported();
-    
-    /**
-     * Return true if the starttls was started
+     * Processing the give line. The line includes the CRLF delimiter
      * 
-     * @return true
+     * @param session not null
+     * @param line not null 
      */
-    boolean isTLSStarted();
-
-    /**
-     * Start TLS encryption 
-     * 
-     * @throws IOException
-     */
-    void startTLS() throws IOException;
+    public void onLine(Session session, byte[] line);
     
 }

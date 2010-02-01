@@ -6,8 +6,8 @@ package org.apache.james.smtpserver.protocol.core.esmtp;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.api.protocol.LineHandler;
 import org.apache.james.dsn.DSNStatus;
+import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.smtpserver.protocol.MailEnvelope;
 import org.apache.james.smtpserver.protocol.SMTPRetCode;
 import org.apache.james.smtpserver.protocol.SMTPSession;

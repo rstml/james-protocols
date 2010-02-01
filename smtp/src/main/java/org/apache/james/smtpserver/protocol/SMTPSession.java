@@ -21,8 +21,8 @@ package org.apache.james.smtpserver.protocol;
 
 import java.util.Map;
 
-import org.apache.james.api.protocol.LineHandler;
-import org.apache.james.api.protocol.TLSSupportedSession;
+import org.apache.james.protocols.api.LineHandler;
+import org.apache.james.protocols.api.TLSSupportedSession;
 
 /**
  * All the handlers access this interface to communicate with

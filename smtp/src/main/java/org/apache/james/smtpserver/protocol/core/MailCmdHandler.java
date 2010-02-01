@@ -28,10 +28,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.james.api.protocol.Request;
-import org.apache.james.api.protocol.Response;
-import org.apache.james.api.protocol.RetCodeResponse;
 import org.apache.james.dsn.DSNStatus;
+import org.apache.james.protocols.api.Request;
+import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.RetCodeResponse;
 import org.apache.james.smtpserver.protocol.SMTPResponse;
 import org.apache.james.smtpserver.protocol.SMTPRetCode;
 import org.apache.james.smtpserver.protocol.SMTPSession;

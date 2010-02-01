@@ -17,27 +17,45 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.api.protocol;
+package org.apache.james.protocols.api;
 
 /**
- * Request received from the client
- * 
+ * Basic Request which contains a command and argument
  *
  */
-public interface Request {
+public class BaseRequest implements Request{
 
+    private final String command;
+    private final String argument;
+
+    public BaseRequest(final String command, final String argument) {
+        this.command = command;
+        this.argument = argument;
+        
+    }
     
-    /**
-     * Return the current argument. If there is no argument null is returned
-     * 
-     * @return argument
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.api.protocol.Request#getArgument()
      */
-    public String getArgument();
+    public String getArgument() {
+        return argument;
+    }
 
-    /**
-     * Return the current command
-     * 
-     * @return command
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.api.protocol.Request#getCommand()
      */
-    public String getCommand();
+    public String getCommand() {
+        return command;
+    }
+
+
+    public String toString() {
+        if (argument == null) {
+            return command;
+        } else {
+            return command + " " + argument;
+        }
+    }
 }

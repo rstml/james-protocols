@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.api.protocol;
+package org.apache.james.protocols.api;
 
 /**
  * Response which use return code 

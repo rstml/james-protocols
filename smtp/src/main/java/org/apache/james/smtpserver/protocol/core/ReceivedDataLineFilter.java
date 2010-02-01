@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.james.api.protocol.LineHandler;
+import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.smtpserver.protocol.SMTPSession;
 import org.apache.mailet.base.RFC2822Headers;
 import org.apache.mailet.base.RFC822DateFormat;

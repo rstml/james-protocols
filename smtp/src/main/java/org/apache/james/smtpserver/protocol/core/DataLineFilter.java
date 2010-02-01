@@ -21,7 +21,7 @@
 
 package org.apache.james.smtpserver.protocol.core;
 
-import org.apache.james.api.protocol.LineHandler;
+import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.smtpserver.protocol.SMTPSession;
 
 /**

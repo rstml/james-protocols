@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.api.protocol;
+package org.apache.james.protocols.api;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
 
     /**
      * @throws WiringException 
-     * @see org.apache.james.api.protocol.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
+     * @see org.apache.james.protocols.api.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
@@ -164,7 +164,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     }
 
     /**
-     * @see org.apache.james.api.protocol.ExtensibleHandler#getMarkerInterfaces()
+     * @see org.apache.james.protocols.api.ExtensibleHandler#getMarkerInterfaces()
      */
     @SuppressWarnings("unchecked")
     public List<Class<?>> getMarkerInterfaces() {

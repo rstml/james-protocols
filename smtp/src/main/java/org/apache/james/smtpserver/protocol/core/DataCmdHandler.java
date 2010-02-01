@@ -23,13 +23,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.api.protocol.CommandHandler;
-import org.apache.james.api.protocol.ExtensibleHandler;
-import org.apache.james.api.protocol.LineHandler;
-import org.apache.james.api.protocol.Request;
-import org.apache.james.api.protocol.Response;
-import org.apache.james.api.protocol.WiringException;
 import org.apache.james.dsn.DSNStatus;
+import org.apache.james.protocols.api.CommandHandler;
+import org.apache.james.protocols.api.ExtensibleHandler;
+import org.apache.james.protocols.api.LineHandler;
+import org.apache.james.protocols.api.Request;
+import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.WiringException;
 import org.apache.james.smtpserver.protocol.MailEnvelopeImpl;
 import org.apache.james.smtpserver.protocol.SMTPResponse;
 import org.apache.james.smtpserver.protocol.SMTPRetCode;
@@ -128,7 +128,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
 
 
     /**
-     * @see org.apache.james.api.protocol.ExtensibleHandler#getMarkerInterfaces()
+     * @see org.apache.james.protocols.api.ExtensibleHandler#getMarkerInterfaces()
      */
     @SuppressWarnings("unchecked")
     public List getMarkerInterfaces() {
@@ -139,7 +139,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
 
 
     /**
-     * @see org.apache.james.api.protocol.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
+     * @see org.apache.james.protocols.api.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {

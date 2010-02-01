@@ -16,20 +16,43 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-
-package org.apache.james.api.protocol;
+package org.apache.james.protocols.api;
 
 /**
- * Custom line handlers must implement this interface
+ * Indicates an issue prevent the successful wiring of the components
+ * composing the SMTP processor.
  */
-public interface LineHandler<Session extends ProtocolSession> {
-     
+public class WiringException extends Exception {
+
+    private static final long serialVersionUID = 8824880646965171467L;
+
     /**
-     * Processing the give line. The line includes the CRLF delimiter
-     * 
-     * @param session not null
-     * @param line not null 
+     * Empty constructor
      */
-    public void onLine(Session session, byte[] line);
-    
+    public WiringException() {
+        super();
+    }
+
+    /**
+     * @param message
+     * @param t
+     */
+    public WiringException(String message, Throwable t) {
+        super(message, t);
+    }
+
+    /**
+     * @param message
+     */
+    public WiringException(String message) {
+        super(message);
+    }
+
+    /**
+     * @param t
+     */
+    public WiringException(Throwable t) {
+        super(t);
+    }
+
 }

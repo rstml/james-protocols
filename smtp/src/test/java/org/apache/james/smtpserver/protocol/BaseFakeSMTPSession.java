@@ -25,8 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.james.api.protocol.LineHandler;
-import org.apache.james.api.protocol.Response;
+import org.apache.james.protocols.api.LineHandler;
+import org.apache.james.protocols.api.Response;
 import org.apache.james.smtpserver.protocol.SMTPConfiguration;
 import org.apache.james.smtpserver.protocol.SMTPSession;
 

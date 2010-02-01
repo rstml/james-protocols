@@ -17,31 +17,27 @@
  * under the License.                                           *
  ****************************************************************/
 
-
-
-package org.apache.james.api.protocol;
-
-
-import java.util.Collection;
-
+package org.apache.james.protocols.api;
 
 /**
- * Custom command handlers must implement this interface
- * The command handlers will be Server wide common to all the handlers,
- * therefore the command handlers must store all the state information
- * in the Session object
+ * Request received from the client
+ * 
+ *
  */
- public interface CommandHandler<Session extends ProtocolSession> {
-    /**
-     * Handle the command
-    **/
-    Response onCommand(Session session, Request request);
+public interface Request {
+
     
     /**
-     * Return a Collection of implemented commands
+     * Return the current argument. If there is no argument null is returned
      * 
-     * @return Collection which contains implemented commands
+     * @return argument
      */
-    Collection<String> getImplCommands();
+    public String getArgument();
 
+    /**
+     * Return the current command
+     * 
+     * @return command
+     */
+    public String getCommand();
 }

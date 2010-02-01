@@ -19,7 +19,7 @@
 
 package org.apache.james.smtpserver.protocol;
 
-import org.apache.james.api.protocol.BaseRequest;
+import org.apache.james.protocols.api.BaseRequest;
 
 /**
  * SMTPRequest which contains a command and an optional argument

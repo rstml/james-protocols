@@ -21,8 +21,6 @@ package org.apache.james.smtpserver.protocol.core.fastfail;
 
 import java.util.Iterator;
 
-import javax.annotation.Resource;
-
 import org.apache.james.dsn.DSNStatus;
 import org.apache.james.smtpserver.protocol.SMTPRetCode;
 import org.apache.james.smtpserver.protocol.SMTPSession;

@@ -18,23 +18,51 @@
  ****************************************************************/
 
 
+package org.apache.james.protocols.api;
 
-package org.apache.james.api.protocol;
-
-import java.util.List;
+import java.io.IOException;
 
 /**
- * Provides a mean to bundle a set of handlers (defined by their classnames) within
- * a single object.
- * This is used for the default set of CoreCommands.
+ * Session which supports TLS 
+ * 
+ *
  */
-public interface HandlersPackage {
+public interface TLSSupportedSession extends ProtocolSession{
+    /**
+     * Returns the user name associated with this interaction.
+     *
+     * @return the user name
+     */
+    String getUser();
+
+    /**
+     * Sets the user name associated with this interaction.
+     *
+     * @param user the user name
+     */
+    void setUser(String user);
+    
+
+  
+	/**
+	 * Return true if StartTLS is supported by the configuration
+	 * 
+	 * @return supported
+	 */
+    boolean isStartTLSSupported();
     
     /**
-     * Return a List which contains a set of CommandHandlers
+     * Return true if the starttls was started
      * 
-     * @return Map
+     * @return true
      */
-    List<String> getHandlers();
+    boolean isTLSStarted();
 
+    /**
+     * Start TLS encryption 
+     * 
+     * @throws IOException
+     */
+    void startTLS() throws IOException;
+    
 }

@@ -19,7 +19,7 @@
 
 
 
-package org.apache.james.api.protocol;
+package org.apache.james.protocols.api;
 
 /**
  * Custom connect handlers must implement this interface

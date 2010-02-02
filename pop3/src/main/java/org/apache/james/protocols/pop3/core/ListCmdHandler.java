@@ -19,7 +19,7 @@
 
 
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,17 +27,17 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.CommandHandler;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 import org.apache.mailet.Mail;
 
 /**
   * Handles LIST command
   */
-public class ListCmdHandler implements CommandHandler<POP3Session> {
+public abstract class ListCmdHandler implements CommandHandler<POP3Session> {
 
 
     /**
@@ -95,7 +95,7 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
                 int num = 0;
                 try {
                     num = Integer.parseInt(parameters);
-                    Mail mc = session.getUserMailbox().get(num);
+                    int size =getMessageSize(session, num);
                     if (mc != dm) {
                         StringBuilder responseBuffer =
                             new StringBuilder(64)
@@ -134,6 +134,8 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
         return response;
     }
 
+    protected abstract int getMessageSize(POP3Session session, int num);
+    
     public Collection<String> getImplCommands() {
         List<String> commands = new ArrayList<String>();
         commands.add("LIST");

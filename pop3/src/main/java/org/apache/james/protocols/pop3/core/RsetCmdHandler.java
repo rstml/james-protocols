@@ -19,7 +19,7 @@
 
 
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,11 +28,11 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.CommandHandler;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 import org.apache.mailet.Mail;
 
 

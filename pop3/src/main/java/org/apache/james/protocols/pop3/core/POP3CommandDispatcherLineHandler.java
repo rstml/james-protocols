@@ -17,18 +17,17 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.AbstractCommandDispatcher;
 import org.apache.james.protocols.api.CommandHandler;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
- * Dispatch 
- * @author norman
+ * Dispatch POP3 Commands
  *
  */
 public class POP3CommandDispatcherLineHandler extends
@@ -38,22 +37,25 @@ public class POP3CommandDispatcherLineHandler extends
   
 
 
-    /**
-     * @see org.apache.james.api.protocol.AbstractCommandDispatcher#getMandatoryCommands()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.AbstractCommandDispatcher#getMandatoryCommands()
      */
     protected List<String> getMandatoryCommands() {
         return Arrays.asList(mandatoryCommands);
     }
 
-    /**
-     * @see org.apache.james.api.protocol.AbstractCommandDispatcher#getUnknownCommandHandler()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.AbstractCommandDispatcher#getUnknownCommandHandler()
      */
     protected CommandHandler<POP3Session> getUnknownCommandHandler() {
         return unknownHandler;
     }
 
-    /**
-     * @see org.apache.james.api.protocol.AbstractCommandDispatcher#getUnknownCommandHandlerIdentifier()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.AbstractCommandDispatcher#getUnknownCommandHandlerIdentifier()
      */
     protected String getUnknownCommandHandlerIdentifier() {
         return UnknownCmdHandler.COMMAND_NAME;

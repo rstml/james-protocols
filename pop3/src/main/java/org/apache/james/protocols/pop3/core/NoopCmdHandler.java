@@ -19,17 +19,17 @@
 
 
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.CommandHandler;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
   * Handles NOOP command
@@ -53,10 +53,10 @@ public class NoopCmdHandler implements CommandHandler<POP3Session> {
     }
 
 
-
-	/**
-	 * @see org.apache.james.api.protocol.CommonCommandHandler#getImplCommands()
-	 */
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.CommandHandler#getImplCommands()
+     */
     public Collection<String> getImplCommands() {
         List<String> commands = new ArrayList<String>();
         commands.add(COMMAND_NAME);

@@ -19,51 +19,24 @@
 
 
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.james.api.user.UsersRepository;
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.services.MailRepository;
-import org.apache.james.services.MailServer;
-import org.apache.james.util.POP3BeforeSMTPHelper;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
   * Handles PASS command
   */
-public class PassCmdHandler extends RsetCmdHandler {
+public abstract class PassCmdHandler extends RsetCmdHandler {
 
 	private final static String COMMAND_NAME ="PASS";
-	private UsersRepository users;
-	private MailServer mailServer;
 
-
-    /**
-     * Sets the users repository.
-     * @param users the users to set
-     */
-    @Resource(name="localusersrepository")
-    public final void setUsers(UsersRepository users) {
-        this.users = users;
-    }
-	
-    /**
-     * Sets the mail server.
-     * @param mailServer the mailServer to set
-     */
-    @Resource(name="James")
-    public final void setMailServer(MailServer mailServer) {
-        this.mailServer = mailServer;
-    }
-    
     
 	/**
      * Handler method called upon receipt of a PASS command.
@@ -75,7 +48,7 @@ public class PassCmdHandler extends RsetCmdHandler {
         POP3Response response = null;
         if (session.getHandlerState() == POP3Session.AUTHENTICATION_USERSET && parameters != null) {
             String passArg = parameters;
-            if (users.test(session.getUser(), passArg)) {
+            if (authenticate(session.getUser(), passArg)) {
                 try {
                     MailRepository inbox = mailServer.getUserInbox(session.getUser());
                     if (inbox == null) {
@@ -110,6 +83,7 @@ public class PassCmdHandler extends RsetCmdHandler {
     }
 
   
+    protected abstract  boolean authenticate(String username, String password);
 
     /**
      * @see org.apache.james.api.protocol.CommonCommandHandler#getImplCommands()

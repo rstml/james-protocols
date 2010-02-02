@@ -18,19 +18,19 @@
  ****************************************************************/
 
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.CommandHandler;
 import org.apache.james.protocols.api.ExtensibleHandler;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.WiringException;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * This handler is used to handle CAPA commands
@@ -43,7 +43,7 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
 
 
 
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.james.protocols.api.CommandHandler#onCommand(org.apache.james.protocols.api.ProtocolSession, org.apache.james.protocols.api.Request)
@@ -62,9 +62,11 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
 	}
 	
 
-	/**
-	 * @see org.apache.james.api.protocol.ExtensibleHandler#getMarkerInterfaces()
-	 */
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ExtensibleHandler#getMarkerInterfaces()
+     */
 	@SuppressWarnings("unchecked")
     public List<Class<?>> getMarkerInterfaces() {
         List<Class<?>> mList = new ArrayList();
@@ -72,9 +74,10 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
         return mList;
     }
 
-    /**
-     * @see org.apache.james.api.protocol.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
-     */
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.james.protocols.api.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
+	 */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension)
             throws WiringException {
@@ -83,8 +86,9 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
         }
     }
 
-    /**
-     * @see org.apache.james.api.protocol.CommonCommandHandler#getImplCommands()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         List<String> commands = new ArrayList<String>();
@@ -93,8 +97,9 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
     }
 
 
-    /**
-     * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.protocols.pop3.pop3server.POP3Session)
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.pop3.core.CapaCapability#getImplementedCapabilities(org.apache.james.protocols.pop3.POP3Session)
      */
 	public List<String> getImplementedCapabilities(POP3Session session) {
 		 List<String> cList = new ArrayList<String>();

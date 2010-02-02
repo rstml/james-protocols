@@ -38,7 +38,7 @@ import org.apache.mailet.Mail;
 /**
   * Handles TOP command
   */
-public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
+public class TopCmdHandler extends AbstractRetrCmdHandler implements CapaCapability {
 	private final static String COMMAND_NAME = "TOP";
 
 

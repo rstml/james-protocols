@@ -19,25 +19,23 @@
 
 
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.mail.MessagingException;
-
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.CommandHandler;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
-import org.apache.mailet.Mail;
+import org.apache.james.protocols.pop3.POP3Exception;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
   * Handles STAT command
   */
-public class StatCmdHandler implements CommandHandler<POP3Session> {
+public abstract class AbstractStatCmdHandler implements CommandHandler<POP3Session> {
 	private final static String COMMAND_NAME = "STAT";
 
 	/**
@@ -49,24 +47,18 @@ public class StatCmdHandler implements CommandHandler<POP3Session> {
     public Response onCommand(POP3Session session, Request request) {
         POP3Response response = null;
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
-            long size = 0;
-            int count = 0;
+            
             try {
-                Mail dm = (Mail) session.getState().get(POP3Session.DELETED);
-
-                for (Mail mc: session.getUserMailbox()) {
-                    if (mc != dm) {
-                        size += mc.getMessageSize();
-                        count++;
-                    }
-                }
+            	long size = getInboxSize(session);
+                int count = getMessageCount(session);
+                
                 StringBuilder responseBuffer =
                     new StringBuilder(32)
                             .append(count)
                             .append(" ")
                             .append(size);
                 response = new POP3Response(POP3Response.OK_RESPONSE,responseBuffer.toString());
-            } catch (MessagingException me) {
+            } catch (POP3Exception me) {
                 response = new POP3Response(POP3Response.ERR_RESPONSE);
             }
         } else {
@@ -75,6 +67,22 @@ public class StatCmdHandler implements CommandHandler<POP3Session> {
         return response;
     }
 
+    /**
+     * Return the count of all messages in the INBOX
+     * 
+     * @param session
+     * @return size
+     * @throws POP3Exception
+     */
+    protected abstract int getMessageCount(POP3Session session) throws POP3Exception;
+    
+    /**
+     * Return the size of the INBOX
+     * @param session
+     * @return size
+     * @throws POP3Exception
+     */
+    protected abstract int getInboxSize(POP3Session session) throws POP3Exception;
 
 
     /**

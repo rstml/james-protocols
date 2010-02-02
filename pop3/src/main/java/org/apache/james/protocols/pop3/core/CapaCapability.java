@@ -18,11 +18,11 @@
  ****************************************************************/
 
 
-package org.apache.james.pop3server.core;
+package org.apache.james.protocols.pop3.core;
 
 import java.util.List;
 
-import org.apache.james.pop3server.POP3Session;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * A handler which support the POP3 Extension Mechanism should implement this interface

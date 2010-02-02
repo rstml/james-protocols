@@ -94,7 +94,7 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
 
 
     /**
-     * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
+     * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.protocols.pop3.pop3server.POP3Session)
      */
 	public List<String> getImplementedCapabilities(POP3Session session) {
 		 List<String> cList = new ArrayList<String>();

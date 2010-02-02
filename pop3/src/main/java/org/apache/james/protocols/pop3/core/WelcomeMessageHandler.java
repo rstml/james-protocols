@@ -31,7 +31,7 @@ public class WelcomeMessageHandler implements ConnectHandler<POP3Session>{
                                                         + Constants.SOFTWARE_VERSION;
 
     /**
-     * @see org.apache.james.pop3server.ConnectHandler#onConnect(org.apache.james.pop3server.POP3Session)
+     * @see org.apache.james.pop3server.ConnectHandler#onConnect(org.apache.james.protocols.pop3.pop3server.POP3Session)
      */
     public void onConnect(POP3Session session) {
         StringBuilder responseBuffer = new StringBuilder();

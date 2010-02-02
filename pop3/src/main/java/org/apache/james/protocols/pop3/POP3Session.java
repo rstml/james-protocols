@@ -19,14 +19,11 @@
 
 
 
-package org.apache.james.pop3server;
+package org.apache.james.protocols.pop3;
 
 
-import java.util.List;
 
 import org.apache.james.protocols.api.TLSSupportedSession;
-import org.apache.james.services.MailRepository;
-import org.apache.mailet.Mail;
 
 /**
  * All the handlers access this interface to communicate with
@@ -80,35 +77,36 @@ public interface POP3Session extends TLSSupportedSession {
      *
      * @return MailRepository
      */
-    MailRepository getUserInbox();
+    
+    //MailRepository getUserInbox();
 
     /**
      * Sets the user's mail repository
      * 
      * @param userInbox userInbox
      */
-    void setUserInbox(MailRepository userInbox);
+    //void setUserInbox(MailRepository userInbox);
 
     /**
      * Returns the mail list contained in the mailbox
      * 
      * @return mailbox content
      */
-    List<Mail> getUserMailbox();
+    //List<Mail> getUserMailbox();
 
     /**
      * Sets a new mailbox content
      * 
      * @param userMailbox mailbox
      */
-    void setUserMailbox(List<Mail> userMailbox);
+    //void setUserMailbox(List<Mail> userMailbox);
     
     /**
      * Returns the backup mailbox
      * 
      * @return list backup
      */
-    List<Mail> getBackupUserMailbox();
+    //List<Mail> getBackupUserMailbox();
 
 
     /**
@@ -116,6 +114,6 @@ public interface POP3Session extends TLSSupportedSession {
      * 
      * @param backupUserMailbox the mailbox backup
      */
-    void setBackupUserMailbox(List<Mail> backupUserMailbox);
+   // void setBackupUserMailbox(List<Mail> backupUserMailbox);
 }
 

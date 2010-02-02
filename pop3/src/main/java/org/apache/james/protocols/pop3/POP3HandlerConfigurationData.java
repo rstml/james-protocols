@@ -19,7 +19,7 @@
 
 
 
-package org.apache.james.pop3server;
+package org.apache.james.protocols.pop3;
 
 /**
  * Provides a number of server-wide constant values to the

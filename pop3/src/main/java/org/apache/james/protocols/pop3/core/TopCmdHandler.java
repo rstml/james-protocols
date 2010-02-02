@@ -128,7 +128,7 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
     
 
    /**
-     * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
+     * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.protocols.pop3.pop3server.POP3Session)
      */
 	public List<String> getImplementedCapabilities(POP3Session session) {
 		List<String> caps = new ArrayList<String>();

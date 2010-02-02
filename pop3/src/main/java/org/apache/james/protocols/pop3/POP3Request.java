@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.pop3server;
+package org.apache.james.protocols.pop3;
 
 import org.apache.james.protocols.api.BaseRequest;
 

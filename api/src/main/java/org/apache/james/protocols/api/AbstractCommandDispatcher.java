@@ -103,9 +103,10 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
         } else {
             List<String> mandatoryCommands = getMandatoryCommands();
             for (int i = 0; i < mandatoryCommands.size(); i++) {
+            	String cmd = mandatoryCommands.get(i);
                 if (!commandHandlerMap.containsKey(mandatoryCommands.get(i))) {
                     throw new WiringException(
-                    "No commandhandlers configured for mandatory commands");
+                    "No commandhandlers configured for mandatory command " +cmd) ;
                 }
             }
         }

@@ -95,9 +95,15 @@ public abstract class AbstractHookableCmdHandler<Hook> implements CommandHandler
                         hRes = ((HookResultHook) rHook).onHookResult(session, hRes, rawHook);
                     }
                 }
-                SMTPResponse res = calcDefaultSMTPResponse(hRes);
-                if (res != null) {
-                    return res;
+                
+                // call the core cmd if we receive a ok return code of the hook so no other hooks are executed
+                if (hRes.getResult() == HookReturnCode.OK) {
+                	return doCoreCmd(session, command, parameters);
+                } else {
+                	SMTPResponse res = calcDefaultSMTPResponse(hRes);
+                	if (res != null) {
+                		return res;
+                	}
                 }
             }
         }

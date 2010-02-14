@@ -24,38 +24,23 @@ package org.apache.james.protocols.smtp.core;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.james.protocols.api.CommandHandler;
-import org.apache.james.protocols.api.Request;
-import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
+import org.apache.james.protocols.smtp.hook.HookResult;
+import org.apache.james.protocols.smtp.hook.UnknownCmdHook;
 
 /**
   * Default command handler for handling unknown commands
   */
-public class UnknownCmdHandler implements CommandHandler<SMTPSession>{
+public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownCmdHook>{
 
     /**
      * The name of the command handled by the command handler
      */
     public static final String UNKNOWN_COMMAND = "UNKNOWN";
-    
-    /**
-     * Handler method called upon receipt of an unrecognized command.
-     * Returns an error response and logs the command.
-     *
-    **/
-    public Response onCommand(SMTPSession session, Request request) {
-        StringBuilder result = new StringBuilder();
-        result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD))
-                      .append(" Command ")
-                      .append(request.getCommand())
-                      .append(" unrecognized.");
-        return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
-    }
-    
+
     /**
      * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
      */
@@ -65,4 +50,33 @@ public class UnknownCmdHandler implements CommandHandler<SMTPSession>{
         
         return implCommands;
     }
+
+	@Override
+	protected SMTPResponse doCoreCmd(SMTPSession session, String command,
+			String parameters) {
+		 StringBuilder result = new StringBuilder();
+	     result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD))
+	                      .append(" Command ")
+	                      .append(command)
+	                      .append(" unrecognized.");
+	     return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
+	}
+
+	@Override
+	protected SMTPResponse doFilterChecks(SMTPSession session, String command,
+			String parameters) {
+		session.getState().put("CURR_COMMAND", command);
+		return null;
+	}
+
+	@Override
+	protected HookResult callHook(UnknownCmdHook rawHook, SMTPSession session,
+			String parameters) {
+		return rawHook.doUnkown(session, (String)session.getState().get("CURR_COMMAND"));
+	}
+
+	@Override
+	protected Class<UnknownCmdHook> getHookInterface() {
+		return UnknownCmdHook.class;
+	}
 }

@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.api;
 
+import java.io.InputStream;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -55,6 +56,14 @@ public interface ProtocolSession {
      * @param response
      */
     public void writeResponse(Response response);
+    
+    /**
+     * Write the stream back to the client
+     * 
+     * @param stream
+     */
+    public void writeStream(InputStream stream);
+
     
     /**
      * Returns host name of the client

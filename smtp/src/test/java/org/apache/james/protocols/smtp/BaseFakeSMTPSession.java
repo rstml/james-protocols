@@ -21,6 +21,7 @@
 package org.apache.james.protocols.smtp;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -197,5 +198,9 @@ public class BaseFakeSMTPSession implements SMTPSession {
 	public void startTLS() throws IOException {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
 
+	}
+
+	public void writeStream(InputStream stream) {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");		
 	}
 }

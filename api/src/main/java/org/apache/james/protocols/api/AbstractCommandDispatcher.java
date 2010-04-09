@@ -138,18 +138,14 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
             int count = commandHandlers.size();
             for (int i = 0; i < count; i++) {
                 Response response = commandHandlers.get(i).onCommand(session, new BaseRequest(curCommandName, curCommandArgument));
-                session.writeResponse(response);
 
                 // if the response is received, stop processing of command
                 // handlers
                 if (response != null) {
+                    session.writeResponse(response);
+
                     break;
                 }
-
-                // NOTE we should never hit this line, otherwise we ended the
-                // CommandHandlers with
-                // no responses.
-                // (The note is valid for i == count-1)
             }
 
         } catch (UnsupportedEncodingException e) {

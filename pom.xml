@@ -17,7 +17,7 @@
   specific language governing permissions and limitations
   under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
   <parent>
     <artifactId>james-server-root</artifactId>
     <groupId>org.apache.james</groupId>
@@ -27,7 +27,7 @@
   <groupId>org.apache.james</groupId>
   <artifactId>james-protocols</artifactId>
   <name>Apache JAMES Protocols</name>
-  <version>1.0</version>
+  <version>1.0-SNAPSHOT</version>
   <description>JAMES Protocols</description>
   <url>http://james.apache.org/protocols</url>
   <inceptionYear>2010</inceptionYear>
@@ -49,9 +49,9 @@
     </notifiers>
   </ciManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/james/protocols/tags/james-protocols-1.0</connection>
-    <developerConnection>scm:svn:https://${maven.username}@svn.apache.org/repos/asf/james/protocols/tags/james-protocols-1.0</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/james/protocols/trunk/tags/james-protocols-1.0?root=Apache-SVN</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/james/protocols/trunk</connection>
+    <developerConnection>scm:svn:https://${maven.username}@svn.apache.org/repos/asf/james/protocols/trunk</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/james/protocols/trunk?root=Apache-SVN</url>
   </scm>
   
   <repositories>
@@ -163,12 +163,12 @@
       <dependency>
         <groupId>org.apache.james.protocols</groupId>
         <artifactId>protocols-smtp</artifactId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.james.protocols</groupId>
         <artifactId>protocols-api</artifactId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>commons-logging</groupId>

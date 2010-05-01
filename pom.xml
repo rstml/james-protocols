@@ -50,7 +50,7 @@
   </ciManagement>
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/james/protocols/trunk</connection>
-    <developerConnection>scm:svn:https://${maven.username}@svn.apache.org/repos/asf/james/protocols/trunk</developerConnection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/james/protocols/trunk</developerConnection>
     <url>http://svn.apache.org/viewcvs.cgi/james/protocols/trunk?root=Apache-SVN</url>
   </scm>
   

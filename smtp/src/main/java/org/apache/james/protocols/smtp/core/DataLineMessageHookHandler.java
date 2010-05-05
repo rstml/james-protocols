@@ -37,7 +37,6 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.HookResultHook;
 import org.apache.james.protocols.smtp.hook.MessageHook;
-import org.apache.mailet.Mail;
 
 public final class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHandler {
 
@@ -92,7 +91,7 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
      * @param session
      */
     private void processExtensions(SMTPSession session, MailEnvelopeImpl mail) {
-        if(mail != null && mail instanceof Mail && messageHandlers != null) {
+        if(mail != null && messageHandlers != null) {
             try {
                 int count = messageHandlers.size();
                 for(int i =0; i < count; i++) {

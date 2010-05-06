@@ -32,7 +32,6 @@ import org.jboss.netty.handler.connection.ConnectionLimitUpstreamHandler;
 import org.jboss.netty.handler.connection.ConnectionPerIpLimitUpstreamHandler;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 import org.jboss.netty.util.HashedWheelTimer;
-import org.jboss.netty.util.Timer;
 
 /**
  * Abstract base class for {@link ChannelPipelineFactory} implementations
@@ -42,13 +41,19 @@ import org.jboss.netty.util.Timer;
 public abstract class AbstractChannelPipelineFactory implements ChannelPipelineFactory{
 
     public final static int MAX_LINE_LENGTH = 8192;
-    private final Timer timer = new HashedWheelTimer();
     private final ConnectionLimitUpstreamHandler connectionLimitHandler;
     private final ConnectionPerIpLimitUpstreamHandler connectionPerIpLimitHandler;
+    private TimeoutHandler timeoutHandler;
+    
+    public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp) {
+        timeoutHandler = new TimeoutHandler(new HashedWheelTimer(), timeout, timeout, 0);
+        connectionLimitHandler = new ConnectionLimitUpstreamHandler(maxConnections);
+        connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(maxConnectsPerIp);
+    }
+    
     
     public AbstractChannelPipelineFactory() {
-        connectionLimitHandler = new ConnectionLimitUpstreamHandler(getMaxConnections());
-        connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(getMaxConnectionsPerIP());
+        this(120, 0, 0);
     }
     /*
      * (non-Javadoc)
@@ -70,7 +75,7 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
         pipeline.addLast("encoderResponse", createEncoder());
 
         pipeline.addLast("streamer", new ChunkedWriteHandler());
-        pipeline.addLast("timeoutHandler", new TimeoutHandler(timer, 120, 120, 0));
+        pipeline.addLast("timeoutHandler", timeoutHandler);
         pipeline.addLast("coreHandler", createHandler());
 
 
@@ -91,27 +96,6 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
      */
     protected abstract OneToOneEncoder createEncoder();
     
-    /**
-     * Return the timeout in seconds
-     * 
-     * @return timeout
-     */
-    protected abstract int getTimeout();
-
-
-    /**
-     * Return the max connections 
-     * 
-     * @return max connections
-     */
-    protected abstract int getMaxConnections();
-    
-    /**
-     * Return the max connections per ip
-     * 
-     * @return max connections per ip
-     */
-    protected abstract int getMaxConnectionsPerIP();
 
 
 }

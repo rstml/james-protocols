@@ -38,7 +38,7 @@ import org.jboss.netty.handler.stream.ChunkedStream;
  * 
  * 
  */
-public abstract class AbstractNettySession implements TLSSupportedSession {
+public abstract class AbstractSession implements TLSSupportedSession {
 
     protected ChannelHandlerContext handlerContext;
     protected InetSocketAddress socketAddress;
@@ -46,14 +46,14 @@ public abstract class AbstractNettySession implements TLSSupportedSession {
     protected SSLEngine engine;
     protected String user;
 
-    public AbstractNettySession(Log logger, ChannelHandlerContext handlerContext, SSLEngine engine) {
+    public AbstractSession(Log logger, ChannelHandlerContext handlerContext, SSLEngine engine) {
         this.handlerContext = handlerContext;
         this.socketAddress = (InetSocketAddress) handlerContext.getChannel().getRemoteAddress();
         this.logger = logger;
         this.engine = engine;
     }
 
-    public AbstractNettySession(Log logger, ChannelHandlerContext handlerContext) {
+    public AbstractSession(Log logger, ChannelHandlerContext handlerContext) {
         this(logger, handlerContext, null);
     }
 

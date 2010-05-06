@@ -61,6 +61,9 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
 
 
 
+    /**
+     * Call the {@link ConnectHandler} instances which are stored in the {@link ProtocolHandlerChain}
+     */
     @SuppressWarnings("unchecked")
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
@@ -76,6 +79,9 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
 
 
 
+    /**
+     * Call the {@link LineHandler} 
+     */
     @SuppressWarnings("unchecked")
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
@@ -111,7 +117,12 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
         }
     }
 
-    private void cleanup(Channel channel) {
+    /**
+     * Cleanup the channel
+     * 
+     * @param channel
+     */
+    protected void cleanup(Channel channel) {
         ProtocolSession session = (ProtocolSession) attributes.get(channel);
         if (session != null) {
             session.resetState();

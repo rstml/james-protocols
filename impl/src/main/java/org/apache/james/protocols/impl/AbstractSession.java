@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.socket.netty;
+package org.apache.james.protocols.impl;
 
 import java.io.IOException;
 import java.io.InputStream;

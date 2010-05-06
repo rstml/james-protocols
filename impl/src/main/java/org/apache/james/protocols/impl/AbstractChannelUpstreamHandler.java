@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.socket.netty;
+package org.apache.james.protocols.impl;
 
 import java.util.LinkedList;
 import java.util.List;

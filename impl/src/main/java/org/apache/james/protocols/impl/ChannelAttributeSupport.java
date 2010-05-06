@@ -16,29 +16,22 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.socket.netty;
+package org.apache.james.protocols.impl;
 
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.handler.timeout.IdleState;
-import org.jboss.netty.handler.timeout.IdleStateHandler;
-import org.jboss.netty.util.Timer;
+import org.jboss.netty.channel.ChannelLocal;
 
 /**
- * {@link IdleStateHandler} implementation which disconnect the {@link Channel} after a configured
- * idle timeout
+ * This interface should be implemented by handlers which need to store attachements that 
+ * are shared across all handlers
+ * 
  *
  */
-public class TimeoutHandler extends IdleStateHandler{
+public interface ChannelAttributeSupport {
 
-    public TimeoutHandler(Timer timer, int readerIdleTimeSeconds, int writerIdleTimeSeconds, int allIdleTimeSeconds) {
-        super(timer, readerIdleTimeSeconds, writerIdleTimeSeconds, allIdleTimeSeconds);
-    }
-
-    @Override
-    protected void channelIdle(ChannelHandlerContext ctx, IdleState state, long lastActivityTimeMillis) throws Exception {
-        ctx.getChannel().close();
-    }
-
+    /**
+     * Stores attributes per {@link Channel}
+     */
+    public static final ChannelLocal<Object> attributes = new ChannelLocal<Object>(); 
 
 }

@@ -25,7 +25,7 @@ import org.apache.james.protocols.smtp.SMTPSession;
  * 
  *
  */
-public interface UnknownCmdHook {
+public interface UnknownHook extends Hook{
 
 	/**
 	 * Called on unknown smtp command

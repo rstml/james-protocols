@@ -24,7 +24,7 @@ import org.apache.mailet.MailAddress;
 /**
  * Implement this interfaces to hook in the MAIL Command
  */
-public interface RcptHook {
+public interface RcptHook extends Hook{
     
     /**
      * Return the HookResult after run the hook

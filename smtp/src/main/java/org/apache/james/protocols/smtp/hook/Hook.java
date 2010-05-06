@@ -18,18 +18,11 @@
  ****************************************************************/
 package org.apache.james.protocols.smtp.hook;
 
-import org.apache.james.protocols.smtp.MailEnvelope;
-import org.apache.james.protocols.smtp.SMTPSession;
-
 /**
- * Custom message handlers must implement this interface The message hooks will
- * be server-wide common to all the SMTPHandlers, therefore the handlers must
- * store all the state information in the SMTPSession object
+ * Just and marker interface for the different Hooks
+ * 
+ *
  */
-public interface MessageHook extends Hook{
-	/**
-	 * Handle Message
-	 */
-	HookResult onMessage(SMTPSession session, MailEnvelope mail);
+public interface Hook {
 
 }

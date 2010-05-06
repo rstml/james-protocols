@@ -30,7 +30,7 @@ import org.apache.mailet.MailAddress;
  * Implement this interfaces to hook in the MAIL Command
  * 
  */
-public interface MailHook {
+public interface MailHook extends Hook{
 
     /**
      * Return the HookResult after run the hook

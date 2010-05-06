@@ -36,8 +36,14 @@ import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.HookResultHook;
+import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.MessageHook;
 
+/**
+ * This class handles the actual calling of the {@link MessageHook} implementations to queue the message. If no {@link MessageHook} return OK or DECLINED it will write back an
+ * error to the client to report the problem while trying to queue the message 
+ *
+ */
 public final class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHandler {
 
     
@@ -91,6 +97,7 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
      * @param session
      */
     private void processExtensions(SMTPSession session, MailEnvelopeImpl mail) {
+        boolean match = false;
         if(mail != null && messageHandlers != null) {
             try {
                 int count = messageHandlers.size();
@@ -112,8 +119,15 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
                     //if the response is received, stop processing of command handlers
                     if(response != null) {
                         session.writeResponse(response);
+                        match = true;
                         break;
                     }
+                }
+                if (match == false) {
+                    // Not queue the message!
+                    SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(new HookResult(HookReturnCode.DENY));
+                    session.writeResponse(response);
+                    
                 }
             } finally {
                

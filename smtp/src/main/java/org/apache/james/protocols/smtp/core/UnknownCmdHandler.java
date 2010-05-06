@@ -29,12 +29,12 @@ import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 import org.apache.james.protocols.smtp.hook.HookResult;
-import org.apache.james.protocols.smtp.hook.UnknownCmdHook;
+import org.apache.james.protocols.smtp.hook.UnknownHook;
 
 /**
   * Default command handler for handling unknown commands
   */
-public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownCmdHook>{
+public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
 
     /**
      * The name of the command handled by the command handler
@@ -70,13 +70,13 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownCmdHook
 	}
 
 	@Override
-	protected HookResult callHook(UnknownCmdHook rawHook, SMTPSession session,
+	protected HookResult callHook(UnknownHook rawHook, SMTPSession session,
 			String parameters) {
 		return rawHook.doUnkown(session, (String)session.getState().get("CURR_COMMAND"));
 	}
 
 	@Override
-	protected Class<UnknownCmdHook> getHookInterface() {
-		return UnknownCmdHook.class;
+	protected Class<UnknownHook> getHookInterface() {
+		return UnknownHook.class;
 	}
 }

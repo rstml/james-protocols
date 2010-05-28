@@ -31,7 +31,8 @@ import java.util.Locale;
 
 
 /**
- * Abstract base class which CommandDispatcher implementations should extend
+ * Abstract base class which CommandDispatcher implementations should extend. A CommandDispatcher is responsible
+ * to call the right {@link CommandHandler} for a given Command
  *
  */
 public abstract class AbstractCommandDispatcher<Session extends ProtocolSession> implements ExtensibleHandler, LineHandler<Session> {

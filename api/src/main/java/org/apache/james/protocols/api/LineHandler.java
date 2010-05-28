@@ -20,7 +20,9 @@
 package org.apache.james.protocols.api;
 
 /**
- * Custom line handlers must implement this interface
+ * Implementations of this Interface will get called after a full line (terminated with \r\n) was received.
+ * 
+ * Only one {@link LineHandler} will get called per line
  */
 public interface LineHandler<Session extends ProtocolSession> {
      

@@ -204,8 +204,8 @@ public class BaseFakeSMTPSession implements SMTPSession {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
-    @Override
     public int getPushedLineHandlerCount() {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");           
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
+
 }

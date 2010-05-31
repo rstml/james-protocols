@@ -64,7 +64,6 @@ public class AuthCmdHandler
             SMTPResponse res;
             try {
                 res = handleCommand(session, new String(l,"US-ASCII"));
-                session.popLineHandler();
                 session.writeResponse(res);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -81,6 +80,7 @@ public class AuthCmdHandler
             // If the server receives such an answer, it MUST reject the AUTH
             // command by sending a 501 reply."
             if (line.equals("*\r\n")) {
+                session.popLineHandler();
                 return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.SECURITY_AUTH) + " Authentication aborted");
             }
             return onCommand(session, line);
@@ -239,7 +239,13 @@ public class AuthCmdHandler
             // with in the if clause below
         }
         // Authenticate user
-        return doAuthTest(session, user, pass, "PLAIN");
+        SMTPResponse response = doAuthTest(session, user, pass, "PLAIN");
+        
+        // remove all pushed linehandlers
+        for (int i = 0; i < session.getPushedLineHandlerCount(); i++) {
+            session.popLineHandler();
+        }
+        return response;
     }
 
     /**
@@ -285,8 +291,15 @@ public class AuthCmdHandler
                 pass = null;
             }
         }
+        
         // Authenticate user
-        return doAuthTest(session, user, pass, "LOGIN");
+        SMTPResponse response = doAuthTest(session, user, pass, "LOGIN");
+        
+        // remove all pushed linehandlers
+        for (int i = 0; i < session.getPushedLineHandlerCount(); i++) {
+            session.popLineHandler();
+        }
+        return response;
     }
 
 

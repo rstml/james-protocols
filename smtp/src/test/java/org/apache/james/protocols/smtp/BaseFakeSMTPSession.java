@@ -187,20 +187,25 @@ public class BaseFakeSMTPSession implements SMTPSession {
         return log;
     }
 
-	public boolean isStartTLSSupported() {
-		return getConfigurationData().isStartTLSSupported();
-	}
+    public boolean isStartTLSSupported() {
+        return getConfigurationData().isStartTLSSupported();
+    }
 
-	public boolean isTLSStarted() {
+    public boolean isTLSStarted() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
-	}
+    }
 
-	public void startTLS() throws IOException {
+    public void startTLS() throws IOException {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
 
-	}
+    }
 
-	public void writeStream(InputStream stream) {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");		
-	}
+    public void writeStream(InputStream stream) {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
+    @Override
+    public int getPushedLineHandlerCount() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");           
+    }
 }

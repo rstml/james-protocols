@@ -133,6 +133,12 @@ public interface SMTPSession extends TLSSupportedSession{
     void popLineHandler();
     
     /**
+     * Return the size of the pushed {@link LineHandler}
+     * @return
+     */
+    int getPushedLineHandlerCount();
+    
+    /**
      * Sleep for the given ms 
      * 
      * @param ms the time to sleep in milliseconds

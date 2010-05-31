@@ -241,10 +241,8 @@ public class AuthCmdHandler
         // Authenticate user
         SMTPResponse response = doAuthTest(session, user, pass, "PLAIN");
         
-        // remove all pushed linehandlers
-        for (int i = 0; i < session.getPushedLineHandlerCount(); i++) {
-            session.popLineHandler();
-        }
+        session.popLineHandler();
+
         return response;
     }
 
@@ -264,6 +262,9 @@ public class AuthCmdHandler
                 user = null;
             }
         }
+        
+        session.popLineHandler();
+        
         session.pushLineHandler(new AbstractSMTPLineHandler() {
 
             private String user;
@@ -291,14 +292,13 @@ public class AuthCmdHandler
                 pass = null;
             }
         }
+       
+        session.popLineHandler();
+
         
         // Authenticate user
         SMTPResponse response = doAuthTest(session, user, pass, "LOGIN");
-        
-        // remove all pushed linehandlers
-        for (int i = 0; i < session.getPushedLineHandlerCount(); i++) {
-            session.popLineHandler();
-        }
+       
         return response;
     }
 

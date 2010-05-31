@@ -29,7 +29,7 @@ import org.apache.james.protocols.smtp.hook.RcptHook;
 import org.apache.mailet.MailAddress;
 
 /**
- * Handler which check if the authenticated user is incorrect or correct
+ * Handler which check if the authenticated user is the same as the one used as MAIL FROM
  */
 public abstract class AbstractSenderAuthIdentifyVerificationRcptHook implements RcptHook {  
     /**
@@ -43,8 +43,14 @@ public abstract class AbstractSenderAuthIdentifyVerificationRcptHook implements 
             MailAddress senderAddress = (MailAddress) session.getState().get(
                     SMTPSession.SENDER);
 
+            String username;
+            if (useVirtualHosting()) {
+                username = senderAddress.toString();
+            } else {
+                username = senderAddress.getLocalPart();
+            }
             if ((senderAddress == null)
-                    || (!authUser.equals(senderAddress.getLocalPart()))
+                    || (!authUser.equals(username))
                     || (!isLocalDomain(senderAddress.getDomain()))) {
                 return new HookResult(HookReturnCode.DENY, 
                         SMTPRetCode.BAD_SEQUENCE,
@@ -64,5 +70,13 @@ public abstract class AbstractSenderAuthIdentifyVerificationRcptHook implements 
      * @return isLocal
      */
     protected abstract boolean isLocalDomain(String domain);
+    
+    /**
+     * Return true if virtualHosting should get used. If so the full email address will get used to 
+     * match against the supplied auth username
+     * 
+     * @return useVirtualHosting
+     */
+    protected abstract boolean useVirtualHosting();
 
 }

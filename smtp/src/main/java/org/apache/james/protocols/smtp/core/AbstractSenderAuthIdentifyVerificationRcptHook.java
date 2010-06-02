@@ -42,9 +42,9 @@ public abstract class AbstractSenderAuthIdentifyVerificationRcptHook implements 
             String authUser = (session.getUser()).toLowerCase(Locale.US);
             MailAddress senderAddress = (MailAddress) session.getState().get(
                     SMTPSession.SENDER);
+            String username= null;
 
             if (senderAddress != null) {
-                String username;
                 if (useVirtualHosting()) {
                     username = senderAddress.toString();
                 } else {

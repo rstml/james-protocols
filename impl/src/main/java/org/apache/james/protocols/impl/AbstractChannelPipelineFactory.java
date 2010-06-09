@@ -18,13 +18,13 @@
  ****************************************************************/
 package org.apache.james.protocols.impl;
 
-import static org.jboss.netty.channel.Channels.*;
-
+import static org.jboss.netty.channel.Channels.pipeline;
 
 import org.apache.james.protocols.api.Response;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
+import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.handler.codec.frame.DelimiterBasedFrameDecoder;
 import org.jboss.netty.handler.codec.frame.Delimiters;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
@@ -44,11 +44,12 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     private final ConnectionLimitUpstreamHandler connectionLimitHandler;
     private final ConnectionPerIpLimitUpstreamHandler connectionPerIpLimitHandler;
     private TimeoutHandler timeoutHandler;
-    
-    public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp) {
+    private ChannelGroupHandler groupHandler;
+    public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp, ChannelGroup channels) {
         timeoutHandler = new TimeoutHandler(new HashedWheelTimer(), timeout, timeout, 0);
         connectionLimitHandler = new ConnectionLimitUpstreamHandler(maxConnections);
         connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(maxConnectsPerIp);
+        groupHandler = new ChannelGroupHandler(channels);
     }
     
     
@@ -60,6 +61,7 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
         // Create a default pipeline implementation.
         ChannelPipeline pipeline = pipeline();
         
+        pipeline.addLast("groupHandler", groupHandler);
         pipeline.addLast("connectionLimit", connectionLimitHandler);
 
         pipeline.addLast("connectionPerIpLimit", connectionPerIpLimitHandler);
@@ -79,6 +81,9 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
         return pipeline;
     }
 
+
+
+    
     /**
      * Create the core {@link ChannelUpstreamHandler} to use
      * 

@@ -23,11 +23,7 @@ import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
@@ -86,11 +82,8 @@ public abstract class AbstractAsyncServer {
         if (port < 1) throw new RuntimeException("Please specify a port to which the server should get bound!");
 
         bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
-        ChannelPipelineFactory factory = createPipelineFactory();
+        ChannelPipelineFactory factory = createPipelineFactory(channels);
         
-        // add the channel group handler
-        factory.getPipeline().addFirst("channelGroupHandler", new ChannelGroupHandler());
-
         // Configure the pipeline factory.
         bootstrap.setPipelineFactory(factory);
 
@@ -145,7 +138,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @return factory
      */
-    protected abstract ChannelPipelineFactory createPipelineFactory();
+    protected abstract ChannelPipelineFactory createPipelineFactory(ChannelGroup group);
 
     /**
      * Set the read/write timeout for the server. This will throw a {@link IllegalStateException} if the
@@ -185,17 +178,4 @@ public abstract class AbstractAsyncServer {
         return timeout;
     }
 
-    /**
-     * Add channels to the channel group after the channel was opened
-     *
-     */
-    @ChannelPipelineCoverage("all")
-    private final class ChannelGroupHandler extends SimpleChannelUpstreamHandler {
-        public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) {
-            // Add all open channels to the global group so that they are
-            // closed on shutdown.
-            channels.add(e.getChannel());
-        }
-
-    }
 }

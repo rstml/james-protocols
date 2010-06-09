@@ -16,48 +16,30 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
+
 package org.apache.james.protocols.impl;
 
-import javax.net.ssl.SSLContext;
-
-import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelPipelineCoverage;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.handler.ssl.SslHandler;
 
 /**
- * Abstract base class for {@link ChannelPipeline} implementations which use TLS 
- * 
+ * Add channels to the channel group after the channel was opened
  *
  */
-public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractChannelPipelineFactory{
-
+@ChannelPipelineCoverage("all")
+public final class ChannelGroupHandler extends SimpleChannelUpstreamHandler {
+    private ChannelGroup channels;
+    public ChannelGroupHandler(ChannelGroup channels) {
+        this.channels = channels;
+    }
     
-    public AbstractSSLAwareChannelPipelineFactory(int timeout,
-            int maxConnections, int maxConnectsPerIp, ChannelGroup group) {
-        super(timeout, maxConnections, maxConnectsPerIp, group);
+    public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) {
+        // Add all open channels to the global group so that they are
+        // closed on shutdown.
+        channels.add(e.getChannel());
     }
 
-    @Override
-    public ChannelPipeline getPipeline() throws Exception {
-        ChannelPipeline pipeline =  super.getPipeline();
-
-        if (isSSLSocket()) {
-            pipeline.addFirst("sslHandler", new SslHandler(getSSLContext().createSSLEngine()));
-        }
-        return pipeline;
-    }
-
-    /**
-     * Return if the socket is using SSL/TLS
-     * 
-     * @return isSSL
-     */
-    protected abstract boolean isSSLSocket();
-    
-    /**
-     * Return the SSL context
-     * 
-     * @return context
-     */
-    protected abstract SSLContext getSSLContext();
 }

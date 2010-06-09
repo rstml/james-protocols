@@ -52,9 +52,6 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     }
     
     
-    public AbstractChannelPipelineFactory() {
-        this(120, 0, 0);
-    }
     /*
      * (non-Javadoc)
      * @see org.jboss.netty.channel.ChannelPipelineFactory#getPipeline()

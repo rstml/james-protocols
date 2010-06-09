@@ -31,7 +31,11 @@ import org.jboss.netty.handler.ssl.SslHandler;
 public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractChannelPipelineFactory{
 
     
-    
+    public AbstractSSLAwareChannelPipelineFactory(int timeout,
+            int maxConnections, int maxConnectsPerIp) {
+        super(timeout, maxConnections, maxConnectsPerIp);
+    }
+
     @Override
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline pipeline =  super.getPipeline();

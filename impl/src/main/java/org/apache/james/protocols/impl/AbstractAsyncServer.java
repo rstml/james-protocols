@@ -22,7 +22,14 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 /**
@@ -30,11 +37,6 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  *
  */
 public abstract class AbstractAsyncServer {
-
-
-    protected int connPerIP = 0;
-
-    protected int connectionLimit = 0;
 
     private int backlog = 250;
     
@@ -44,32 +46,65 @@ public abstract class AbstractAsyncServer {
 
     private ServerBootstrap bootstrap;
 
-	private boolean started;
+    private boolean started;
 
     private String ip;
+    
+    private ChannelGroup channels = new DefaultChannelGroup();
 
-    public AbstractAsyncServer(String ip, int port) {
+    
+    /**
+     * Set the ip on which the Server should listen on
+     * 
+     * @param ip
+     */
+    public void setIP(String ip) {
+        if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.ip = ip;
+    }
+    
+    
+    /**
+     * Set the port on which the Server should listen on
+     * 
+     * @param ip
+     */
+    public void setPort(int port) {
+        if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.port = port;
     }
-	
+    
     /**
      * Start the server
      * 
+     * @throws Exception 
+     * 
      */
-    public synchronized final void start() {
-        if (started)
-            throw new IllegalStateException("Server running allready");
+    public synchronized void start() throws Exception {
+        if (started) throw new IllegalStateException("Server running already");
+
+        if (port < 1) throw new RuntimeException("Please specify a port to which the server should get bound!");
 
         bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+        ChannelPipelineFactory factory = createPipelineFactory();
+        
+        // add the channel group handler
+        factory.getPipeline().addFirst("channelGroupHandler", new ChannelGroupHandler());
+
         // Configure the pipeline factory.
-        bootstrap.setPipelineFactory(createPipelineFactory());
+        bootstrap.setPipelineFactory(factory);
 
         // Bind and start to accept incoming connections.
         bootstrap.setOption("backlog", backlog);
         bootstrap.setOption("reuseAddress", true);
-
-        bootstrap.bind(new InetSocketAddress(ip, port));
+        Channel serverChannel;
+        if (getIP() == null) {
+            serverChannel = bootstrap.bind(new InetSocketAddress(port));
+        } else {
+            serverChannel = bootstrap.bind(new InetSocketAddress(ip, port));
+        }
+          
+        channels.add(serverChannel);
         started = true;
 
     }
@@ -77,13 +112,22 @@ public abstract class AbstractAsyncServer {
     /**
      * Stop the server
      */
-    public synchronized final void stop() {
+    public synchronized void stop() {
+        channels.close().awaitUninterruptibly();
         bootstrap.releaseExternalResources();
         started = false;
     }
     
     
     
+    /**
+     * Return the ip on which the server listen for connections
+     * 
+     * @return ip
+     */
+    public String getIP() {
+        return ip;
+    }
     
     /**
      * Return the port this server will listen on
@@ -109,7 +153,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @param timeout
      */
-    public synchronized void setTimeout(int timeout) {
+    public void setTimeout(int timeout) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.timeout = timeout;
     }
@@ -119,7 +163,7 @@ public abstract class AbstractAsyncServer {
      * Set the Backlog for the socket. This will throw a {@link IllegalStateException} if the server is running.
      * @param backlog
      */
-    public synchronized void setBacklog(int backlog) {
+    public void setBacklog(int backlog) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.backlog = backlog;
     }
@@ -139,5 +183,19 @@ public abstract class AbstractAsyncServer {
      */
     public int getTimeout() {
         return timeout;
+    }
+
+    /**
+     * Add channels to the channel group after the channel was opened
+     *
+     */
+    @ChannelPipelineCoverage("all")
+    private final class ChannelGroupHandler extends SimpleChannelUpstreamHandler {
+        public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) {
+            // Add all open channels to the global group so that they are
+            // closed on shutdown.
+            channels.add(e.getChannel());
+        }
+
     }
 }

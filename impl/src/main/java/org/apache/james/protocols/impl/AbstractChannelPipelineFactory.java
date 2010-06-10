@@ -60,8 +60,8 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     public ChannelPipeline getPipeline() throws Exception {
         // Create a default pipeline implementation.
         ChannelPipeline pipeline = pipeline();
-        
         pipeline.addLast("groupHandler", groupHandler);
+
         pipeline.addLast("connectionLimit", connectionLimitHandler);
 
         pipeline.addLast("connectionPerIpLimit", connectionPerIpLimitHandler);

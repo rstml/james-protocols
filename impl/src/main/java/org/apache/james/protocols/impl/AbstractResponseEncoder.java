@@ -20,13 +20,13 @@ package org.apache.james.protocols.impl;
 
 import static org.jboss.netty.buffer.ChannelBuffers.*;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 
 import org.apache.james.protocols.api.Response;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 
 /**
@@ -35,13 +35,12 @@ import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
  *
  * @param <R>
  */
-@ChannelPipelineCoverage("all")
 public abstract class AbstractResponseEncoder<R extends Response> extends OneToOneEncoder{
 
     private Class<? extends Response> classType;
-    private String charset;
+    private Charset charset;
 
-    public AbstractResponseEncoder(Class< ? extends Response> classType, String charset) {
+    public AbstractResponseEncoder(Class< ? extends Response> classType, Charset charset) {
         this.classType = classType;
         this.charset = charset;
     }

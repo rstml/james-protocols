@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
@@ -35,7 +34,6 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
  * TODO: Remove when its committed to NETTY. 
  *       https://jira.jboss.org/jira/browse/NETTY-311
  */
-@ChannelPipelineCoverage("all")
 public class ConnectionLimitUpstreamHandler extends SimpleChannelUpstreamHandler{
 
     private final AtomicInteger connections = new AtomicInteger(0);

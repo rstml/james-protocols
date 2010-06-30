@@ -29,7 +29,6 @@ import org.apache.james.protocols.api.ProtocolSession;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.ExceptionEvent;
@@ -43,7 +42,6 @@ import org.jboss.netty.handler.codec.frame.TooLongFrameException;
  * 
  *
  */
-@ChannelPipelineCoverage("all")
 public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstreamHandler implements ChannelAttributeSupport{
     
     private ProtocolHandlerChain chain;

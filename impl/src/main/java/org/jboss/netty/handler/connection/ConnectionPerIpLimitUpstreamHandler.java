@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
@@ -37,7 +36,6 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
  * TODO: Remove when its committed to NETTY. 
  *       https://jira.jboss.org/jira/browse/NETTY-311
  */
-@ChannelPipelineCoverage("all")
 public class ConnectionPerIpLimitUpstreamHandler extends SimpleChannelUpstreamHandler{
 
     private final Map<String, Integer> connections = new HashMap<String, Integer>();

@@ -22,7 +22,6 @@ import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
@@ -32,7 +31,6 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
  *
  * @param <Session>
  */
-@ChannelPipelineCoverage("all")
 public class LineHandlerUpstreamHandler<Session extends ProtocolSession> extends SimpleChannelUpstreamHandler implements ChannelAttributeSupport{
 
     private LineHandler<Session> handler;

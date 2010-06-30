@@ -20,7 +20,6 @@
 package org.apache.james.protocols.impl;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipelineCoverage;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -29,7 +28,6 @@ import org.jboss.netty.channel.group.ChannelGroup;
  * Add channels to the channel group after the channel was opened
  *
  */
-@ChannelPipelineCoverage("all")
 public final class ChannelGroupHandler extends SimpleChannelUpstreamHandler {
     private ChannelGroup channels;
     public ChannelGroupHandler(ChannelGroup channels) {

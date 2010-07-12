@@ -19,6 +19,7 @@
 package org.apache.james.protocols.impl;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
 
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -42,7 +43,11 @@ public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractCha
         ChannelPipeline pipeline =  super.getPipeline();
 
         if (isSSLSocket()) {
-            pipeline.addFirst("sslHandler", new SslHandler(getSSLContext().createSSLEngine()));
+            // We need to set clientMode to false.
+            // See https://issues.apache.org/jira/browse/JAMES-1025
+            SSLEngine engine = getSSLContext().createSSLEngine();
+            engine.setUseClientMode(false);
+            pipeline.addFirst("sslHandler", new SslHandler(engine));
         }
         return pipeline;
     }

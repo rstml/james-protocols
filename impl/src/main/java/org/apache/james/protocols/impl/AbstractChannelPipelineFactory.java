@@ -46,7 +46,7 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     private TimeoutHandler timeoutHandler;
     private ChannelGroupHandler groupHandler;
     public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp, ChannelGroup channels) {
-        timeoutHandler = new TimeoutHandler(new HashedWheelTimer(), timeout, timeout, 0);
+        timeoutHandler = new TimeoutHandler(new HashedWheelTimer(), timeout);
         connectionLimitHandler = new ConnectionLimitUpstreamHandler(maxConnections);
         connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(maxConnectsPerIp);
         groupHandler = new ChannelGroupHandler(channels);

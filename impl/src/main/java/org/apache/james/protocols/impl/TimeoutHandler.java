@@ -31,13 +31,15 @@ import org.jboss.netty.util.Timer;
  */
 public class TimeoutHandler extends IdleStateHandler{
 
-    public TimeoutHandler(Timer timer, int readerIdleTimeSeconds, int writerIdleTimeSeconds, int allIdleTimeSeconds) {
-        super(timer, readerIdleTimeSeconds, writerIdleTimeSeconds, allIdleTimeSeconds);
+    public TimeoutHandler(Timer timer, int readerIdleTimeSeconds) {
+        super(timer, readerIdleTimeSeconds, 0, 0);
     }
 
     @Override
     protected void channelIdle(ChannelHandlerContext ctx, IdleState state, long lastActivityTimeMillis) throws Exception {
-        ctx.getChannel().close();
+        if (state.equals(IdleState.READER_IDLE)) {
+            ctx.getChannel().close();
+        }
     }
 
 

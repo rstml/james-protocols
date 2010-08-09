@@ -43,13 +43,14 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     public final static int MAX_LINE_LENGTH = 8192;
     private final ConnectionLimitUpstreamHandler connectionLimitHandler;
     private final ConnectionPerIpLimitUpstreamHandler connectionPerIpLimitHandler;
-    private TimeoutHandler timeoutHandler;
+    private final HashedWheelTimer timer = new HashedWheelTimer();
     private ChannelGroupHandler groupHandler;
+	private int timeout;
     public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp, ChannelGroup channels) {
-        timeoutHandler = new TimeoutHandler(new HashedWheelTimer(), timeout);
         connectionLimitHandler = new ConnectionLimitUpstreamHandler(maxConnections);
         connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(maxConnectsPerIp);
         groupHandler = new ChannelGroupHandler(channels);
+        this.timeout = timeout;
     }
     
     
@@ -74,7 +75,8 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
         pipeline.addLast("encoderResponse", createEncoder());
 
         pipeline.addLast("streamer", new ChunkedWriteHandler());
-        pipeline.addLast("timeoutHandler", timeoutHandler);
+        pipeline.addLast("timeoutHandler", new TimeoutHandler(timer, timeout));
+
         pipeline.addLast("coreHandler", createHandler());
 
 

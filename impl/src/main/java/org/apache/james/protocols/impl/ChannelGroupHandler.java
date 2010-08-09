@@ -25,7 +25,9 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 
 /**
- * Add channels to the channel group after the channel was opened
+ * Add channels to the channel group after the channel was opened.
+ * 
+ * This handler is thread-safe and thus can be shared across pipelines
  *
  */
 public final class ChannelGroupHandler extends SimpleChannelUpstreamHandler {

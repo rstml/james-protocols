@@ -121,13 +121,11 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
      * @param channel
      */
     protected void cleanup(Channel channel) {
-        ProtocolSession session = (ProtocolSession) attributes.get(channel);
+        ProtocolSession session = (ProtocolSession) attributes.remove(channel);
         if (session != null) {
             session.resetState();
             session = null;
         }
-        attributes.remove(channel);
-
     }
 
     /**

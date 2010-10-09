@@ -90,6 +90,7 @@ public abstract class AbstractAsyncServer {
         // Bind and start to accept incoming connections.
         bootstrap.setOption("backlog", backlog);
         bootstrap.setOption("reuseAddress", true);
+        bootstrap.setOption("child.tcpNoDelay", true);
         Channel serverChannel;
         if (getIP() == null) {
             serverChannel = bootstrap.bind(new InetSocketAddress(port));

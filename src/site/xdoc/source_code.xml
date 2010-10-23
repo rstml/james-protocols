@@ -31,7 +31,7 @@
 
       <p>The source can be checked out anonymously from SVN with the following command.</p>
 
-      <source>svn checkout http://svn.apache.org/repos/asf/james/protocols/trunk james-protocols</source>
+      <code>$ svn checkout http://svn.apache.org/repos/asf/james/protocols/trunk james-protocols</code>
     
     </subsection>
 
@@ -39,10 +39,16 @@
 
       <p>Everyone can access the Subversion repository via HTTP, but Committers must checkout the Subversion repository via HTTPS.</p>
 
-      <source>svn checkout https://svn.apache.org/repos/asf/james/protocols/trunk james-protocols</source>
+      <code>$ svn checkout https://svn.apache.org/repos/asf/james/protocols/trunk james-protocols</code>
       
     </subsection>
 
+  </section>
+
+  <section name="Architecture">
+  
+    <img src="images/uml/org.apache.james.protocols_package.png"/>
+  
   </section>
 
 </body>

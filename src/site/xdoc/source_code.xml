@@ -25,7 +25,7 @@
 
 <body>
 
-  <section name="Source Code">
+  <section name="Get Source Code">
 
     <subsection name="Anonymous Access">
 
@@ -45,10 +45,36 @@
 
   </section>
 
-  <section name="Architecture">
+  <section name="Protocols Source Projcts">
   
-    <img src="images/uml/org.apache.james.protocols_package.png"/>
+    <subsection name="Organization">
   
+      <div style="float:left; margin=4px;">
+        <img src="images/uml/org.apache.james.protocols_package.png"/>
+      </div>
+      
+      <p><code>apache-james-protocols-api</code> contains the interfaces, exceptions and Constants needed by the other projects.</p>
+     
+      <p><code>apache-james-protocols-impl</code> provides common services that can be used by any mail protocol.</p>
+    
+      <p><code>apache-james-protocols-smtp</code> implements the SMTP protocols with hooks for extensions.</p>
+         
+    </subsection>
+       
+    <div style="clear:both; float:none;"/>
+    
+    <subsection name="James Protocols API - apache-james-protocols-api">
+    
+    </subsection>
+    
+    <subsection name="James Protocols Implementation- apache-protocols-impl">
+    
+    </subsection>
+    
+    <subsection name="James Protocols SMTP - apache-james-protocols-smtp">
+    
+    </subsection>
+    
   </section>
 
 </body>

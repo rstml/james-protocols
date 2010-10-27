@@ -27,7 +27,7 @@
 
   <section name="What is James Protocols?">
 
-    <p>The Apache JAMES Protocols Project delivers a lightweight, 
+    <p>The Apache James Protocols Project delivers a lightweight, 
        and highly extensible framework for mail protocols implementations.</p>
        
     <p>The framework was build as a generic one, so its not bound to any socket implementation. 
@@ -42,7 +42,7 @@
        
     <p>At the moment only the SMTP protocol is included, but others will follow.</p>
        
-    <p>You can read more about protocols used for SMTP in James Server on the <a href="../server/head/concept_smtp_hooks.html">SMTP Hooks</a> page.</p>
+    <p>You can read more about protocols used for SMTP in James Server on the <a href="../server/3/dev_smtp_hooks.html">SMTP Hooks</a> page.</p>
 
   </section>
        

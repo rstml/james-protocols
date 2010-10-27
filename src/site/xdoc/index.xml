@@ -42,7 +42,7 @@
        
     <p>At the moment only the SMTP protocol is included, but others will follow.</p>
        
-    <p>You can read more about protocols used for SMTP in James Server on the <a href="../server/3/dev_smtp_hooks.html">SMTP Hooks</a> page.</p>
+    <p>You can read more about protocols used for SMTP in James Server on the <a href="../server/3/dev_extend_hook_smtp.html">SMTP Hooks</a> page.</p>
 
   </section>
        

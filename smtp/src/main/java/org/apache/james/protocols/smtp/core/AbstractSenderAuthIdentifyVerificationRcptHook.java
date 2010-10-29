@@ -51,8 +51,12 @@ public abstract class AbstractSenderAuthIdentifyVerificationRcptHook implements 
                     username = senderAddress.getLocalPart();
                 }
             }
+            
+            // Check if the sender address is the same as the user which was used to authenticate.
+            // Its important to ignore case here to fix JAMES-837. This is save todo because if the handler is called
+            // the user was already authenticated
             if ((senderAddress == null)
-                    || (!authUser.equals(username))
+                    || (!authUser.equalsIgnoreCase(username))
                     || (!isLocalDomain(senderAddress.getDomain()))) {
                 return new HookResult(HookReturnCode.DENY, 
                         SMTPRetCode.BAD_SEQUENCE,

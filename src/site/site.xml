@@ -44,7 +44,7 @@
     </menu>  
      
     <menu name="References">
-      <item name="Source Code" href="/source_code.html" />
+      <item name="Source Code" href="/source-code.html" />
       <item name="Javadoc" href="/apidocs/index.html" />
       <item name="Changes" href="/changes.html" />
 <!--      <item name="JIRA Report" href="/jira-report.html" />-->

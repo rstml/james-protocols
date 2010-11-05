@@ -42,16 +42,16 @@
        
     <p>At the moment only the SMTP protocol is included, but others will follow.</p>
        
-    <p>You can read more about protocols used for SMTP in James Server on the <a href="../server/3/dev_extend_hook_smtp.html">SMTP Hooks</a> page.</p>
+    <p>You can read more about protocols used for SMTP in James Server on the <a href="../server/3/dev-extend-hook-smtp.html">SMTP Hooks</a> page.</p>
 
   </section>
        
   <section name='Use James Protocols as a component in you application'>
  
-    <p>The <a href="source_code.html">source code</a> page contains information on how 
+    <p>The <a href="source-code.html">source code</a> page contains information on how 
        to develop with James Protocols.</p>
 
-    <img src="images/uml/org.apache.james.protocols_package.png"/>
+    <img src="images/uml/org.apache.james.protocols-package.png"/>
   
   </section>
 

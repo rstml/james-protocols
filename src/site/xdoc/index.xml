@@ -43,7 +43,7 @@
     <p>At the moment only the SMTP protocol is included, but others will follow.</p>
        
     <p>You can read more about protocols used for SMTP in James Server 
-       on the <a href="http://james.apache.org/server/3/dev-extend-hook-smtp.html">SMTP Hooks</a> page.</p>
+       on the <a href="http://james.apache.org/server/3/dev-extend-smtp-hook.html">SMTP Hooks</a> page.</p>
 
   </section>
        

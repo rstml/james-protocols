@@ -45,10 +45,14 @@ public class LineHandlerUpstreamHandler<Session extends ProtocolSession> extends
         Session pSession = (Session) attributes.get(ctx.getChannel());
         
         ChannelBuffer buf = (ChannelBuffer) e.getMessage();      
-
-        // copy the ChannelBuffer to a byte array to process the LineHandler
-        byte[] line = new byte[buf.capacity()];
-        buf.getBytes(0, line);
+        byte[] line;
+        if (buf.hasArray()) {
+            line = buf.array();
+        } else {
+            // copy the ChannelBuffer to a byte array to process the LineHandler
+            line = new byte[buf.capacity()];
+            buf.getBytes(0, line);
+        }
 
         handler.onLine(pSession, line);
 

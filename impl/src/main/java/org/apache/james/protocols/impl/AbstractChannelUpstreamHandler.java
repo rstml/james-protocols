@@ -85,14 +85,21 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         ProtocolSession pSession = (ProtocolSession) attributes.get(ctx.getChannel());
         LinkedList<LineHandler> lineHandlers = chain.getHandlers(LineHandler.class);
-        
-        ChannelBuffer buf = (ChannelBuffer) e.getMessage();      
-        byte[] line = new byte[buf.capacity()];
-        buf.getBytes(0, line);
+      
         
         if (lineHandlers.size() > 0) {
+        
+            ChannelBuffer buf = (ChannelBuffer) e.getMessage();      
+            byte[] line;
             
-            // Maybe it would be better to use the ByteBuffer here
+            if (buf.hasArray()) {
+                line = buf.array();
+            } else {
+                // copy the ChannelBuffer to a byte array to process the LineHandler
+                line = new byte[buf.capacity()];
+                buf.getBytes(0, line);
+            }
+            
             ((LineHandler) lineHandlers.getLast()).onLine(pSession,line);
         }
         

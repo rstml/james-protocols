@@ -48,6 +48,8 @@ public abstract class AbstractAsyncServer {
     
     private ChannelGroup channels = new DefaultChannelGroup();
 
+    private int ioWorker = Runtime.getRuntime().availableProcessors() * 2;
+
     
     /**
      * Set the ip on which the Server should listen on
@@ -71,6 +73,15 @@ public abstract class AbstractAsyncServer {
     }
     
     /**
+     * Set the IO-worker thread count to use. Default is nCores * 2
+     * 
+     * @param ioWorker
+     */
+    public void setIoWorkerCount(int ioWorker) {
+        if (started) throw new IllegalStateException("Can only be set when the server is not running");
+        this.ioWorker = ioWorker;
+    }
+    /**
      * Start the server
      * 
      * @throws Exception 
@@ -81,7 +92,7 @@ public abstract class AbstractAsyncServer {
 
         if (port < 1) throw new RuntimeException("Please specify a port to which the server should get bound!");
 
-        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
+        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool(), ioWorker));
         ChannelPipelineFactory factory = createPipelineFactory(channels);
         
         // Configure the pipeline factory.

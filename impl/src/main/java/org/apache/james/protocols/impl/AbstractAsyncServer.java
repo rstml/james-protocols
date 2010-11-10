@@ -56,7 +56,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @param ip
      */
-    public void setIP(String ip) {
+    public synchronized void setIP(String ip) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.ip = ip;
     }
@@ -67,7 +67,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @param ip
      */
-    public void setPort(int port) {
+    public synchronized void setPort(int port) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.port = port;
     }
@@ -77,10 +77,20 @@ public abstract class AbstractAsyncServer {
      * 
      * @param ioWorker
      */
-    public void setIoWorkerCount(int ioWorker) {
+    public synchronized void setIoWorkerCount(int ioWorker) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.ioWorker = ioWorker;
     }
+    
+    /**
+     * Return the IO worker thread count to use
+     * 
+     * @return ioWorker
+     */
+    public synchronized int getIoWorkerCount() {
+        return ioWorker;
+    }
+    
     /**
      * Start the server
      * 
@@ -130,7 +140,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @return ip
      */
-    public String getIP() {
+    public synchronized String getIP() {
         return ip;
     }
     
@@ -139,7 +149,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @return port
      */
-    public int getPort() {
+    public synchronized int getPort() {
         return port;
     }
     
@@ -158,7 +168,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @param timeout
      */
-    public void setTimeout(int timeout) {
+    public synchronized void setTimeout(int timeout) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.timeout = timeout;
     }
@@ -166,9 +176,10 @@ public abstract class AbstractAsyncServer {
     
     /**
      * Set the Backlog for the socket. This will throw a {@link IllegalStateException} if the server is running.
+     * 
      * @param backlog
      */
-    public void setBacklog(int backlog) {
+    public synchronized void setBacklog(int backlog) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.backlog = backlog;
     }
@@ -178,7 +189,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @return backlog
      */
-    public int getBacklog() {
+    public synchronized int getBacklog() {
         return backlog;
     }
     
@@ -186,7 +197,7 @@ public abstract class AbstractAsyncServer {
      * Return the read/write timeout for the socket.
      * @return
      */
-    public int getTimeout() {
+    public synchronized int getTimeout() {
         return timeout;
     }
 

@@ -41,6 +41,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      */
     private HashMap<String, List<CommandHandler<Session>>> commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
 
+    private List<ResponseResultHandler<Response, Session>> rHandlers = new ArrayList<ResponseResultHandler<Response, Session>>();
     /**
      * Add it to map (key as command name, value is an array list of CommandHandlers)
      *
@@ -85,29 +86,31 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
-        this.commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
-
-        for (Iterator it = extension.iterator(); it.hasNext(); ) {
-            CommandHandler handler = (CommandHandler) it.next();
-            Collection implCmds = handler.getImplCommands();
-    
-            for (Iterator i = implCmds.iterator(); i.hasNext(); ) {
-                String commandName = ((String) i.next()).trim().toUpperCase(Locale.US);
-                addToMap(commandName, (CommandHandler) handler);
-            }
+        if (interfaceName.equals(ResponseResultHandler.class)) {
+            rHandlers.addAll(extension);
         }
+        if (interfaceName.equals(CommandHandler.class)) {
+            for (Iterator it = extension.iterator(); it.hasNext();) {
+                CommandHandler handler = (CommandHandler) it.next();
+                Collection implCmds = handler.getImplCommands();
 
-        addToMap(getUnknownCommandHandlerIdentifier(), getUnknownCommandHandler());
+                for (Iterator i = implCmds.iterator(); i.hasNext();) {
+                    String commandName = ((String) i.next()).trim().toUpperCase(Locale.US);
+                    addToMap(commandName, (CommandHandler) handler);
+                }
+            }
 
-        if (commandHandlerMap.size() < 2) {
-            throw new WiringException("No commandhandlers configured");
-        } else {
-            List<String> mandatoryCommands = getMandatoryCommands();
-            for (int i = 0; i < mandatoryCommands.size(); i++) {
-            	String cmd = mandatoryCommands.get(i);
-                if (!commandHandlerMap.containsKey(mandatoryCommands.get(i))) {
-                    throw new WiringException(
-                    "No commandhandlers configured for mandatory command " +cmd) ;
+            addToMap(getUnknownCommandHandlerIdentifier(), getUnknownCommandHandler());
+
+            if (commandHandlerMap.size() < 2) {
+                throw new WiringException("No commandhandlers configured");
+            } else {
+                List<String> mandatoryCommands = getMandatoryCommands();
+                for (int i = 0; i < mandatoryCommands.size(); i++) {
+                    String cmd = mandatoryCommands.get(i);
+                    if (!commandHandlerMap.containsKey(mandatoryCommands.get(i))) {
+                        throw new WiringException("No commandhandlers configured for mandatory command " + cmd);
+                    }
                 }
             }
         }
@@ -138,11 +141,17 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
             // fetch the command handlers registered to the command
             int count = commandHandlers.size();
             for (int i = 0; i < count; i++) {
-                Response response = commandHandlers.get(i).onCommand(session, new BaseRequest(curCommandName, curCommandArgument));
+                CommandHandler<Session> cHandler = commandHandlers.get(i);
+                Response response = cHandler.onCommand(session, new BaseRequest(curCommandName, curCommandArgument));
 
                 // if the response is received, stop processing of command
                 // handlers
                 if (response != null) {
+                    
+                    // now process the result handlers
+                    for (int a = 0; a < rHandlers.size(); a++) {
+                        response = rHandlers.get(a).onResponse(session, response, (CommandHandler<Session>) cHandler);
+                    }
                     session.writeResponse(response);
 
                     break;
@@ -151,7 +160,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
 
         } catch (UnsupportedEncodingException e) {
             // Should never happen
-            e.printStackTrace();
+           session.getLogger().error("Unable to handle encoding" ,e );
         }
 
        
@@ -168,6 +177,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     public List<Class<?>> getMarkerInterfaces() {
         List res = new LinkedList();
         res.add(CommandHandler.class);
+        res.add(ResponseResultHandler.class);
         return res;
     }
 

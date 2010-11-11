@@ -19,6 +19,7 @@
 package org.apache.james.protocols.impl;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -49,7 +50,6 @@ public abstract class AbstractAsyncServer {
     private ChannelGroup channels = new DefaultChannelGroup();
 
     private int ioWorker = Runtime.getRuntime().availableProcessors() * 2;
-
     
     /**
      * Set the ip on which the Server should listen on
@@ -102,7 +102,7 @@ public abstract class AbstractAsyncServer {
 
         if (port < 1) throw new RuntimeException("Please specify a port to which the server should get bound!");
 
-        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool(), ioWorker));
+        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(createBossExecutor(), createWorkerExecutor(), ioWorker));
         ChannelPipelineFactory factory = createPipelineFactory(channels);
         
         // Configure the pipeline factory.
@@ -200,5 +200,23 @@ public abstract class AbstractAsyncServer {
     public synchronized int getTimeout() {
         return timeout;
     }
+    
+    /**
+     * Create a new {@link Executor} used for dispatch messages to the workers. One Thread will be used per port which is bound.
+     * This can get overridden if needed, by default it use a {@link Executors#newCachedThreadPool()}
+     * 
+     * @return bossExecutor
+     */
+    protected Executor createBossExecutor() {
+        return Executors.newCachedThreadPool();
+    }
 
+    /**
+     * Create a new {@link Executor} used for workers. This can get overridden if needed, by default it use a {@link Executors#newCachedThreadPool()}
+     * 
+     * @return workerExecutor
+     */
+    protected Executor createWorkerExecutor() {
+        return Executors.newCachedThreadPool();
+    }
 }

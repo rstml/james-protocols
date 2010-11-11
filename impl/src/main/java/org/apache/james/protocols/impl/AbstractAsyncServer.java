@@ -35,6 +35,7 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  */
 public abstract class AbstractAsyncServer {
 
+    public static final int DEFAULT_IO_WORKER_COUNT = Runtime.getRuntime().availableProcessors() * 2;
     private int backlog = 250;
     
     private int port;
@@ -49,7 +50,7 @@ public abstract class AbstractAsyncServer {
     
     private ChannelGroup channels = new DefaultChannelGroup();
 
-    private int ioWorker = Runtime.getRuntime().availableProcessors() * 2;
+    private int ioWorker = DEFAULT_IO_WORKER_COUNT;
     
     /**
      * Set the ip on which the Server should listen on

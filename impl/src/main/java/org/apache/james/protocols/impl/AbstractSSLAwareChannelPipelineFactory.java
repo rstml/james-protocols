@@ -33,11 +33,20 @@ import org.jboss.netty.handler.ssl.SslHandler;
 public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractChannelPipelineFactory{
 
     
+    private String[] enabledCipherSuites = null;
+
     public AbstractSSLAwareChannelPipelineFactory(int timeout,
             int maxConnections, int maxConnectsPerIp, ChannelGroup group) {
         super(timeout, maxConnections, maxConnectsPerIp, group);
     }
 
+    public AbstractSSLAwareChannelPipelineFactory(int timeout,
+            int maxConnections, int maxConnectsPerIp, ChannelGroup group, String[] enabledCipherSuites) {
+        this(timeout, maxConnections, maxConnectsPerIp, group);
+        this.enabledCipherSuites  = enabledCipherSuites;
+    }
+
+    
     @Override
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline pipeline =  super.getPipeline();
@@ -47,6 +56,9 @@ public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractCha
             // See https://issues.apache.org/jira/browse/JAMES-1025
             SSLEngine engine = getSSLContext().createSSLEngine();
             engine.setUseClientMode(false);
+            if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
+                engine.setEnabledCipherSuites(enabledCipherSuites);
+            }
             pipeline.addFirst("sslHandler", new SslHandler(engine));
         }
         return pipeline;

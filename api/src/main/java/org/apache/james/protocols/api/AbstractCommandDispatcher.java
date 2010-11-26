@@ -121,7 +121,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      * (non-Javadoc)
      * @see org.apache.james.api.protocol.LineHandler#onLine(org.apache.james.api.protocol.ProtocolSession, byte[])
      */
-    public void onLine(Session session, byte[] line) {
+    public boolean onLine(Session session, byte[] line) {
         String curCommandName = null;
         String curCommandArgument = null;
         String cmdString;
@@ -162,7 +162,8 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
             // Should never happen
            session.getLogger().error("Unable to handle encoding" ,e );
         }
-
+        
+        return false;
        
     }
 

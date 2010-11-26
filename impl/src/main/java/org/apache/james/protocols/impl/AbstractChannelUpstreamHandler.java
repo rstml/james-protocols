@@ -69,7 +69,11 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
 
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
-                connectHandlers.get(i).onConnect((ProtocolSession) attributes.get(ctx.getChannel()));
+                boolean disconnect = connectHandlers.get(i).onConnect((ProtocolSession) attributes.get(ctx.getChannel()));
+                if (disconnect)  {
+                    ctx.getChannel().disconnect();
+                    break;
+                }
             }
         }
         super.channelConnected(ctx, e);
@@ -100,7 +104,8 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
                 buf.getBytes(0, line);
             }
             
-            ((LineHandler) lineHandlers.getLast()).onLine(pSession,line);
+            boolean disconnect = ((LineHandler) lineHandlers.getLast()).onLine(pSession,line);
+            if (disconnect) ctx.getChannel().disconnect();
         }
         
         super.messageReceived(ctx, e);

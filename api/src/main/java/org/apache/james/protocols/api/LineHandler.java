@@ -27,11 +27,13 @@ package org.apache.james.protocols.api;
 public interface LineHandler<Session extends ProtocolSession> {
      
     /**
-     * Processing the give line. The line includes the CRLF delimiter
+     * Processing the give line. The line includes the CRLF delimiter.
+     * If true is returned the connection is closed
      * 
      * @param session not null
      * @param line not null 
+     * @return disconnect
      */
-    public void onLine(Session session, byte[] line);
+    public boolean onLine(Session session, byte[] line);
     
 }

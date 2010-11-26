@@ -41,7 +41,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
     /**
      * @see org.apache.james.smtpserver.protocol.ConnectHandler#onConnect(SMTPSession)
      */
-    public void onConnect(SMTPSession session) {
+    public boolean onConnect(SMTPSession session) {
         String smtpGreeting = session.getSMTPGreeting();
 
         SMTPResponse welcomeResponse;
@@ -60,6 +60,8 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
             welcomeResponse = new SMTPResponse(SMTPRetCode.SERVICE_READY,smtpGreeting);
         }
         session.writeResponse(welcomeResponse);
+        
+        return false;
     }
     
     protected String getProductName() {

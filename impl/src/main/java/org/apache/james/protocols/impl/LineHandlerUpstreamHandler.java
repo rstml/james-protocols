@@ -54,8 +54,8 @@ public class LineHandlerUpstreamHandler<Session extends ProtocolSession> extends
             buf.getBytes(0, line);
         }
 
-        handler.onLine(pSession, line);
-
+        boolean disconnect = handler.onLine(pSession, line);
+        if (disconnect) ctx.getChannel().disconnect();
         
     }
 

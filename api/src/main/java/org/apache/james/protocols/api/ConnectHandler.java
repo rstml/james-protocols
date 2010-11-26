@@ -29,8 +29,10 @@ package org.apache.james.protocols.api;
  */
 public interface ConnectHandler<Session extends ProtocolSession> {
     /**
-     * Handle connection
+     * Handle connection and disconnect if true is returned
+     * 
+     * @return disconnect 
     **/
-    public void onConnect(Session session);
+    public boolean onConnect(Session session);
 
 }

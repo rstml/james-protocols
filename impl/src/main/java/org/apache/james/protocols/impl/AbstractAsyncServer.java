@@ -129,6 +129,7 @@ public abstract class AbstractAsyncServer {
      * Stop the server
      */
     public synchronized void stop() {
+        if (started == false) return;
         channels.close().awaitUninterruptibly();
         bootstrap.releaseExternalResources();
         started = false;

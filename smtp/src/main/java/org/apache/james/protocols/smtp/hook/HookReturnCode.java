@@ -23,8 +23,9 @@
 package org.apache.james.protocols.smtp.hook;
 
 public class HookReturnCode {
-    public final static int OK = 0;
-    public final static int DENY = 1;
-    public final static int DENYSOFT = 2;
-    public final static int DECLINED = 3;
+    public final static int OK = 0x1;
+    public final static int DENY = 0x1 << 1;
+    public final static int DENYSOFT = 0x1 << 2;
+    public final static int DECLINED = 0x1 << 3;
+    public final static int DISCONNECT = 0x1 << 4;
 }

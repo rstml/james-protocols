@@ -97,8 +97,12 @@ public abstract class AbstractHookableCmdHandler<Hook> implements CommandHandler
                 }
                 
                 // call the core cmd if we receive a ok return code of the hook so no other hooks are executed
-                if (hRes.getResult() == HookReturnCode.OK) {
-                	return doCoreCmd(session, command, parameters);
+                if ((hRes.getResult() & HookReturnCode.OK) == HookReturnCode.OK) {
+                    SMTPResponse response = doCoreCmd(session, command, parameters);
+                    if ((hRes.getResult() & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                        response.setEndSession(true);
+                    }
+                      return response;
                 } else {
                 	SMTPResponse res = calcDefaultSMTPResponse(hRes);
                 	if (res != null) {
@@ -132,27 +136,43 @@ public abstract class AbstractHookableCmdHandler<Hook> implements CommandHandler
             String smtpRetCode = result.getSmtpRetCode();
             String smtpDesc = result.getSmtpDescription();
     
-            if (rCode == HookReturnCode.DENY) {
+            if ((rCode &HookReturnCode.DENY) == HookReturnCode.DENY) {
                 if (smtpRetCode == null)
                     smtpRetCode = SMTPRetCode.TRANSACTION_FAILED;
                 if (smtpDesc == null)
                     smtpDesc = "Email rejected";
     
-                return new SMTPResponse(smtpRetCode, smtpDesc);
+                SMTPResponse response =  new SMTPResponse(smtpRetCode, smtpDesc);
+                if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                    response.setEndSession(true);
+                }
+                return response;
             } else if (rCode == HookReturnCode.DENYSOFT) {
                 if (smtpRetCode == null)
                     smtpRetCode = SMTPRetCode.LOCAL_ERROR;
                 if (smtpDesc == null)
                     smtpDesc = "Temporary problem. Please try again later";
     
-                return new SMTPResponse(smtpRetCode, smtpDesc);
-            } else if (rCode == HookReturnCode.OK) {
+                SMTPResponse response = new SMTPResponse(smtpRetCode, smtpDesc);
+                if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                    response.setEndSession(true);
+                }
+                return response;
+            } else if ((rCode & HookReturnCode.OK) == HookReturnCode.OK) {
                 if (smtpRetCode == null)
                     smtpRetCode = SMTPRetCode.MAIL_OK;
                 if (smtpDesc == null)
                     smtpDesc = "Command accepted";
     
-                return new SMTPResponse(smtpRetCode, smtpDesc);
+                SMTPResponse response = new SMTPResponse(smtpRetCode, smtpDesc);
+                if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                    response.setEndSession(true);
+                }
+                return response;
+            } else if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                SMTPResponse response = new SMTPResponse("");
+                response.setEndSession(true);
+                return response;
             } else {
                 // Return null as default
                 return null;

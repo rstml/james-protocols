@@ -23,7 +23,7 @@ package org.apache.james.protocols.smtp.hook;
  * Result which get used for hooks
  * 
  */
-public class HookResult {
+public final class HookResult {
 
     private int result;
     private String smtpRetCode;
@@ -32,11 +32,29 @@ public class HookResult {
     /**
      * Construct new HookResult
      * 
-     * @param result
+     * @param result 
      * @param smtpRetCode 
      * @param smtpDescription
      */
     public HookResult(int result, String smtpRetCode, CharSequence smtpDescription) {
+        boolean match = false;
+
+        if ((result & HookReturnCode.DECLINED) == HookReturnCode.DECLINED) {
+            if (match == true) throw new IllegalArgumentException();
+            match = true;
+        }
+        if ((result & HookReturnCode.OK) == HookReturnCode.OK) {
+            if (match == true) throw new IllegalArgumentException();
+            match = true;
+        }
+        if ((result & HookReturnCode.DENY) == HookReturnCode.DENY) {
+            if (match == true) throw new IllegalArgumentException();
+            match = true;
+        }
+        if ((result & HookReturnCode.DENYSOFT) == HookReturnCode.DENYSOFT) {
+            if (match == true) throw new IllegalArgumentException();
+            match = true;
+        }
         this.result = result;
         this.smtpRetCode = smtpRetCode;
         this.smtpDescription = (smtpDescription == null) ? null : smtpDescription.toString();
@@ -61,6 +79,7 @@ public class HookResult {
         this(result,null,null);
     }
     
+   
     /**
      * Return the result
      * 

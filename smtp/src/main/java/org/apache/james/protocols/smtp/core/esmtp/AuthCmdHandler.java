@@ -373,27 +373,47 @@ public class AuthCmdHandler
             String smtpRetCode = result.getSmtpRetCode();
             String smtpDesc = result.getSmtpDescription();
     
-            if (rCode == HookReturnCode.DENY) {
+            if ((rCode & HookReturnCode.DENY) == HookReturnCode.DENY) {
                 if (smtpRetCode == null)
                     smtpRetCode = SMTPRetCode.AUTH_FAILED;
                 if (smtpDesc == null)
                     smtpDesc = "Authentication Failed";
     
-                return new SMTPResponse(smtpRetCode, smtpDesc);
-            } else if (rCode == HookReturnCode.DENYSOFT) {
+                SMTPResponse response =  new SMTPResponse(smtpRetCode, smtpDesc);
+
+                if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                    response.setEndSession(true);
+                }
+                return response;
+            } else if ((rCode & HookReturnCode.DENYSOFT) == HookReturnCode.DENYSOFT) {
                 if (smtpRetCode == null)
                     smtpRetCode = SMTPRetCode.LOCAL_ERROR;
                 if (smtpDesc == null)
                     smtpDesc = "Temporary problem. Please try again later";
     
-                return new SMTPResponse(smtpRetCode, smtpDesc);
-            } else if (rCode == HookReturnCode.OK) {
+                SMTPResponse response =  new SMTPResponse(smtpRetCode, smtpDesc);
+
+                if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                    response.setEndSession(true);
+                }
+                return response;
+            } else if ((rCode & HookReturnCode.OK) == HookReturnCode.OK) {
                 if (smtpRetCode == null)
                     smtpRetCode = SMTPRetCode.AUTH_OK;
                 if (smtpDesc == null)
                     smtpDesc = "Authentication Succesfull";
-    
-                return new SMTPResponse(smtpRetCode, smtpDesc);
+                
+                SMTPResponse response =  new SMTPResponse(smtpRetCode, smtpDesc);
+
+                if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                    response.setEndSession(true);
+                }
+                return response;
+            } else if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
+                SMTPResponse response =  new SMTPResponse("");
+                response.setEndSession(true);
+            
+                return response;
             } else {
                 // Return null as default
                 return null;

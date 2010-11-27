@@ -17,12 +17,17 @@
  * under the License.                                           *
  ****************************************************************/
 
+package org.apache.james.protocols.api;
 
-package org.apache.james.protocols.smtp.hook;
+public interface CommanHandlerResultHandler<R extends Response, S extends ProtocolSession> {
 
-import org.apache.james.protocols.smtp.SMTPSession;
-
-public interface HookResultHook {
-    
-    public HookResult onHookResult(SMTPSession session,HookResult result, long executionTime, Hook object);
+    /**
+     * Get called when a {@link Response} was returned from the {@link CommandHandler}
+     * 
+     * @param session
+     * @param response
+     * @param handler
+     * @return response
+     */
+    public Response onResponse(ProtocolSession session, R response, long executionTime, CommandHandler<S> handler);
 }

@@ -17,12 +17,28 @@
  * under the License.                                           *
  ****************************************************************/
 
+package org.apache.james.protocols.api;
 
-package org.apache.james.protocols.smtp.hook;
+/**
+ * Handler which can be used to gather statistics for {@link LineHandler} or 
+ * modify the return type of them
+ * 
+ *
+ * @param <S>
+ */
+public interface LineHandlerResultHandler<S extends ProtocolSession> {
 
-import org.apache.james.protocols.smtp.SMTPSession;
-
-public interface HookResultHook {
     
-    public HookResult onHookResult(SMTPSession session,HookResult result, long executionTime, Hook object);
+    /**
+     * Called after the {@link LineHandler} returned a result
+     * 
+     * @param session
+     * @param response
+     * @param executionTime
+     * @param handler
+     * @return result
+     */
+    public boolean onResponse(ProtocolSession session, boolean response, long executionTime, LineHandler<S> handler);
+
+    
 }

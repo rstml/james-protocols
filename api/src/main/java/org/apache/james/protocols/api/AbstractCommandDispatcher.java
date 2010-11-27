@@ -41,7 +41,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      */
     private HashMap<String, List<CommandHandler<Session>>> commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
 
-    private List<ResponseResultHandler<Response, Session>> rHandlers = new ArrayList<ResponseResultHandler<Response, Session>>();
+    private List<CommanHandlerResultHandler<Response, Session>> rHandlers = new ArrayList<CommanHandlerResultHandler<Response, Session>>();
     /**
      * Add it to map (key as command name, value is an array list of CommandHandlers)
      *
@@ -86,7 +86,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
-        if (interfaceName.equals(ResponseResultHandler.class)) {
+        if (interfaceName.equals(CommanHandlerResultHandler.class)) {
             rHandlers.addAll(extension);
         }
         if (interfaceName.equals(CommandHandler.class)) {
@@ -142,7 +142,10 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
             int count = commandHandlers.size();
             for (int i = 0; i < count; i++) {
                 CommandHandler<Session> cHandler = commandHandlers.get(i);
+
+                long start = System.currentTimeMillis();
                 Response response = cHandler.onCommand(session, new BaseRequest(curCommandName, curCommandArgument));
+                long executionTime = System.currentTimeMillis() - start;
 
                 // if the response is received, stop processing of command
                 // handlers
@@ -150,7 +153,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
                     
                     // now process the result handlers
                     for (int a = 0; a < rHandlers.size(); a++) {
-                        response = rHandlers.get(a).onResponse(session, response, (CommandHandler<Session>) cHandler);
+                        response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
                     }
                     session.writeResponse(response);
 
@@ -178,7 +181,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     public List<Class<?>> getMarkerInterfaces() {
         List res = new LinkedList();
         res.add(CommandHandler.class);
-        res.add(ResponseResultHandler.class);
+        res.add(CommanHandlerResultHandler.class);
         return res;
     }
 

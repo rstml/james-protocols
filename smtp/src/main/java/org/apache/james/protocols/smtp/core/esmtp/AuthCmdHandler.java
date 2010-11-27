@@ -327,14 +327,17 @@ public class AuthCmdHandler
                 AuthHook rawHook = hooks.get(i);
                 session.getLogger().debug("executing  hook " + rawHook);
                 
+
+                long start = System.currentTimeMillis();
                 HookResult hRes = rawHook.doAuth(session, user, pass);
-                
+                long executionTime = System.currentTimeMillis() - start;
+
                 if (rHooks != null) {
                     for (int i2 = 0; i2 < rHooks.size(); i2++) {
                         Object rHook = rHooks.get(i2);
                         session.getLogger().debug("executing  hook " + rHook);
                     
-                        hRes = ((HookResultHook) rHook).onHookResult(session, hRes, rawHook);
+                        hRes = ((HookResultHook) rHook).onHookResult(session, hRes, executionTime, rawHook);
                     }
                 }
                 

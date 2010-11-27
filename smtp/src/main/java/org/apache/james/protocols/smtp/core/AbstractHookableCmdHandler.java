@@ -87,12 +87,16 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
             for (int i = 0; i < count; i++) {
                 Hook rawHook = hooks.get(i);
                 session.getLogger().debug("executing hook " + rawHook.getClass().getName());
+                long start = System.currentTimeMillis();
+                
                 HookResult hRes = callHook(rawHook, session, parameters);
+                long executionTime = System.currentTimeMillis() - start;
+
                 if (rHooks != null) {
                     for (int i2 = 0; i2 < rHooks.size(); i2++) {
                         Object rHook = rHooks.get(i2);
                         session.getLogger().debug("executing hook " + rHook);
-                        hRes = ((HookResultHook) rHook).onHookResult(session, hRes, rawHook);
+                        hRes = ((HookResultHook) rHook).onHookResult(session, hRes, executionTime, rawHook);
                     }
                 }
                 

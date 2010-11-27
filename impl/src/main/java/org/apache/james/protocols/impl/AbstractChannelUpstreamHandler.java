@@ -23,7 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.james.protocols.api.ConnectHandler;
+import org.apache.james.protocols.api.ConnectHandlerResultHandler;
 import org.apache.james.protocols.api.LineHandler;
+import org.apache.james.protocols.api.LineHandlerResultHandler;
 import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -66,10 +68,19 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         List<ConnectHandler> connectHandlers = chain.getHandlers(ConnectHandler.class);
-
+        List<ConnectHandlerResultHandler> resultHandlers = chain.getHandlers(ConnectHandlerResultHandler.class);
+        ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
-                boolean disconnect = connectHandlers.get(i).onConnect((ProtocolSession) attributes.get(ctx.getChannel()));
+                ConnectHandler cHandler = connectHandlers.get(i);
+                
+                long start = System.currentTimeMillis();
+                boolean disconnect = connectHandlers.get(i).onConnect(session);
+                long executionTime = System.currentTimeMillis() - start;
+                
+                for (int a = 0; a < resultHandlers.size(); a++) {
+                    disconnect = resultHandlers.get(i).onResponse(session, disconnect, executionTime, cHandler);
+                }
                 if (disconnect)  {
                     ctx.getChannel().disconnect();
                     break;
@@ -89,7 +100,8 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         ProtocolSession pSession = (ProtocolSession) attributes.get(ctx.getChannel());
         LinkedList<LineHandler> lineHandlers = chain.getHandlers(LineHandler.class);
-      
+        LinkedList<LineHandlerResultHandler> resultHandlers = chain.getHandlers(LineHandlerResultHandler.class);
+
         
         if (lineHandlers.size() > 0) {
         
@@ -104,8 +116,16 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
                 buf.getBytes(0, line);
             }
             
-            boolean disconnect = ((LineHandler) lineHandlers.getLast()).onLine(pSession,line);
+            LineHandler lHandler=  (LineHandler) lineHandlers.getLast();
+            long start = System.currentTimeMillis();            
+            boolean disconnect = lHandler.onLine(pSession,line);
+            long executionTime = System.currentTimeMillis() - start;
+
+            for (int i = 0; i < resultHandlers.size(); i++) {
+                disconnect = resultHandlers.get(i).onResponse(pSession, disconnect, executionTime, lHandler);
+            }
             if (disconnect) ctx.getChannel().disconnect();
+
         }
         
         super.messageReceived(ctx, e);

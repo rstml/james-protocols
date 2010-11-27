@@ -36,10 +36,6 @@
     <module>api</module>
     <module>smtp</module>
     <module>impl</module>
-    <!-- 
-    <module>smtp-impl</module>
-    <module>pop3</module>
-    -->
   </modules>
   <ciManagement>
     <system>hudson</system>

@@ -334,7 +334,7 @@ public class AuthCmdHandler
                         Object rHook = rHooks.get(i2);
                         session.getLogger().debug("executing  hook " + rHook);
                     
-                        hRes = ((HookResultHook) rHook).onHookResult(session, hRes, rHook);
+                        hRes = ((HookResultHook) rHook).onHookResult(session, hRes, rawHook);
                     }
                 }
                 

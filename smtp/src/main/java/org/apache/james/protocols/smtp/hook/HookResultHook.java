@@ -24,5 +24,5 @@ import org.apache.james.protocols.smtp.SMTPSession;
 
 public interface HookResultHook {
     
-    public HookResult onHookResult(SMTPSession session,HookResult result, Object object);
+    public HookResult onHookResult(SMTPSession session,HookResult result, Hook object);
 }

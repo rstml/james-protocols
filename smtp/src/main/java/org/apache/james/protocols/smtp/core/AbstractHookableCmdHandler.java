@@ -37,7 +37,7 @@ import org.apache.james.protocols.smtp.hook.HookReturnCode;
  * Abstract class which Handle hook-aware CommanHandler.
  * 
  */
-public abstract class AbstractHookableCmdHandler<Hook> implements CommandHandler<SMTPSession>, ExtensibleHandler {
+public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.protocols.smtp.hook.Hook> implements CommandHandler<SMTPSession>, ExtensibleHandler {
 
 
     private List<Hook> hooks;

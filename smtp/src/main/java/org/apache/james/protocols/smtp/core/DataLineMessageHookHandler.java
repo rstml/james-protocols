@@ -102,9 +102,9 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
             try {
                 int count = messageHandlers.size();
                 for(int i =0; i < count; i++) {
-                    Object rawHandler =  messageHandlers.get(i);
+                    MessageHook rawHandler =  (MessageHook) messageHandlers.get(i);
                     session.getLogger().debug("executing message handler " + rawHandler);
-                    HookResult hRes = ((MessageHook)rawHandler).onMessage(session, mail);
+                    HookResult hRes = rawHandler.onMessage(session, mail);
                     
                     if (rHooks != null) {
                         for (int i2 = 0; i2 < rHooks.size(); i2++) {

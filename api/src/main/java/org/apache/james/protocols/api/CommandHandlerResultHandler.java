@@ -19,7 +19,7 @@
 
 package org.apache.james.protocols.api;
 
-public interface CommanHandlerResultHandler<R extends Response, S extends ProtocolSession> {
+public interface CommandHandlerResultHandler<R extends Response, S extends ProtocolSession> {
 
     /**
      * Get called when a {@link Response} was returned from the {@link CommandHandler}

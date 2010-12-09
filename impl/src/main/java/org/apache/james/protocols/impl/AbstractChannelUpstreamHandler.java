@@ -79,7 +79,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
                 long executionTime = System.currentTimeMillis() - start;
                 
                 for (int a = 0; a < resultHandlers.size(); a++) {
-                    disconnect = resultHandlers.get(i).onResponse(session, disconnect, executionTime, cHandler);
+                    disconnect = resultHandlers.get(a).onResponse(session, disconnect, executionTime, cHandler);
                 }
                 if (disconnect)  {
                     ctx.getChannel().disconnect();

@@ -137,6 +137,9 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
             }
             curCommandName = curCommandName.toUpperCase(Locale.US);
 
+            if (session.getLogger().isDebugEnabled()) {
+                session.getLogger().debug(getClass().getName()+" received: " + cmdString);
+            }
             List<CommandHandler<Session>> commandHandlers = getCommandHandlers(curCommandName, session);
             // fetch the command handlers registered to the command
             int count = commandHandlers.size();

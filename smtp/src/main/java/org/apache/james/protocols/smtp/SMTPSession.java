@@ -99,13 +99,6 @@ public interface SMTPSession extends TLSSupportedSession{
      */
     boolean isAuthSupported();
 
-
-    /**
-     * Returns the SMTP session id
-     *
-     * @return SMTP session id
-     */
-    String getSessionID();
     
     /**
      * Returns the recipient count

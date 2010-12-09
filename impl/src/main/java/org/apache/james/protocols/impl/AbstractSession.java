@@ -22,6 +22,7 @@ package org.apache.james.protocols.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.util.Random;
 
 import javax.net.ssl.SSLEngine;
 
@@ -39,18 +40,25 @@ import org.jboss.netty.handler.stream.ChunkedStream;
  * 
  */
 public abstract class AbstractSession implements TLSSupportedSession {
+    private static Random random = new Random();
 
     protected ChannelHandlerContext handlerContext;
     protected InetSocketAddress socketAddress;
-    protected Log logger;
+    private Log logger;
+    private ProtocolSessionLog pLog = null;
+    
     protected SSLEngine engine;
     protected String user;
+
+    private String id;
 
     public AbstractSession(Log logger, ChannelHandlerContext handlerContext, SSLEngine engine) {
         this.handlerContext = handlerContext;
         this.socketAddress = (InetSocketAddress) handlerContext.getChannel().getRemoteAddress();
         this.logger = logger;
         this.engine = engine;
+        this.id = random.nextInt(1024) + "";
+
     }
 
     public AbstractSession(Log logger, ChannelHandlerContext handlerContext) {
@@ -132,7 +140,10 @@ public abstract class AbstractSession implements TLSSupportedSession {
      * @see org.apache.james.api.protocol.ProtocolSession#getLogger()
      */
     public Log getLogger() {
-        return logger;
+        if (pLog == null) {
+            pLog = new ProtocolSessionLog(this, logger);
+        }
+        return pLog;
     }
     
 
@@ -159,6 +170,14 @@ public abstract class AbstractSession implements TLSSupportedSession {
         if (stream != null && channel.isConnected()) {
             channel.write(new ChunkedStream(stream));
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getSessionID()
+     */
+    public String getSessionID() {
+        return id;
     }
     
     

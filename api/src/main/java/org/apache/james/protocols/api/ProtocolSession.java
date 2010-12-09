@@ -78,4 +78,11 @@ public interface ProtocolSession {
      * @return host ip address of the client
      */
     public String getRemoteIPAddress();
+    
+    /**
+     * Return the ID for the session
+     * 
+     * @return id
+     */
+    public String getSessionID();
 }

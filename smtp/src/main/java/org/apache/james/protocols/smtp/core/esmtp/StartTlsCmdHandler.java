@@ -36,72 +36,69 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
  * Handles STARTTLS command
  */
 public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExtension {
-	/**
-	 * The name of the command handled by the command handler
-	 */
-	private final static String COMMAND_NAME = "STARTTLS";
+    /**
+     * The name of the command handled by the command handler
+     */
+    private final static String COMMAND_NAME = "STARTTLS";
 
-	/**
-	 * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
-	 */
-	public Collection<String> getImplCommands() {
-		Collection<String> commands = new ArrayList<String>();
-		commands.add(COMMAND_NAME);
-		return commands;
-	}
+    /**
+     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     */
+    public Collection<String> getImplCommands() {
+        Collection<String> commands = new ArrayList<String>();
+        commands.add(COMMAND_NAME);
+        return commands;
+    }
 
-	/**
-	 * Handler method called upon receipt of a STARTTLS command. Resets
-	 * message-specific, but not authenticated user, state.
-	 * 
-	 */
+    /**
+     * Handler method called upon receipt of a STARTTLS command. Resets
+     * message-specific, but not authenticated user, state.
+     * 
+     */
     public Response onCommand(SMTPSession session, Request request) {
-		SMTPResponse response = null;
-		String command = request.getCommand();
-		String parameters = request.getArgument();
-		if (session.isStartTLSSupported()) {
-			if (session.isTLSStarted()) {
-				response = new SMTPResponse("500", DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) + " TLS already active RFC2487 5.2");
-			} else {
-				if ((parameters == null) || (parameters.length() == 0)) {
-					response = new SMTPResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS");
-				} else {
-					response = new SMTPResponse("501 "+ DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Syntax error (no parameters allowed) with STARTTLS command");
-				}
-				session.writeResponse(response);
-				try {
-					if (!session.isTLSStarted()) {
-						session.startTLS();
-						// force reset
-						session.resetState();
-					}
-				} catch (IOException e) {
-					return new SMTPResponse(SMTPRetCode.LOCAL_ERROR,"TLS not available due to temporary reason");
-				}
-			}
-			
-		} else {
-	        StringBuilder result = new StringBuilder();
-	        result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD))
-	                      .append(" Command ")
-	                      .append(command)
-	                      .append(" unrecognized.");
-	        response =  new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
-		}
-		return null;
-	}
+        SMTPResponse response = null;
+        String command = request.getCommand();
+        String parameters = request.getArgument();
+        if (session.isStartTLSSupported()) {
+            if (session.isTLSStarted()) {
+                response = new SMTPResponse("500", DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) + " TLS already active RFC2487 5.2");
+            } else {
+                if ((parameters == null) || (parameters.length() == 0)) {
+                    response = new SMTPResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS");
+                } else {
+                    response = new SMTPResponse("501 " + DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Syntax error (no parameters allowed) with STARTTLS command");
+                }
+                session.writeResponse(response);
+                try {
+                    if (!session.isTLSStarted()) {
+                        session.startTLS();
+                        // force reset
+                        session.resetState();
+                    }
+                } catch (IOException e) {
+                    return new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "TLS not available due to temporary reason");
+                }
+            }
 
-	/**
-	 * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
-	 */
-	public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
-		List<String> esmtpextensions = new ArrayList<String>();
-		// SMTP STARTTLS
-		if (!session.isTLSStarted() && session.isStartTLSSupported()) {
-			esmtpextensions.add("STARTTLS");
-		}
-		return esmtpextensions;
+        } else {
+            StringBuilder result = new StringBuilder();
+            result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD)).append(" Command ").append(command).append(" unrecognized.");
+            response = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
+        }
+        return null;
+    }
 
-	}
+    /**
+     * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
+     */
+    public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
+        List<String> esmtpextensions = new ArrayList<String>();
+        // SMTP STARTTLS
+        if (!session.isTLSStarted() && session.isStartTLSSupported()) {
+            esmtpextensions.add("STARTTLS");
+        }
+        return esmtpextensions;
+
+    }
 
 }

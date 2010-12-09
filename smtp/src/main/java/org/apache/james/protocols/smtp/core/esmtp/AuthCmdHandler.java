@@ -434,13 +434,13 @@ public class AuthCmdHandler
      * @param initialResponse the initial response line passed in with the AUTH command
      */
     private SMTPResponse doUnknownAuth(SMTPSession session, String authType, String initialResponse) {
-        if (session.getLogger().isErrorEnabled()) {
+        if (session.getLogger().isInfoEnabled()) {
             StringBuilder errorBuffer =
                 new StringBuilder(128)
                     .append("AUTH method ")
                         .append(authType)
                         .append(" is an unrecognized authentication type");
-            session.getLogger().error(errorBuffer.toString());
+            session.getLogger().info(errorBuffer.toString());
         }
         return new SMTPResponse(SMTPRetCode.PARAMETER_NOT_IMPLEMENTED, "Unrecognized Authentication Type");
     }

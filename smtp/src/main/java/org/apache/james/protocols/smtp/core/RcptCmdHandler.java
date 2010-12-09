@@ -122,12 +122,12 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
         }
         if (session.useAddressBracketsEnforcement()
                 && (!recipient.startsWith("<") || !recipient.endsWith(">"))) {
-            if (session.getLogger().isErrorEnabled()) {
+            if (session.getLogger().isInfoEnabled()) {
                 StringBuilder errorBuffer = new StringBuilder(192).append(
                         "Error parsing recipient address: ").append(
                         "Address did not start and end with < >").append(
                         getContext(session, null, recipient));
-                session.getLogger().error(errorBuffer.toString());
+                session.getLogger().info(errorBuffer.toString());
             }
             return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
                     DSNStatus.getStatus(DSNStatus.PERMANENT,
@@ -151,12 +151,12 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
         try {
             recipientAddress = new MailAddress(recipient);
         } catch (Exception pe) {
-            if (session.getLogger().isErrorEnabled()) {
+            if (session.getLogger().isInfoEnabled()) {
                 StringBuilder errorBuffer = new StringBuilder(192).append(
                         "Error parsing recipient address: ").append(
                         getContext(session, recipientAddress, recipient))
                         .append(pe.getMessage());
-                session.getLogger().error(errorBuffer.toString());
+                session.getLogger().info(errorBuffer.toString());
             }
             /*
              * from RFC2822; 553 Requested action not taken: mailbox name

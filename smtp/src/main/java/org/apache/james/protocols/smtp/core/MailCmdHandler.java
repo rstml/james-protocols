@@ -199,11 +199,11 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
             }
             if (session.useAddressBracketsEnforcement()
                     && (!sender.startsWith("<") || !sender.endsWith(">"))) {
-                if (session.getLogger().isErrorEnabled()) {
+                if (session.getLogger().isInfoEnabled()) {
                     StringBuilder errorBuffer = new StringBuilder(128).append(
                             "Error parsing sender address: ").append(sender)
                             .append(": did not start and end with < >");
-                    session.getLogger().error(errorBuffer.toString());
+                    session.getLogger().info(errorBuffer.toString());
                 }
                 return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
                         DSNStatus.getStatus(DSNStatus.PERMANENT,
@@ -231,12 +231,12 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
                 try {
                     senderAddress = new MailAddress(sender);
                 } catch (Exception pe) {
-                    if (session.getLogger().isErrorEnabled()) {
+                    if (session.getLogger().isInfoEnabled()) {
                         StringBuilder errorBuffer = new StringBuilder(256)
                                 .append("Error parsing sender address: ")
                                 .append(sender).append(": ").append(
                                         pe.getMessage());
-                        session.getLogger().error(errorBuffer.toString());
+                        session.getLogger().info(errorBuffer.toString());
                     }
                     return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
                             DSNStatus.getStatus(DSNStatus.PERMANENT,

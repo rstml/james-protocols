@@ -70,6 +70,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
         List<ConnectHandler> connectHandlers = chain.getHandlers(ConnectHandler.class);
         List<ConnectHandlerResultHandler> resultHandlers = chain.getHandlers(ConnectHandlerResultHandler.class);
         ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
+        session.getLogger().info("Connection established from " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
                 ConnectHandler cHandler = connectHandlers.get(i);
@@ -134,8 +135,10 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
 
     @Override
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
+        session.getLogger().info("Connection closed for " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
         cleanup(ctx.getChannel());
-        
+
         super.channelClosed(ctx, e);
     }
 

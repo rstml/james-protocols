@@ -22,7 +22,6 @@ package org.apache.james.protocols.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.util.Random;
 
 import javax.net.ssl.SSLEngine;
 
@@ -40,8 +39,6 @@ import org.jboss.netty.handler.stream.ChunkedStream;
  * 
  */
 public abstract class AbstractSession implements TLSSupportedSession {
-    private static Random random = new Random();
-
     protected ChannelHandlerContext handlerContext;
     protected InetSocketAddress socketAddress;
     private Log logger;
@@ -57,7 +54,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
         this.socketAddress = (InetSocketAddress) handlerContext.getChannel().getRemoteAddress();
         this.logger = logger;
         this.engine = engine;
-        this.id = random.nextInt(1024) + "";
+        this.id = handlerContext.getChannel().getId() + "";
 
     }
 

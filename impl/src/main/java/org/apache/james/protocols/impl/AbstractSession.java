@@ -45,7 +45,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
     protected ChannelHandlerContext handlerContext;
     protected InetSocketAddress socketAddress;
     private Log logger;
-    private ProtocolSessionLog pLog = null;
+    private SessionLog pLog = null;
     
     protected SSLEngine engine;
     protected String user;
@@ -141,7 +141,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
      */
     public Log getLogger() {
         if (pLog == null) {
-            pLog = new ProtocolSessionLog(this, logger);
+            pLog = new SessionLog(getSessionID(), logger);
         }
         return pLog;
     }

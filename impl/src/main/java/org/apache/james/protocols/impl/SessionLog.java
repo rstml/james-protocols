@@ -20,7 +20,6 @@
 package org.apache.james.protocols.impl;
 
 import org.apache.commons.logging.Log;
-import org.apache.james.protocols.api.ProtocolSession;
 
 /**
  * A {@link Log} implementation which suffix every log message with the session id
@@ -28,17 +27,17 @@ import org.apache.james.protocols.api.ProtocolSession;
  * 
  * 
  */
-public class ProtocolSessionLog implements Log {
+public class SessionLog implements Log {
     private Log logger;
-    private ProtocolSession session;
+    private String id;
 
-    public ProtocolSessionLog(ProtocolSession session, Log logger) {
+    public SessionLog(String id, Log logger) {
         this.logger = logger;
-        this.session = session;
+        this.id = id;
     }
 
     private String getText(Object obj) {
-        return "ID="+session.getSessionID() + " " + obj.toString();
+        return "ID="+ id + " " + obj.toString();
     }
 
     /*

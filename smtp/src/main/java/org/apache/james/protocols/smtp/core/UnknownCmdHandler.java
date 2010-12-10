@@ -47,36 +47,30 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();
         implCommands.add(UNKNOWN_COMMAND);
-        
+
         return implCommands;
     }
 
-	@Override
-	protected SMTPResponse doCoreCmd(SMTPSession session, String command,
-			String parameters) {
-		 StringBuilder result = new StringBuilder();
-	     result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD))
-	                      .append(" Command ")
-	                      .append(command)
-	                      .append(" unrecognized.");
-	     return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
-	}
+    @Override
+    protected SMTPResponse doCoreCmd(SMTPSession session, String command, String parameters) {
+        StringBuilder result = new StringBuilder();
+        result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD)).append(" Command ").append(command).append(" unrecognized.");
+        return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
+    }
 
-	@Override
-	protected SMTPResponse doFilterChecks(SMTPSession session, String command,
-			String parameters) {
-		session.getState().put("CURR_COMMAND", command);
-		return null;
-	}
+    @Override
+    protected SMTPResponse doFilterChecks(SMTPSession session, String command, String parameters) {
+        session.getState().put("CURR_COMMAND", command);
+        return null;
+    }
 
-	@Override
-	protected HookResult callHook(UnknownHook rawHook, SMTPSession session,
-			String parameters) {
-		return rawHook.doUnkown(session, (String)session.getState().get("CURR_COMMAND"));
-	}
+    @Override
+    protected HookResult callHook(UnknownHook rawHook, SMTPSession session, String parameters) {
+        return rawHook.doUnkown(session, (String) session.getState().get("CURR_COMMAND"));
+    }
 
-	@Override
-	protected Class<UnknownHook> getHookInterface() {
-		return UnknownHook.class;
-	}
+    @Override
+    protected Class<UnknownHook> getHookInterface() {
+        return UnknownHook.class;
+    }
 }

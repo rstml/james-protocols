@@ -50,21 +50,24 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      */
     private Map<String, MailParametersHook> paramHooks;
 
-
     /*
      * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.core.AbstractHookableCmdHandler#onCommand(org.apache.james.smtpserver.protocol.SMTPSession, org.apache.james.api.protocol.Request)
+     * 
+     * @see
+     * org.apache.james.smtpserver.protocol.core.AbstractHookableCmdHandler#
+     * onCommand(org.apache.james.smtpserver.protocol.SMTPSession,
+     * org.apache.james.api.protocol.Request)
      */
-	public Response onCommand(SMTPSession session, Request request) {
-	    Response response =  super.onCommand(session, request);
-		// Check if the response was not ok 
-		if (((RetCodeResponse)response).getRetCode().equals(SMTPRetCode.MAIL_OK) == false) {
-			// cleanup the session
-			session.getState().remove(SMTPSession.SENDER);
-		}
-		
-		return response;
-	}
+    public Response onCommand(SMTPSession session, Request request) {
+        Response response = super.onCommand(session, request);
+        // Check if the response was not ok
+        if (((RetCodeResponse) response).getRetCode().equals(SMTPRetCode.MAIL_OK) == false) {
+            // cleanup the session
+            session.getState().remove(SMTPSession.SENDER);
+        }
+
+        return response;
+    }
 
 	/**
      * Handler method called upon receipt of a MAIL command. Sets up handler to

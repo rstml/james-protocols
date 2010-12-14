@@ -98,7 +98,7 @@ public abstract class AbstractAsyncServer {
      * @throws Exception 
      * 
      */
-    public synchronized void start() throws Exception {
+    public synchronized void bind() throws Exception {
         if (started) throw new IllegalStateException("Server running already");
 
         if (port < 1) throw new RuntimeException("Please specify a port to which the server should get bound!");
@@ -128,7 +128,7 @@ public abstract class AbstractAsyncServer {
     /**
      * Stop the server
      */
-    public synchronized void stop() {
+    public synchronized void unbind() {
         if (started == false) return;
         channels.close().awaitUninterruptibly();
         bootstrap.releaseExternalResources();
@@ -220,5 +220,14 @@ public abstract class AbstractAsyncServer {
      */
     protected Executor createWorkerExecutor() {
         return Executors.newCachedThreadPool();
+    }
+    
+    /**
+     * return true if the server is bound 
+     * 
+     * @return bound
+     */
+    public synchronized boolean isBound() {
+        return started;
     }
 }

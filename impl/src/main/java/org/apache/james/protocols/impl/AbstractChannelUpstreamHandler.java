@@ -136,7 +136,9 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     @Override
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
-        session.getLogger().info("Connection closed for " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
+        if (session != null) {
+            session.getLogger().info("Connection closed for " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
+        }
         cleanup(ctx.getChannel());
 
         super.channelClosed(ctx, e);

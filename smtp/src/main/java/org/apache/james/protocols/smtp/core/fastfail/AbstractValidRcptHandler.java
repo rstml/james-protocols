@@ -42,17 +42,33 @@ public abstract class AbstractValidRcptHandler implements RcptHook {
      * @see org.apache.james.protocols.smtp.hook.RcptHook#doRcpt(org.apache.james.protocols.smtp.SMTPSession, org.apache.mailet.MailAddress, org.apache.mailet.MailAddress)
      */
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
+        boolean reject = false;
         
-        if (!session.isRelayingAllowed()) {
-            if (isValidRecipient(session, rcpt) == false) {
-                //user not exist
-                session.getLogger().info("Rejected message. Unknown user: " + rcpt.toString());
-                return new HookResult(HookReturnCode.DENY,SMTPRetCode.MAILBOX_PERM_UNAVAILABLE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.ADDRESS_MAILBOX) + " Unknown user: " + rcpt.toString());
+        if (session.isRelayingAllowed()) {
+            // check if the domain is local, if so we still want to check if the recipient is valid or not as we want to fail fast in such cases
+            if (isLocalDomain(session, rcpt.getDomain())) {
+                if (isValidRecipient(session, rcpt) == false) {
+                    reject = true;
+                }
             }
         } else {
-            session.getLogger().debug("Sender allowed");
+            if (isLocalDomain(session, rcpt.getDomain()) == false) {
+                session.getLogger().debug("Unknown domain " + rcpt.getDomain() + " so reject it");
+
+            } else {
+                if (isValidRecipient(session, rcpt) == false) {
+                    reject= true;
+                }
+            }
         }
-        return new HookResult(HookReturnCode.DECLINED);
+       
+        if (reject) {
+          //user not exist
+            session.getLogger().info("Rejected message. Unknown user: " + rcpt.toString());
+            return new HookResult(HookReturnCode.DENY,SMTPRetCode.MAILBOX_PERM_UNAVAILABLE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.ADDRESS_MAILBOX) + " Unknown user: " + rcpt.toString());
+        } else {
+            return new HookResult(HookReturnCode.DECLINED);
+        }
     }
     
   
@@ -63,4 +79,13 @@ public abstract class AbstractValidRcptHandler implements RcptHook {
      * @return isValid
      */
     protected abstract boolean isValidRecipient(SMTPSession session, MailAddress recipient);
+    
+    /**
+     * Return true if the domain is local
+     * 
+     * @param session
+     * @param domain
+     * @return local
+     */
+    protected abstract boolean isLocalDomain(SMTPSession session, String domain);
 }

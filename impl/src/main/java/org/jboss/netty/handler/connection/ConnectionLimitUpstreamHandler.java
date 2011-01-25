@@ -37,9 +37,17 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 public class ConnectionLimitUpstreamHandler extends SimpleChannelUpstreamHandler{
 
     private final AtomicInteger connections = new AtomicInteger(0);
-    private final int maxConnections;
+    private int maxConnections;
     
     public ConnectionLimitUpstreamHandler(int maxConnections) {
+        this.maxConnections = maxConnections;
+    }
+    
+    public int getConnections() {
+        return connections.get();
+    }
+    
+    public void setMaxConnections(int maxConnections) {
         this.maxConnections = maxConnections;
     }
     
@@ -48,7 +56,7 @@ public class ConnectionLimitUpstreamHandler extends SimpleChannelUpstreamHandler
         if (maxConnections > 0) {
             int currentCount = connections.getAndIncrement();
             
-            if (currentCount + 1 > maxConnections) {
+            if (currentCount > maxConnections) {
                 ctx.getChannel().close();
                 connections.decrementAndGet();
             }

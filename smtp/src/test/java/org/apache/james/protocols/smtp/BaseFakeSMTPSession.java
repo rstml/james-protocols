@@ -24,19 +24,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class to simplify the mocks
  */
 public class BaseFakeSMTPSession implements SMTPSession {
 
-    private static final Log log = LogFactory.getLog(BaseFakeSMTPSession.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseFakeSMTPSession.class);
 
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getConfigurationData()
@@ -183,7 +183,7 @@ public class BaseFakeSMTPSession implements SMTPSession {
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getLogger()
      */
-    public Log getLogger() {
+    public Logger getLogger() {
         return log;
     }
 

@@ -22,7 +22,7 @@ package org.apache.james.protocols.api;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 
 /**
  * Session for a protcol. Every new connection generates a new session
@@ -35,7 +35,7 @@ public interface ProtocolSession {
      * Gets the context sensitive log for this session.
      * @return log, not null
      */
-    public Log getLogger();
+    public Logger getLogger();
     
     
     /**

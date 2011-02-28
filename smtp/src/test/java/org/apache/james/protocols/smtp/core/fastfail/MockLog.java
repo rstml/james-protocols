@@ -19,100 +19,306 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.Marker;
 
-public class MockLog implements Log{
+public class MockLog implements Logger {
 
-    public void debug(Object arg0) {
-        System.out.println(arg0);
-    }
-
-    public void debug(Object arg0, Throwable arg1) {
-        System.out.println(arg0);
-        arg1.printStackTrace();
-
-
-    }
-
-    public void error(Object arg0) {
-        System.out.println(arg0);
-        
-    }
-
-    public void error(Object arg0, Throwable arg1) {
-        System.out.println(arg0);
-        arg1.printStackTrace();
-
-        
-    }
-
-    public void fatal(Object arg0) {
-        System.out.println(arg0);
-        
-    }
-
-    public void fatal(Object arg0, Throwable arg1) {
-        System.out.println(arg0);
-        arg1.printStackTrace();
-
-        
-    }
-
-    public void info(Object arg0) {
-        System.out.println(arg0);
-        
-    }
-
-    public void info(Object arg0, Throwable arg1) {
-        System.out.println(arg0);
-        arg1.printStackTrace();
-
-        
-    }
-
-    public boolean isDebugEnabled() {
-        return true;
-    }
-
-    public boolean isErrorEnabled() {
-        return true;
-    }
-
-    public boolean isFatalEnabled() {
-        return true;
-    }
-
-    public boolean isInfoEnabled() {
-        return true;
+    public String getName() {
+	return "MockLogger to System out";
     }
 
     public boolean isTraceEnabled() {
-        return true;
+	return true;
+    }
+
+    public void trace(String msg) {
+	SysPrint(msg);
+    }
+
+    public void trace(String format, Object arg) {
+	SysPrint(format, arg);
+    }
+
+    public void trace(String format, Object arg1, Object arg2) {
+	SysPrint(format, arg1, arg2);
+    }
+
+    public void trace(String format, Object[] argArray) {
+	SysPrint(format, argArray);
+    }
+
+    public void trace(String msg, Throwable t) {
+	SysPrint(msg, t);
+    }
+
+    public boolean isTraceEnabled(Marker marker) {
+	return true;
+    }
+
+    public void trace(Marker marker, String msg) {
+	SysPrint(marker, msg);
+    }
+
+    public void trace(Marker marker, String format, Object arg) {
+	SysPrint(marker, format, arg);
+    }
+
+    public void trace(Marker marker, String format, Object arg1, Object arg2) {
+	SysPrint(marker, format, arg1, arg2);
+    }
+
+    public void trace(Marker marker, String format, Object[] argArray) {
+	SysPrint(marker, format, argArray);
+    }
+
+    public void trace(Marker marker, String msg, Throwable t) {
+	SysPrint(marker, msg, t);
+    }
+
+    public boolean isDebugEnabled() {
+	return true;
+    }
+
+    public void debug(String msg) {
+	SysPrint(msg);
+    }
+
+    public void debug(String format, Object arg) {
+	SysPrint(format, arg);
+    }
+
+    public void debug(String format, Object arg1, Object arg2) {
+	SysPrint(format, arg1, arg2);
+    }
+
+    public void debug(String format, Object[] argArray) {
+	SysPrint(format, argArray);
+    }
+
+    public void debug(String msg, Throwable t) {
+	SysPrint(msg, t);
+    }
+
+    public boolean isDebugEnabled(Marker marker) {
+	return true;
+    }
+
+    public void debug(Marker marker, String msg) {
+	SysPrint(marker, msg);
+    }
+
+    public void debug(Marker marker, String format, Object arg) {
+	SysPrint(marker, format, arg);
+    }
+
+    public void debug(Marker marker, String format, Object arg1, Object arg2) {
+	SysPrint(marker, format, arg1, arg2);
+    }
+
+    public void debug(Marker marker, String format, Object[] argArray) {
+	SysPrint(marker, format, argArray);
+    }
+
+    public void debug(Marker marker, String msg, Throwable t) {
+	SysPrint(marker, msg, t);
+    }
+
+    public boolean isInfoEnabled() {
+	return true;
+    }
+
+    public void info(String msg) {
+	SysPrint(msg);
+    }
+
+    public void info(String format, Object arg) {
+	SysPrint(format, arg);
+    }
+
+    public void info(String format, Object arg1, Object arg2) {
+	SysPrint(format, arg1, arg2);
+    }
+
+    public void info(String format, Object[] argArray) {
+	SysPrint(format, argArray);
+    }
+
+    public void info(String msg, Throwable t) {
+	SysPrint(msg, t);
+    }
+
+    public boolean isInfoEnabled(Marker marker) {
+	return true;
+    }
+
+    public void info(Marker marker, String msg) {
+	SysPrint(marker, msg);
+    }
+
+    public void info(Marker marker, String format, Object arg) {
+	SysPrint(marker, format, arg);
+    }
+
+    public void info(Marker marker, String format, Object arg1, Object arg2) {
+	SysPrint(marker, format, arg1, arg2);
+    }
+
+    public void info(Marker marker, String format, Object[] argArray) {
+	SysPrint(marker, format, argArray);
+    }
+
+    public void info(Marker marker, String msg, Throwable t) {
+	SysPrint(marker, msg, t);
     }
 
     public boolean isWarnEnabled() {
-        return true;
+	return true;
     }
 
-    public void trace(Object arg0) {
-        System.out.println(arg0);        
+    public void warn(String msg) {
+	SysPrint(msg);
     }
 
-    public void trace(Object arg0, Throwable arg1) {
-        System.out.println(arg0);  
-        arg1.printStackTrace();
-
+    public void warn(String format, Object arg) {
+	SysPrint(format, arg);
     }
 
-    public void warn(Object arg0) {
-        System.out.println(arg0);
-        
+    public void warn(String format, Object[] argArray) {
+	SysPrint(format, argArray);
     }
 
-    public void warn(Object arg0, Throwable arg1) {
-        System.out.println(arg0);
-        arg1.printStackTrace();
-        
+    public void warn(String format, Object arg1, Object arg2) {
+	SysPrint(format, arg1, arg2);
     }
 
+    public void warn(String msg, Throwable t) {
+	SysPrint(msg, t);
+    }
+
+    public boolean isWarnEnabled(Marker marker) {
+	return true;
+    }
+
+    public void warn(Marker marker, String msg) {
+    }
+
+    public void warn(Marker marker, String format, Object arg) {
+	SysPrint(marker, format, arg);
+    }
+
+    public void warn(Marker marker, String format, Object arg1, Object arg2) {
+	SysPrint(marker, format, arg1, arg2);
+    }
+
+    public void warn(Marker marker, String format, Object[] argArray) {
+	SysPrint(marker, format, argArray);
+    }
+
+    public void warn(Marker marker, String msg, Throwable t) {
+	SysPrint(marker, msg, t);
+    }
+
+    public boolean isErrorEnabled() {
+	return true;
+    }
+
+    public void error(String msg) {
+	SysPrint(msg);
+    }
+
+    public void error(String format, Object arg) {
+	SysPrint(format, arg);
+    }
+
+    public void error(String format, Object arg1, Object arg2) {
+	SysPrint(format, arg1, arg2);
+    }
+
+    public void error(String format, Object[] argArray) {
+	SysPrint(format, argArray);
+    }
+
+    public void error(String msg, Throwable t) {
+	SysPrint(msg, t);
+    }
+
+    public boolean isErrorEnabled(Marker marker) {
+	return true;
+    }
+
+    public void error(Marker marker, String msg) {
+	SysPrint(marker, msg);
+    }
+
+    public void error(Marker marker, String format, Object arg) {
+	SysPrint(marker, format, arg);
+    }
+
+    public void error(Marker marker, String format, Object arg1, Object arg2) {
+	SysPrint(marker, format, arg1, arg2);
+    }
+
+    public void error(Marker marker, String format, Object[] argArray) {
+	SysPrint(marker, format, argArray);
+    }
+
+    public void error(Marker marker, String msg, Throwable t) {
+	SysPrint(marker, msg, t);
+    }
+
+    private void SysPrint(Marker marker, String msg, Object... obj) {
+	if (obj != null) {
+	    Throwable t = null;
+	    StringBuffer s = new StringBuffer("[");
+	    s.append(marker.toString()).append("] ").append(msg);
+	    s.append(" args=[");
+	    boolean first = true;
+	    for (Object o : obj) {
+		if (o instanceof Throwable) {
+		    t = (Throwable) o;
+		} else {
+		    if (first) {
+			s.append(o.toString());
+			first = false;
+		    } else {
+			s.append(", ").append(o.toString());
+		    }
+		}
+	    }
+	    System.out.println(s.toString());
+	    if (t != null) {
+		t.printStackTrace();
+	    }
+	} else {
+	    System.out.println(msg);
+	}
+    }
+
+    private void SysPrint(String msg, Object... obj) {
+	if (obj != null) {
+	    Throwable t = null;
+	    StringBuffer s = new StringBuffer(msg);
+	    s.append(" args=[");
+	    boolean first = true;
+	    for (Object o : obj) {
+		if (o instanceof Throwable) {
+		    t = (Throwable) o;
+		} else {
+		    if (first) {
+			s.append(o.toString());
+			first = false;
+		    } else {
+			s.append(", ").append(o.toString());
+		    }
+		}
+	    }
+	    System.out.println(s.toString());
+	    if (t != null) {
+		t.printStackTrace();
+	    }
+	} else {
+	    System.out.println(msg);
+	}
+    }
 }

@@ -25,13 +25,13 @@ import java.net.InetSocketAddress;
 
 import javax.net.ssl.SSLEngine;
 
-import org.apache.commons.logging.Log;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.TLSSupportedSession;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.ssl.SslHandler;
 import org.jboss.netty.handler.stream.ChunkedStream;
+import org.slf4j.Logger;
 
 /**
  * Abstract implementation of TLSSupportedSession which use Netty
@@ -41,7 +41,7 @@ import org.jboss.netty.handler.stream.ChunkedStream;
 public abstract class AbstractSession implements TLSSupportedSession {
     protected ChannelHandlerContext handlerContext;
     protected InetSocketAddress socketAddress;
-    private Log logger;
+    private Logger logger;
     private SessionLog pLog = null;
     
     protected SSLEngine engine;
@@ -49,7 +49,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
 
     private String id;
 
-    public AbstractSession(Log logger, ChannelHandlerContext handlerContext, SSLEngine engine) {
+    public AbstractSession(Logger logger, ChannelHandlerContext handlerContext, SSLEngine engine) {
         this.handlerContext = handlerContext;
         this.socketAddress = (InetSocketAddress) handlerContext.getChannel().getRemoteAddress();
         this.logger = logger;
@@ -58,7 +58,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
 
     }
 
-    public AbstractSession(Log logger, ChannelHandlerContext handlerContext) {
+    public AbstractSession(Logger logger, ChannelHandlerContext handlerContext) {
         this(logger, handlerContext, null);
     }
 
@@ -136,7 +136,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
     /**
      * @see org.apache.james.api.protocol.ProtocolSession#getLogger()
      */
-    public Log getLogger() {
+    public Logger getLogger() {
         if (pLog == null) {
             pLog = new SessionLog(getSessionID(), logger);
         }

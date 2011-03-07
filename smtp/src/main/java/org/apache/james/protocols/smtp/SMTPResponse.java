@@ -43,7 +43,7 @@ public final class SMTPResponse implements RetCodeResponse {
      */
     public SMTPResponse(String code, CharSequence description) {
         if (code == null) throw new IllegalArgumentException("SMTPResponse code can not be null");
-        if (description == null) new IllegalArgumentException("SMTPResponse description can not be null");
+        if (description == null) throw new IllegalArgumentException("SMTPResponse description can not be null");
     
         this.setRetCode(code);
         this.appendLine(description);

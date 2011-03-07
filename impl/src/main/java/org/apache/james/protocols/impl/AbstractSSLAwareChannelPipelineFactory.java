@@ -43,7 +43,13 @@ public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractCha
     public AbstractSSLAwareChannelPipelineFactory(int timeout,
             int maxConnections, int maxConnectsPerIp, ChannelGroup group, String[] enabledCipherSuites) {
         this(timeout, maxConnections, maxConnectsPerIp, group);
-        this.enabledCipherSuites  = enabledCipherSuites;
+        
+        // We need to copy the String array becuase of possible security issues.
+        // See https://issues.apache.org/jira/browse/PROTOCOLS-18
+        this.enabledCipherSuites = new String[enabledCipherSuites.length];
+        for (int i = 0; i < enabledCipherSuites.length; i++) {
+            this.enabledCipherSuites[i] = new String(enabledCipherSuites[i]);
+        }
     }
 
     

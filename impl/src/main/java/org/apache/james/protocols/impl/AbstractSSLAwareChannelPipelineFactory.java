@@ -46,9 +46,11 @@ public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractCha
         
         // We need to copy the String array becuase of possible security issues.
         // See https://issues.apache.org/jira/browse/PROTOCOLS-18
-        this.enabledCipherSuites = new String[enabledCipherSuites.length];
-        for (int i = 0; i < enabledCipherSuites.length; i++) {
-            this.enabledCipherSuites[i] = new String(enabledCipherSuites[i]);
+        if (enabledCipherSuites != null) {
+            this.enabledCipherSuites = new String[enabledCipherSuites.length];
+            for (int i = 0; i < enabledCipherSuites.length; i++) {
+                this.enabledCipherSuites[i] = new String(enabledCipherSuites[i]);
+            }
         }
     }
 

@@ -81,11 +81,13 @@ public class DNSRBLHandler implements  ConnectHandler<SMTPSession>, RcptHook{
      * @param whitelist The array which contains the whitelist
      */
     public void setWhitelist(String[] whitelist) {
-        // We need to copy the String array becuase of possible security issues.
+        // We need to copy the String array because of possible security issues.
         // Similar to https://issues.apache.org/jira/browse/PROTOCOLS-18
-        this.whitelist = new String[whitelist.length];
-        for (int i = 0; i < whitelist.length; i++) {
-            this.whitelist[i] = new String(whitelist[i]);
+        if (whitelist != null) {
+            this.whitelist = new String[whitelist.length];
+            for (int i = 0; i < whitelist.length; i++) {
+                this.whitelist[i] = new String(whitelist[i]);
+            }
         }
         this.whitelist = whitelist;
     }
@@ -96,11 +98,13 @@ public class DNSRBLHandler implements  ConnectHandler<SMTPSession>, RcptHook{
      * @param blacklist The array which contains the blacklist
      */
     public void setBlacklist(String[] blacklist) {
-        // We need to copy the String array becuase of possible security issues.
+        // We need to copy the String array because of possible security issues.
         // Similar to https://issues.apache.org/jira/browse/PROTOCOLS-18
-        this.blacklist = new String[blacklist.length];
-        for (int i = 0; i < blacklist.length; i++) {
-            this.blacklist[i] = new String(blacklist[i]);
+        if (blacklist != null) {
+            this.blacklist = new String[blacklist.length];
+            for (int i = 0; i < blacklist.length; i++) {
+                this.blacklist[i] = new String(blacklist[i]);
+            }
         }
     }
 

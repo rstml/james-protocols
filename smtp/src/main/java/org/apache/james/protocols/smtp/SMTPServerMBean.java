@@ -24,40 +24,31 @@ package org.apache.james.protocols.smtp;
 /**
  * An interface to expose James management functionality through JMX.
  * 
- * @phoenix:mx-topic name="SMTPServer"
  */
 public interface SMTPServerMBean {
     /**
-    * @phoenix:mx-attribute
-    * @phoenix:mx-description Returns flag indicating it this service is enabled 
-    * @phoenix:mx-isWriteable no
+    * Returns flag indicating it this service is enabled 
     * 
     * @return boolean The enabled flag     
     */  
     boolean isEnabled();
 
     /**
-    * @phoenix:mx-attribute
-    * @phoenix:mx-description Returns the port that the service is bound to 
-    * @phoenix:mx-isWriteable no
+    * Returns the port that the service is bound to 
     * 
     * @return int The port number     
     */  
     int  getPort();
     
     /**
-    * @phoenix:mx-attribute
-    * @phoenix:mx-description Returns the address if the network interface the socket is bound to 
-    * @phoenix:mx-isWriteable no
+    * Returns the address if the network interface the socket is bound to 
     * 
     * @return String The network interface name     
     */  
     String  getNetworkInterface();
     
     /**
-    * @phoenix:mx-attribute
-    * @phoenix:mx-description Returns the server socket type, plain or SSL 
-    * @phoenix:mx-isWriteable no
+    * Returns the server socket type, plain or SSL 
     * 
     * @return String The scoekt type, plain or SSL     
     */  

@@ -102,11 +102,6 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
                             + " Usage: RCPT TO:<recipient>");
         }
 
-        Collection rcptColl = (Collection) session.getState().get(
-                SMTPSession.RCPT_LIST);
-        if (rcptColl == null) {
-            rcptColl = new ArrayList();
-        }
         recipient = recipient.trim();
         int lastChar = recipient.lastIndexOf('>');
         // Check to see if any options are present and, if so, whether they

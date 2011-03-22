@@ -27,6 +27,7 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
+import org.jboss.netty.channel.socket.ServerSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 
 /**
@@ -103,7 +104,7 @@ public abstract class AbstractAsyncServer {
 
         if (port < 1) throw new RuntimeException("Please specify a port to which the server should get bound!");
 
-        bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(createBossExecutor(), createWorkerExecutor(), ioWorker));
+        bootstrap = new ServerBootstrap(createSocketChannelFactory());
         ChannelPipelineFactory factory = createPipelineFactory(channels);
         
         // Configure the pipeline factory.
@@ -125,6 +126,10 @@ public abstract class AbstractAsyncServer {
 
     }
 
+    protected ServerSocketChannelFactory createSocketChannelFactory() {
+        return new NioServerSocketChannelFactory(createBossExecutor(), createWorkerExecutor(), ioWorker);
+    }
+    
     /**
      * Stop the server
      */

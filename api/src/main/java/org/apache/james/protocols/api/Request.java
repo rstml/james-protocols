@@ -32,12 +32,12 @@ public interface Request {
      * 
      * @return argument
      */
-    public String getArgument();
+    String getArgument();
 
     /**
      * Return the current command
      * 
      * @return command
      */
-    public String getCommand();
+    String getCommand();
 }

@@ -39,5 +39,5 @@ public interface MailHook extends Hook{
      * @param sender the sender MailAddress
      * @return HockResult
      */
-    public HookResult doMail(SMTPSession session, MailAddress sender);
+    HookResult doMail(SMTPSession session, MailAddress sender);
 }

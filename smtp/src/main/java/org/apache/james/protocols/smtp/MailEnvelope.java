@@ -38,14 +38,14 @@ public interface MailEnvelope {
      * 
      * @return size
      */
-	public int getSize();
+	int getSize();
 
 	/**
 	 * Return the recipients which where supplied in the RCPT TO: command
 	 * 
 	 * @return recipients
 	 */
-	public List<MailAddress> getRecipients();
+	List<MailAddress> getRecipients();
 
 	/**
 	 * Return the sender of the mail which was supplied int the MAIL FROM: command. If its a "null" sender,
@@ -53,7 +53,7 @@ public interface MailEnvelope {
 	 * 
 	 * @return sender
 	 */
-	public MailAddress getSender();
+	MailAddress getSender();
 
 
 	/**
@@ -62,7 +62,7 @@ public interface MailEnvelope {
 	 * @return out
 	 * @throws Exception
 	 */
-	public OutputStream getMessageOutputStream() throws Exception;
+	OutputStream getMessageOutputStream() throws Exception;
 
 	/**
 	 * Return the InputStream of the message
@@ -70,5 +70,5 @@ public interface MailEnvelope {
 	 * @return in
 	 * @throws Exception
 	 */
-	public InputStream getMessageInputStream() throws Exception;
+	InputStream getMessageInputStream() throws Exception;
 }

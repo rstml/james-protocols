@@ -29,5 +29,5 @@ public interface CommandHandlerResultHandler<R extends Response, S extends Proto
      * @param handler
      * @return response
      */
-    public Response onResponse(ProtocolSession session, R response, long executionTime, CommandHandler<S> handler);
+    Response onResponse(ProtocolSession session, R response, long executionTime, CommandHandler<S> handler);
 }

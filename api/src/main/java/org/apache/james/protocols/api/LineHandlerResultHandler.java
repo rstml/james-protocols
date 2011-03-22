@@ -38,7 +38,7 @@ public interface LineHandlerResultHandler<S extends ProtocolSession> {
      * @param handler
      * @return result
      */
-    public boolean onResponse(ProtocolSession session, boolean response, long executionTime, LineHandler<S> handler);
+    boolean onResponse(ProtocolSession session, boolean response, long executionTime, LineHandler<S> handler);
 
     
 }

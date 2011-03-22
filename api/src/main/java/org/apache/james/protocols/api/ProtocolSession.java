@@ -35,7 +35,7 @@ public interface ProtocolSession {
      * Gets the context sensitive log for this session.
      * @return log, not null
      */
-    public Logger getLogger();
+    Logger getLogger();
     
     
     /**
@@ -43,26 +43,26 @@ public interface ProtocolSession {
      * 
      * @return state
      */
-    public Map<String, Object> getState();
+    Map<String, Object> getState();
     
     /**
      * Reset the state
      */
-    public void resetState();
+    void resetState();
     
     /**
      * Write the response back to the client
      * 
      * @param response
      */
-    public void writeResponse(Response response);
+    void writeResponse(Response response);
     
     /**
      * Write the stream back to the client
      * 
      * @param stream
      */
-    public void writeStream(InputStream stream);
+    void writeStream(InputStream stream);
 
     
     /**
@@ -70,19 +70,19 @@ public interface ProtocolSession {
      *
      * @return hostname of the client
      */
-    public String getRemoteHost();
+    String getRemoteHost();
 
     /**
      * Returns host ip address of the client
      *
      * @return host ip address of the client
      */
-    public String getRemoteIPAddress();
+    String getRemoteIPAddress();
     
     /**
      * Return the ID for the session
      * 
      * @return id
      */
-    public String getSessionID();
+    String getSessionID();
 }

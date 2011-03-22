@@ -33,6 +33,6 @@ public interface ConnectHandler<Session extends ProtocolSession> {
      * 
      * @return disconnect 
     **/
-    public boolean onConnect(Session session);
+    boolean onConnect(Session session);
 
 }

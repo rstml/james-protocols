@@ -34,6 +34,6 @@ public interface RcptHook extends Hook{
      * @param rcpt the recipient MailAddress
      * @return HookResult
      */
-    public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt);
+    HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt);
 
 }

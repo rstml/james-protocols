@@ -33,5 +33,5 @@ public interface AuthHook extends Hook{
      * @param password the password
      * @return HockResult
      */
-    public HookResult doAuth(SMTPSession session, String username, String password);
+    HookResult doAuth(SMTPSession session, String username, String password);
 }

@@ -36,5 +36,5 @@ public interface QuitHook extends Hook{
      * @param session the SMTPSession
      * @return HockResult
      */
-    public HookResult doQuit(SMTPSession session);
+    HookResult doQuit(SMTPSession session);
 }

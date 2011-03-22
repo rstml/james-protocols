@@ -37,5 +37,5 @@ public interface HeloHook extends Hook{
      * @param helo the helo name
      * @return HockResult
      */
-    public HookResult doHelo(SMTPSession session, String helo);
+    HookResult doHelo(SMTPSession session, String helo);
 }

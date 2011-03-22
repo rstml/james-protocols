@@ -34,10 +34,10 @@ public interface MailParametersHook extends Hook{
      * @param paramValue parameter value
      * @return HockResult
      */
-    public HookResult doMailParameter(SMTPSession session, String paramName, String paramValue);
+    HookResult doMailParameter(SMTPSession session, String paramName, String paramValue);
     
     /**
      * @return an array of supported parameters
      */
-    public String[] getMailParamNames();
+    String[] getMailParamNames();
 }

@@ -30,7 +30,7 @@ public interface RetCodeResponse extends Response{
      * Return return-code
      * @return
      */
-    public String getRetCode();
+    String getRetCode();
 
 
     /**
@@ -38,5 +38,5 @@ public interface RetCodeResponse extends Response{
      * 
      * @param retCode
      */
-    public void setRetCode(String retCode);
+    void setRetCode(String retCode);
 }

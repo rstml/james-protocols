@@ -32,6 +32,6 @@ public interface ChannelAttributeSupport {
     /**
      * Stores attributes per {@link Channel}
      */
-    public static final ChannelLocal<Object> attributes = new ChannelLocal<Object>(); 
+    static final ChannelLocal<Object> attributes = new ChannelLocal<Object>(); 
 
 }

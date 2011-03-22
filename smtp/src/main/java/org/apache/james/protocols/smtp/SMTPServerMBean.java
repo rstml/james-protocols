@@ -34,7 +34,7 @@ public interface SMTPServerMBean {
     * 
     * @return boolean The enabled flag     
     */  
-    public boolean isEnabled();
+    boolean isEnabled();
 
     /**
     * @phoenix:mx-attribute
@@ -43,7 +43,7 @@ public interface SMTPServerMBean {
     * 
     * @return int The port number     
     */  
-    public int  getPort();
+    int  getPort();
     
     /**
     * @phoenix:mx-attribute
@@ -52,7 +52,7 @@ public interface SMTPServerMBean {
     * 
     * @return String The network interface name     
     */  
-    public String  getNetworkInterface();
+    String  getNetworkInterface();
     
     /**
     * @phoenix:mx-attribute
@@ -61,5 +61,5 @@ public interface SMTPServerMBean {
     * 
     * @return String The scoekt type, plain or SSL     
     */  
-    public String  getSocketType();
+    String  getSocketType();
 }

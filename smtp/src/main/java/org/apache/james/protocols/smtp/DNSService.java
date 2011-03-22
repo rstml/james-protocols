@@ -89,19 +89,19 @@ public interface DNSService {
     /**
      * @see java.net.InetAddress#getAllByName(String)
      */
-    public InetAddress[] getAllByName(String host) throws UnknownHostException;
+    InetAddress[] getAllByName(String host) throws UnknownHostException;
  
     /**
      * @see java.net.InetAddress#getByName(String)
      */
-    public InetAddress getByName(String host) throws UnknownHostException;
+    InetAddress getByName(String host) throws UnknownHostException;
 
     /**
      * @see org.xbill.DNS.Address#getHostName(InetAddress)
      */
-    public String getHostName(InetAddress addr);
+    String getHostName(InetAddress addr);
     
     /**
      */
-    public InetAddress getLocalHost() throws UnknownHostException;
+    InetAddress getLocalHost() throws UnknownHostException;
 }

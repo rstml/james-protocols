@@ -33,14 +33,14 @@ public interface SMTPSession extends TLSSupportedSession{
 
     // Keys used to store/lookup data in the internal state hash map
     /** Sender's email address */
-    public final static String SENDER = "SENDER_ADDRESS";
+    final static String SENDER = "SENDER_ADDRESS";
     /** The message recipients */
-    public final static String RCPT_LIST = "RCPT_LIST";  
+    final static String RCPT_LIST = "RCPT_LIST";  
     /** HELO or EHLO */
-    public final static String CURRENT_HELO_MODE = "CURRENT_HELO_MODE";
-    public final static String CURRENT_HELO_NAME = "CURRENT_HELO_NAME";
+    final static String CURRENT_HELO_MODE = "CURRENT_HELO_MODE";
+    final static String CURRENT_HELO_NAME = "CURRENT_HELO_NAME";
     /** the Session state */
-    public final static String SESSION_STATE_MAP = "SESSION_STATE_MAP";
+    final static String SESSION_STATE_MAP = "SESSION_STATE_MAP";
 
     /**
      * Returns the service wide hello name

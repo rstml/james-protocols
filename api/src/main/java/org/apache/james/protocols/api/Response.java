@@ -34,33 +34,33 @@ public interface Response {
      * 
      * @param line 
      */
-    public void appendLine(CharSequence line);
+    void appendLine(CharSequence line);
    
     /**
      * Return a List of all response lines stored in this Response
      * 
      * @return all responseLines
      */
-    public List<CharSequence> getLines();
+    List<CharSequence> getLines();
 
     /**
      * Return the raw representation of the stored Response
      * 
      * @return rawLine the raw Response
      */
-    public String getRawLine();
+    String getRawLine();
 
     /**
      * Return true if the session is ended
      * 
      * @return true if session is ended
      */
-    public boolean isEndSession();
+    boolean isEndSession();
     /**
      * Set to true to end the session
      * 
      * @param endSession
      */
-    public void setEndSession(boolean endSession);
+    void setEndSession(boolean endSession);
 
 }

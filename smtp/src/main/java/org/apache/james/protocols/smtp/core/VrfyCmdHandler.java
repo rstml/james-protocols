@@ -37,7 +37,7 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
   */
 public class VrfyCmdHandler implements CommandHandler<SMTPSession> {
 
-    private final String COMMAND_NAME = "VRFY";
+    private static final String COMMAND_NAME = "VRFY";
 
     /**
      * Handler method called upon receipt of a VRFY command.

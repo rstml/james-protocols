@@ -126,7 +126,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
         } else {
             // put the message size in the message state so it can be used
             // later to restrict messages for user quotas, etc.
-            session.getState().put(MESG_SIZE, new Integer(size));
+            session.getState().put(MESG_SIZE, Integer.valueOf(size));
         }
         return null;
     }
@@ -149,9 +149,9 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                 Long currentSize = (Long) session.getState().get("CURRENT_SIZE");
                 Long newSize;
                 if (currentSize == null) {
-                    newSize = new Long(line.length);
+                    newSize = Long.valueOf(line.length);
                 } else {
-                    newSize = new Long(currentSize.intValue()+line.length);
+                    newSize = Long.valueOf(currentSize.intValue()+line.length);
                 }
                 
                 if (session.getMaxMessageSize() > 0 && newSize.intValue() > session.getMaxMessageSize()) {

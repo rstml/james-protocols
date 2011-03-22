@@ -112,7 +112,7 @@ public class SpamTrapHandler implements RcptHook {
         session.getLogger().debug("Add ip " + ip + " for " + bTime + " to blockList");
     
         synchronized(blockedIps) {
-            blockedIps.put(ip, new Long(bTime));
+            blockedIps.put(ip, Long.valueOf(bTime));
         }
     
     }

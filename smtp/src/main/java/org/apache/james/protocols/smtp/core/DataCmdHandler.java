@@ -42,7 +42,7 @@ import org.apache.mailet.MailAddress;
  */
 public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHandler {
 
-    public final class DataConsumerLineHandler implements LineHandler<SMTPSession> {
+    public static final class DataConsumerLineHandler implements LineHandler<SMTPSession> {
 
         /*
          * (non-Javadoc)
@@ -58,7 +58,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
         }
     }
 
-    public final class DataLineFilterWrapper implements LineHandler<SMTPSession> {
+    public static final class DataLineFilterWrapper implements LineHandler<SMTPSession> {
 
         private DataLineFilter filter;
         private LineHandler<SMTPSession> next;

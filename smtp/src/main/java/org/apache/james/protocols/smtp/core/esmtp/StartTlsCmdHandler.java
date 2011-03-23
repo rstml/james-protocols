@@ -56,13 +56,14 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
      * 
      */
     public Response onCommand(SMTPSession session, Request request) {
-        SMTPResponse response = null;
         String command = request.getCommand();
         String parameters = request.getArgument();
         if (session.isStartTLSSupported()) {
             if (session.isTLSStarted()) {
-                response = new SMTPResponse("500", DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) + " TLS already active RFC2487 5.2");
+                SMTPResponse response = new SMTPResponse("500", DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) + " TLS already active RFC2487 5.2");
+                return response;
             } else {
+                SMTPResponse response;
                 if ((parameters == null) || (parameters.length() == 0)) {
                     response = new SMTPResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS");
                 } else {
@@ -75,6 +76,7 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
                         // force reset
                         session.resetState();
                     }
+                    
                 } catch (IOException e) {
                     return new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "TLS not available due to temporary reason");
                 }
@@ -83,7 +85,8 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
         } else {
             StringBuilder result = new StringBuilder();
             result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD)).append(" Command ").append(command).append(" unrecognized.");
-            response = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
+            SMTPResponse response = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
+            return response;
         }
         return null;
     }

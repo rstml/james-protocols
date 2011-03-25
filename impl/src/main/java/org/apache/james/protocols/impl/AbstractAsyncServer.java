@@ -109,11 +109,7 @@ public abstract class AbstractAsyncServer {
         
         // Configure the pipeline factory.
         bootstrap.setPipelineFactory(factory);
-
-        // Bind and start to accept incoming connections.
-        bootstrap.setOption("backlog", backlog);
-        bootstrap.setOption("reuseAddress", true);
-        bootstrap.setOption("child.tcpNoDelay", true);
+        configureBootstrap(bootstrap);
         Channel serverChannel;
         if (getIP() == null) {
             serverChannel = bootstrap.bind(new InetSocketAddress(port));
@@ -126,6 +122,18 @@ public abstract class AbstractAsyncServer {
 
     }
 
+    /**
+     * Configure the bootstrap before it get bound
+     * 
+     * @param bootstrap
+     */
+    protected void configureBootstrap(ServerBootstrap bootstrap) {
+        // Bind and start to accept incoming connections.
+        bootstrap.setOption("backlog", backlog);
+        bootstrap.setOption("reuseAddress", true);
+        bootstrap.setOption("child.tcpNoDelay", true);
+    }
+    
     protected ServerSocketChannelFactory createSocketChannelFactory() {
         return new NioServerSocketChannelFactory(createBossExecutor(), createWorkerExecutor(), ioWorker);
     }

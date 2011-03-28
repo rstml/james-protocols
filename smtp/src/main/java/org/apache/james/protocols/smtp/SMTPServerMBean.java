@@ -32,20 +32,6 @@ public interface SMTPServerMBean {
     * @return boolean The enabled flag     
     */  
     boolean isEnabled();
-
-    /**
-    * Returns the port that the service is bound to 
-    * 
-    * @return int The port number     
-    */  
-    int  getPort();
-    
-    /**
-    * Returns the address if the network interface the socket is bound to 
-    * 
-    * @return String The network interface name     
-    */  
-    String  getNetworkInterface();
     
     /**
     * Returns the server socket type, plain or SSL 

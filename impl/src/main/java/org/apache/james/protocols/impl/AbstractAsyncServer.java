@@ -19,11 +19,13 @@
 package org.apache.james.protocols.impl;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
@@ -39,39 +41,20 @@ public abstract class AbstractAsyncServer {
     public static final int DEFAULT_IO_WORKER_COUNT = Runtime.getRuntime().availableProcessors() * 2;
     private int backlog = 250;
     
-    private int port;
-
     private int timeout = 120;
 
     private ServerBootstrap bootstrap;
 
     private boolean started;
-
-    private String ip;
     
     private ChannelGroup channels = new DefaultChannelGroup();
 
     private int ioWorker = DEFAULT_IO_WORKER_COUNT;
     
-    /**
-     * Set the ip on which the Server should listen on
-     * 
-     * @param ip
-     */
-    public synchronized void setIP(String ip) {
-        if (started) throw new IllegalStateException("Can only be set when the server is not running");
-        this.ip = ip;
-    }
+    private List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
     
-    
-    /**
-     * Set the port on which the Server should listen on
-     * 
-     * @param ip
-     */
-    public synchronized void setPort(int port) {
-        if (started) throw new IllegalStateException("Can only be set when the server is not running");
-        this.port = port;
+    public synchronized void setListenAddresses(List<InetSocketAddress> addresses) {
+        this.addresses = Collections.unmodifiableList(addresses);
     }
     
     /**
@@ -102,7 +85,7 @@ public abstract class AbstractAsyncServer {
     public synchronized void bind() throws Exception {
         if (started) throw new IllegalStateException("Server running already");
 
-        if (port < 1) throw new RuntimeException("Please specify a port to which the server should get bound!");
+        if (addresses.isEmpty()) throw new RuntimeException("Please specify at least on socketaddress to which the server should get bound!");
 
         bootstrap = new ServerBootstrap(createSocketChannelFactory());
         ChannelPipelineFactory factory = createPipelineFactory(channels);
@@ -110,14 +93,10 @@ public abstract class AbstractAsyncServer {
         // Configure the pipeline factory.
         bootstrap.setPipelineFactory(factory);
         configureBootstrap(bootstrap);
-        Channel serverChannel;
-        if (getIP() == null) {
-            serverChannel = bootstrap.bind(new InetSocketAddress(port));
-        } else {
-            serverChannel = bootstrap.bind(new InetSocketAddress(ip, port));
+        
+        for (int i = 0; i < addresses.size();i++) {
+            channels.add(bootstrap.bind(addresses.get(i)));
         }
-          
-        channels.add(serverChannel);
         started = true;
 
     }
@@ -155,19 +134,9 @@ public abstract class AbstractAsyncServer {
      * 
      * @return ip
      */
-    public synchronized String getIP() {
-        return ip;
+    public synchronized List<InetSocketAddress> getListenAddresses() {
+        return addresses;
     }
-    
-    /**
-     * Return the port this server will listen on
-     * 
-     * @return port
-     */
-    public synchronized int getPort() {
-        return port;
-    }
-    
     
     
     /**

@@ -26,7 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.james.protocols</groupId>
   <artifactId>protocols-impl</artifactId>
-  <name>Apache JAMES Protocols Implementation</name>  
+  <name>Apache James Protocols Implementation</name>  
   <build>
     <plugins>
       <plugin>

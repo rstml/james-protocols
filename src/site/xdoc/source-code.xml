@@ -20,61 +20,38 @@
 <document>
 
   <properties>
-     <title>James Protocols - Source Code</title>
+     <title>Source Code</title>
   </properties>
 
 <body>
 
   <section name="Get Source Code">
-
     <subsection name="Anonymous Access">
-
       <p>The source can be checked out anonymously from SVN with the following command.</p>
-
       <p><code>$ svn checkout http://svn.apache.org/repos/asf/james/protocols/trunk james-protocols</code></p>
-    
     </subsection>
-
     <subsection name="Developer Access">
-
       <p>Everyone can access the Subversion repository via HTTP, but Committers must checkout the Subversion repository via HTTPS.</p>
-
       <p><code>$ svn checkout https://svn.apache.org/repos/asf/james/protocols/trunk james-protocols</code></p>
-      
     </subsection>
-
   </section>
 
-  <section name="Protocols Source Projects">
-  
-    <subsection name="Source Projects">
-  
+  <section name="Source Organization">
+    <subsection name="Modules">
       <div style="float:left; margin=4px;">
         <img src="images/uml/org.apache.james.protocols-package.png"/>
       </div>
-      
     </subsection>
-       
     <div style="clear:both; float:none;"/>
-    
-    <subsection name="James Protocols API - apache-james-protocols-api">
-    
+    <subsection name="James Protocols API">
       <p><code>apache-james-protocols-api</code> contains the interfaces, exceptions and Constants needed by the other projects.</p>
-     
     </subsection>
-    
-    <subsection name="James Protocols Implementation- apache-protocols-impl">
-    
+    <subsection name="James Protocols Implementation">
       <p><code>apache-james-protocols-impl</code> provides common services that can be used by any mail protocol.</p>
-    
     </subsection>
-    
-    <subsection name="James Protocols SMTP - apache-james-protocols-smtp">
-    
-      <p><code>apache-james-protocols-smtp</code> implements the SMTP protocols with hooks for extensions.</p>
-         
+    <subsection name="James Protocols SMTP">
+      <p><code>apache-james-protocols-smtp</code> implements the SMTP protocols with <a href="http://james.apache.org/server/3/dev-extend-smtp-hook.html">hooks</a> for extensions.</p>
     </subsection>
-    
   </section>
 
 </body>

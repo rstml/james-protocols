@@ -26,9 +26,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.james</groupId>
   <artifactId>protocols</artifactId>
-  <name>Apache JAMES Protocols</name>
+  <name>Apache James Protocols</name>
   <version>1.4-SNAPSHOT</version>
-  <description>JAMES Protocols</description>
+  <description>James Protocols</description>
   <url>http://james.apache.org/protocols</url>
   <inceptionYear>2010</inceptionYear>
   <packaging>pom</packaging>
@@ -469,4 +469,5 @@
   <properties>
     <target.jdk>1.5</target.jdk>
   </properties>
+  
 </project>

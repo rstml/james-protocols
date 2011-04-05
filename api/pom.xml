@@ -26,7 +26,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.james.protocols</groupId>
   <artifactId>protocols-api</artifactId>
-  <name>Apache JAMES Protocols API</name>
+  <name>Apache James Protocols API</name>
   <build>
     <plugins>
       <plugin>

@@ -17,7 +17,7 @@
   specific language governing permissions and limitations
   under the License.    
 -->
-<project name="Server">
+<project name="Apache James Protocols">
 
   <skin>
     <groupId>org.apache.james</groupId>
@@ -47,9 +47,10 @@
      
     <menu name="References">
       <item name="Javadoc" href="/apidocs/index.html" />
-      <item name="Changes" href="/changes.html" />
-<!--      <item name="JIRA Report" href="/jira-report.html" />-->
       <item name="Issue Tracker" href="https://issues.apache.org/jira/browse/PROTOCOLS" />
+<!--      Changes are not updated in JIRA (missing version numbers,...) -->
+<!--      <item name="Changes" href="/changes.html" />-->
+<!--      <item name="JIRA Report" href="/jira-report.html" />-->
     </menu>
 
     <menu ref="reports" />

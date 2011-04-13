@@ -28,6 +28,8 @@ import javax.net.ssl.SSLEngine;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.TLSSupportedSession;
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.handler.ssl.SslHandler;
 import org.jboss.netty.handler.stream.ChunkedStream;
@@ -148,13 +150,23 @@ public abstract class AbstractSession implements TLSSupportedSession {
      * (non-Javadoc)
      * @see org.apache.james.api.protocol.ProtocolSession#writeResponse(org.apache.james.api.protocol.Response)
      */
-    public void writeResponse(Response response) {
+    public void writeResponse(final Response response) {
         Channel channel = getChannelHandlerContext().getChannel();
         if (response != null && channel.isConnected()) {
-            channel.write(response);
-            if (response.isEndSession()) {
-                channel.close();
-            }
+            channel.write(response).addListener(new ChannelFutureListener() {
+                
+                /*
+                 * (non-Javadoc)
+                 * @see org.jboss.netty.channel.ChannelFutureListener#operationComplete(org.jboss.netty.channel.ChannelFuture)
+                 */
+                public void operationComplete(ChannelFuture c) throws Exception {
+                    // once the response was written we can close the channel if needed
+                    if (response.isEndSession() && c.getChannel().isConnected()) {
+                        c.getChannel().close();         
+                    }
+                }
+            });
+          
         }
     }
 

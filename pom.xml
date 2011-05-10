@@ -27,7 +27,7 @@
   <groupId>org.apache.james</groupId>
   <artifactId>protocols</artifactId>
   <name>Apache James Protocols</name>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4</version>
   <description>James Protocols</description>
   <url>http://james.apache.org/protocols</url>
   <inceptionYear>2010</inceptionYear>
@@ -48,9 +48,9 @@
     </notifiers>
   </ciManagement>
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/james/protocols/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/james/protocols/trunk</developerConnection>
-    <url>http://svn.apache.org/viewcvs.cgi/james/protocols/trunk?root=Apache-SVN</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/james/protocols/tags/protocols-1.4</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/james/protocols/tags/protocols-1.4</developerConnection>
+    <url>http://svn.apache.org/viewcvs.cgi/james/protocols/trunk/tags/protocols-1.4?root=Apache-SVN</url>
   </scm>
   
   <repositories>

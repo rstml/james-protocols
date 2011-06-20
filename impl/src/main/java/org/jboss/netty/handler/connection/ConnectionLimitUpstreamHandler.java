@@ -54,11 +54,10 @@ public class ConnectionLimitUpstreamHandler extends SimpleChannelUpstreamHandler
     @Override
     public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         if (maxConnections > 0) {
-            int currentCount = connections.getAndIncrement();
+            int currentCount = connections.incrementAndGet();
             
             if (currentCount > maxConnections) {
                 ctx.getChannel().close();
-                connections.decrementAndGet();
             }
         }
         

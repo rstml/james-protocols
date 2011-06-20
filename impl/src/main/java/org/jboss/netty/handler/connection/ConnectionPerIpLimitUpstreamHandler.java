@@ -80,7 +80,6 @@ public class ConnectionPerIpLimitUpstreamHandler extends SimpleChannelUpstreamHa
                 Integer count = atomicCount.incrementAndGet();
                 if (count > maxConnectionsPerIp) {
                     ctx.getChannel().close();
-                    atomicCount.decrementAndGet();
                 }
             }
         }

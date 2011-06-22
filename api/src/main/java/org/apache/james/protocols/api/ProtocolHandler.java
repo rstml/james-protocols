@@ -17,12 +17,15 @@
  * under the License.                                           *
  ****************************************************************/
 
+package org.apache.james.protocols.api;
 
-package org.apache.james.protocols.smtp.hook;
 
-import org.apache.james.protocols.smtp.SMTPSession;
-
-public interface HookResultHook extends Hook{
-    
-    HookResult onHookResult(SMTPSession session,HookResult result, long executionTime, Hook object);
+/**
+ * Just the base interface for all kind of "protocol" handlers.
+ * 
+ * Every of them should implement this interface
+ * 
+ */
+public interface ProtocolHandler {
+  
 }

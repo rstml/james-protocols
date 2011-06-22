@@ -24,7 +24,7 @@ package org.apache.james.protocols.api;
  * 
  * Only one {@link LineHandler} will get called per line
  */
-public interface LineHandler<Session extends ProtocolSession> {
+public interface LineHandler<Session extends ProtocolSession> extends ProtocolHandler{
      
     /**
      * Processing the give line. The line includes the CRLF delimiter.

@@ -25,7 +25,7 @@ package org.apache.james.protocols.api;
  *
  * @param <S>
  */
-public interface ConnectHandlerResultHandler<S extends ProtocolSession> {
+public interface ConnectHandlerResultHandler<S extends ProtocolSession> extends ProtocolHandler{
     
     /**
      * Called after the {@link ConnectHandler} returned a result

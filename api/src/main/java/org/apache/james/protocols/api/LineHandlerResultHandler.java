@@ -26,7 +26,7 @@ package org.apache.james.protocols.api;
  *
  * @param <S>
  */
-public interface LineHandlerResultHandler<S extends ProtocolSession> {
+public interface LineHandlerResultHandler<S extends ProtocolSession> extends ProtocolHandler {
 
     
     /**

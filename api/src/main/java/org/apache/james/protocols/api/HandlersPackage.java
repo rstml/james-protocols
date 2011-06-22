@@ -28,7 +28,7 @@ import java.util.List;
  * a single object.
  * This is used for the default set of CoreCommands.
  */
-public interface HandlersPackage {
+public interface HandlersPackage extends ProtocolHandler{
     
     /**
      * Return a List which contains a set of CommandHandlers

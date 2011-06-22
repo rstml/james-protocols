@@ -16,15 +16,30 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.smtp.hook;
+package org.apache.james.protocols.api;
 
-import org.apache.james.protocols.api.ProtocolHandler;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
 
 /**
- * Just and marker interface for the different Hooks
- * 
+ * This interface allows to handle lifecycles for handlers and hooks
  *
  */
-public interface Hook extends ProtocolHandler{
+public interface LifecycleAwareProtocolHandler extends ProtocolHandler{
+
+    
+    /**
+     * Init with the given {@link Configuration}
+     * 
+     * @param config
+     * @throws ConfigurationException
+     */
+    public void init(Configuration config) throws ConfigurationException;
+    
+    /**
+     * Destroy object
+     */
+    public void destroy();
+
 
 }

@@ -62,16 +62,6 @@
       <url>http://download.java.net/maven/2/</url>
       <layout>default</layout>
     </repository>
-   
-
-    <!-- netty -->
-    <repository>
-      <id>repository.jboss.org</id>
-      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
   </repositories>
   
   <build>
@@ -409,7 +399,7 @@
       <dependency>
         <groupId>javax.mail</groupId>
         <artifactId>mail</artifactId>
-        <version>1.4.3</version>
+        <version>1.4.4</version>
       </dependency>
       <dependency>
         <groupId>javax.activation</groupId>

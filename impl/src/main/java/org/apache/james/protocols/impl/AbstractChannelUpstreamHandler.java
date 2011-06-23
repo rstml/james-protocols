@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.james.protocols.api.ConnectHandler;
 import org.apache.james.protocols.api.ConnectHandlerResultHandler;
+import org.apache.james.protocols.api.DisconnectHandler;
 import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.LineHandlerResultHandler;
 import org.apache.james.protocols.api.ProtocolHandlerChain;
@@ -91,6 +92,22 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
         super.channelConnected(ctx, e);
     }
 
+
+
+    @Override
+    public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        List<DisconnectHandler> connectHandlers = chain.getHandlers(DisconnectHandler.class);
+        ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
+        if (connectHandlers != null) {
+            for (int i = 0; i < connectHandlers.size(); i++) {
+                DisconnectHandler cHandler = connectHandlers.get(i);
+                
+                connectHandlers.get(i).onDisconnect(session);
+               
+            }
+        }
+        super.channelDisconnected(ctx, e);
+    }
 
 
     /**

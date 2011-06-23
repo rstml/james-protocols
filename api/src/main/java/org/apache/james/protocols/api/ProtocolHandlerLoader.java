@@ -33,13 +33,13 @@ public interface ProtocolHandlerLoader {
      * Load the {@link ProtocolHandler} and make sure all lifecycle methods are called and all
      * needed services injected.
      * 
-     * The class to load is identified by the class attribute in the config
      * 
+     * @param name
      * @param config
      * @return handler
      * @throws LoadingException
      */
-    public ProtocolHandler load(Configuration config) throws LoadingException;
+    public ProtocolHandler load(String name, Configuration config) throws LoadingException;
     
     
     /**

@@ -100,10 +100,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
         ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
-                DisconnectHandler cHandler = connectHandlers.get(i);
-                
                 connectHandlers.get(i).onDisconnect(session);
-               
             }
         }
         super.channelDisconnected(ctx, e);

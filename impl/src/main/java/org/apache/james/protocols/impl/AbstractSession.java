@@ -19,9 +19,11 @@
 
 package org.apache.james.protocols.impl;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.nio.channels.FileChannel;
 
 import javax.net.ssl.SSLEngine;
 
@@ -31,7 +33,10 @@ import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.DefaultFileRegion;
+import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.ssl.SslHandler;
+import org.jboss.netty.handler.stream.ChunkedNioFile;
 import org.jboss.netty.handler.stream.ChunkedStream;
 import org.slf4j.Logger;
 
@@ -50,13 +55,19 @@ public abstract class AbstractSession implements TLSSupportedSession {
     protected String user;
 
     private String id;
+	private boolean zeroCopy;
 
     public AbstractSession(Logger logger, ChannelHandlerContext handlerContext, SSLEngine engine) {
+        this(logger, handlerContext, engine, true);
+    }
+    
+    public AbstractSession(Logger logger, ChannelHandlerContext handlerContext, SSLEngine engine, boolean zeroCopy) {
         this.handlerContext = handlerContext;
         this.socketAddress = (InetSocketAddress) handlerContext.getChannel().getRemoteAddress();
         this.logger = logger;
         this.engine = engine;
         this.id = handlerContext.getChannel().getId() + "";
+        this.zeroCopy = zeroCopy;
 
     }
 
@@ -168,7 +179,22 @@ public abstract class AbstractSession implements TLSSupportedSession {
     public void writeStream(InputStream stream) {
         Channel channel = getChannelHandlerContext().getChannel();
         if (stream != null && channel.isConnected()) {
-            channel.write(new ChunkedStream(stream));
+
+            if (stream instanceof FileInputStream  && channel.getFactory() instanceof NioServerSocketChannelFactory) {
+                FileChannel fc = ((FileInputStream) stream).getChannel();
+                try {
+                    if (zeroCopy) {
+                        channel.write(new DefaultFileRegion(fc, fc.position(), fc.size()));
+                    } else {
+                        channel.write(new ChunkedNioFile(fc, 8192));
+                    }
+                } catch (IOException e) {
+                    // Catch the exception and just pass it so we get the exception later
+                    channel.write(new ChunkedStream(stream));
+                }
+            } else {
+                channel.write(new ChunkedStream(stream));
+            }
         }
     }
 

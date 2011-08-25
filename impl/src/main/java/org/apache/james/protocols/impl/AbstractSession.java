@@ -151,22 +151,13 @@ public abstract class AbstractSession implements TLSSupportedSession {
      * @see org.apache.james.api.protocol.ProtocolSession#writeResponse(org.apache.james.api.protocol.Response)
      */
     public void writeResponse(final Response response) {
-        Channel channel = getChannelHandlerContext().getChannel();
+    	Channel channel = getChannelHandlerContext().getChannel();
         if (response != null && channel.isConnected()) {
-            channel.write(response).addListener(new ChannelFutureListener() {
-                
-                /*
-                 * (non-Javadoc)
-                 * @see org.jboss.netty.channel.ChannelFutureListener#operationComplete(org.jboss.netty.channel.ChannelFuture)
-                 */
-                public void operationComplete(ChannelFuture c) throws Exception {
-                    // once the response was written we can close the channel if needed
-                    if (response.isEndSession() && c.getChannel().isConnected()) {
-                        c.getChannel().close();         
-                    }
-                }
-            });
-          
+           ChannelFuture cf = channel.write(response);
+           if (response.isEndSession()) {
+                // close the channel if needed after the message was written out
+                cf.addListener(ChannelFutureListener.CLOSE);
+           }
         }
     }
 

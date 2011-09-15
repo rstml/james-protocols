@@ -19,13 +19,12 @@
 
 package org.apache.james.protocols.api;
 
-import java.io.InputStream;
 import java.util.Map;
 
 import org.slf4j.Logger;
 
 /**
- * Session for a protcol. Every new connection generates a new session
+ * Session for a protocol. Every new connection generates a new session
  * 
  *
  */
@@ -56,13 +55,6 @@ public interface ProtocolSession {
      * @param response
      */
     void writeResponse(Response response);
-    
-    /**
-     * Write the stream back to the client
-     * 
-     * @param stream
-     */
-    void writeStream(InputStream stream);
 
     
     /**

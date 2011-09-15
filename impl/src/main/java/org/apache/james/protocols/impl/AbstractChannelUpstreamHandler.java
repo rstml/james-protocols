@@ -30,7 +30,6 @@ import org.apache.james.protocols.api.LineHandlerResultHandler;
 import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
@@ -45,7 +44,7 @@ import org.jboss.netty.handler.codec.frame.TooLongFrameException;
  * 
  *
  */
-public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstreamHandler implements ChannelAttributeSupport{
+public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     
     private ProtocolHandlerChain chain;
 
@@ -56,7 +55,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
 
     @Override
     public void channelBound(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-        attributes.set(ctx.getChannel(),createSession(ctx));
+        ctx.setAttachment(createSession(ctx));
         super.channelBound(ctx, e);
     }
 
@@ -70,7 +69,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         List<ConnectHandler> connectHandlers = chain.getHandlers(ConnectHandler.class);
         List<ConnectHandlerResultHandler> resultHandlers = chain.getHandlers(ConnectHandlerResultHandler.class);
-        ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
+        ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         session.getLogger().info("Connection established from " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
@@ -97,7 +96,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     @Override
     public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         List<DisconnectHandler> connectHandlers = chain.getHandlers(DisconnectHandler.class);
-        ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
+        ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
                 connectHandlers.get(i).onDisconnect(session);
@@ -113,7 +112,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     @SuppressWarnings("unchecked")
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        ProtocolSession pSession = (ProtocolSession) attributes.get(ctx.getChannel());
+        ProtocolSession pSession = (ProtocolSession) ctx.getAttachment();
         LinkedList<LineHandler> lineHandlers = chain.getHandlers(LineHandler.class);
         LinkedList<LineHandlerResultHandler> resultHandlers = chain.getHandlers(LineHandlerResultHandler.class);
 
@@ -149,11 +148,11 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
 
     @Override
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-        ProtocolSession session = (ProtocolSession) attributes.get(ctx.getChannel());
+        ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (session != null) {
             session.getLogger().info("Connection closed for " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
         }
-        cleanup(ctx.getChannel());
+        cleanup(ctx);
 
         super.channelClosed(ctx, e);
     }
@@ -162,7 +161,7 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         if ((e.getCause() instanceof TooLongFrameException) == false) {
-            cleanup(ctx.getChannel());
+            cleanup(ctx);
         }
     }
 
@@ -171,8 +170,8 @@ public abstract class AbstractChannelUpstreamHandler extends SimpleChannelUpstre
      * 
      * @param channel
      */
-    protected void cleanup(Channel channel) {
-        ProtocolSession session = (ProtocolSession) attributes.remove(channel);
+    protected void cleanup(ChannelHandlerContext ctx) {
+        ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (session != null) {
             session.resetState();
             session = null;

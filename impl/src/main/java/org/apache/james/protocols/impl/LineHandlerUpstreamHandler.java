@@ -31,19 +31,18 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
  *
  * @param <Session>
  */
-public class LineHandlerUpstreamHandler<Session extends ProtocolSession> extends SimpleChannelUpstreamHandler implements ChannelAttributeSupport{
+public class LineHandlerUpstreamHandler<Session extends ProtocolSession> extends SimpleChannelUpstreamHandler {
 
-    private LineHandler<Session> handler;
+    private final LineHandler<Session> handler;
+	private final Session session;
     
-    public LineHandlerUpstreamHandler(LineHandler<Session> handler) {
+    public LineHandlerUpstreamHandler(Session session, LineHandler<Session> handler) {
         this.handler = handler;
+        this.session = session;
     }
     
-    @SuppressWarnings("unchecked")
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-        Session pSession = (Session) attributes.get(ctx.getChannel());
-        
+    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {        
         ChannelBuffer buf = (ChannelBuffer) e.getMessage();      
         byte[] line;
         if (buf.hasArray()) {
@@ -54,7 +53,7 @@ public class LineHandlerUpstreamHandler<Session extends ProtocolSession> extends
             buf.getBytes(0, line);
         }
 
-        boolean disconnect = handler.onLine(pSession, line);
+        boolean disconnect = handler.onLine(session, line);
         if (disconnect) ctx.getChannel().disconnect();
         
     }

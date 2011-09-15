@@ -19,11 +19,8 @@
 
 package org.apache.james.protocols.impl;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.nio.channels.FileChannel;
 
 import javax.net.ssl.SSLEngine;
 
@@ -32,12 +29,7 @@ import org.apache.james.protocols.api.TLSSupportedSession;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.DefaultFileRegion;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.ssl.SslHandler;
-import org.jboss.netty.handler.stream.ChunkedNioFile;
-import org.jboss.netty.handler.stream.ChunkedStream;
 import org.slf4j.Logger;
 
 /**
@@ -46,7 +38,7 @@ import org.slf4j.Logger;
  * 
  */
 public abstract class AbstractSession implements TLSSupportedSession {
-    protected ChannelHandlerContext handlerContext;
+    protected Channel channel;
     protected InetSocketAddress socketAddress;
     private Logger logger;
     private SessionLog pLog = null;
@@ -55,24 +47,18 @@ public abstract class AbstractSession implements TLSSupportedSession {
     protected String user;
 
     private String id;
-	private boolean zeroCopy;
 
-    public AbstractSession(Logger logger, ChannelHandlerContext handlerContext, SSLEngine engine) {
-        this(logger, handlerContext, engine, true);
-    }
     
-    public AbstractSession(Logger logger, ChannelHandlerContext handlerContext, SSLEngine engine, boolean zeroCopy) {
-        this.handlerContext = handlerContext;
-        this.socketAddress = (InetSocketAddress) handlerContext.getChannel().getRemoteAddress();
+    public AbstractSession(Logger logger, Channel channel, SSLEngine engine) {
+        this.channel = channel;
+        this.socketAddress = (InetSocketAddress) channel.getRemoteAddress();
         this.logger = logger;
         this.engine = engine;
-        this.id = handlerContext.getChannel().getId() + "";
-        this.zeroCopy = zeroCopy;
-
+        this.id = channel.getId() + "";
     }
 
-    public AbstractSession(Logger logger, ChannelHandlerContext handlerContext) {
-        this(logger, handlerContext, null);
+    public AbstractSession(Logger logger, Channel channel) {
+        this(logger, channel, null);
     }
 
     /**
@@ -104,12 +90,12 @@ public abstract class AbstractSession implements TLSSupportedSession {
     }
 
     /**
-     * Return underlying IoSession
+     * Return underlying {@link Channel}
      * 
      * @return session
      */
-    public ChannelHandlerContext getChannelHandlerContext() {
-        return handlerContext;
+    public Channel getChannel() {
+        return channel;
     }
 
     /**
@@ -125,7 +111,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
     public boolean isTLSStarted() {
         
         if (isStartTLSSupported()) {
-            return getChannelHandlerContext().getPipeline().get("sslHandler") != null;
+            return channel.getPipeline().get("sslHandler") != null;
         }
         
         return false;
@@ -136,12 +122,12 @@ public abstract class AbstractSession implements TLSSupportedSession {
      */
     public void startTLS() throws IOException {
         if (isStartTLSSupported() && isTLSStarted() == false) {
-            getChannelHandlerContext().getChannel().setReadable(false);
+            channel.setReadable(false);
             SslHandler filter = new SslHandler(engine);
             filter.getEngine().setUseClientMode(false);
             resetState();
-            getChannelHandlerContext().getPipeline().addFirst("sslHandler", filter);
-            getChannelHandlerContext().getChannel().setReadable(true);
+            channel.getPipeline().addFirst("sslHandler", filter);
+            channel.setReadable(true);
         }
         
     }
@@ -162,39 +148,12 @@ public abstract class AbstractSession implements TLSSupportedSession {
      * @see org.apache.james.api.protocol.ProtocolSession#writeResponse(org.apache.james.api.protocol.Response)
      */
     public void writeResponse(final Response response) {
-    	Channel channel = getChannelHandlerContext().getChannel();
         if (response != null && channel.isConnected()) {
            ChannelFuture cf = channel.write(response);
            if (response.isEndSession()) {
                 // close the channel if needed after the message was written out
                 cf.addListener(ChannelFutureListener.CLOSE);
            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.api.ProtocolSession#writeStream(java.io.InputStream)
-     */
-    public void writeStream(InputStream stream) {
-        Channel channel = getChannelHandlerContext().getChannel();
-        if (stream != null && channel.isConnected()) {
-
-            if (stream instanceof FileInputStream  && channel.getFactory() instanceof NioServerSocketChannelFactory) {
-                FileChannel fc = ((FileInputStream) stream).getChannel();
-                try {
-                    if (zeroCopy) {
-                        channel.write(new DefaultFileRegion(fc, fc.position(), fc.size()));
-                    } else {
-                        channel.write(new ChunkedNioFile(fc, 8192));
-                    }
-                } catch (IOException e) {
-                    // Catch the exception and just pass it so we get the exception later
-                    channel.write(new ChunkedStream(stream));
-                }
-            } else {
-                channel.write(new ChunkedStream(stream));
-            }
         }
     }
 

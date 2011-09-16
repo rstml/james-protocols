@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.AbstractSession;
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.slf4j.Logger;
@@ -183,6 +184,14 @@ public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
      */
     public int getPushedLineHandlerCount() {
         return transport.getPushedLineHandlerCount();
+    }
+
+    public Response newLineTooLongResponse() {
+        return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, "Line length exceeded. See RFC 2821 #4.5.3.1.");
+    }
+
+    public Response newFatalErrorResponse() {
+        return new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "Unable to process request");
     }
     
 }

@@ -77,4 +77,17 @@ public interface ProtocolSession {
      * @return id
      */
     String getSessionID();
+
+    /**
+     * Define a response object to be used as reply for a too long input line
+     * @return Response
+     */
+    Response newLineTooLongResponse();
+
+    /**
+     * Define a response object to be used as reply during a fatal error.
+     * Connection will be closed after this response.
+     * @return Response
+     */
+    Response newFatalErrorResponse();
 }

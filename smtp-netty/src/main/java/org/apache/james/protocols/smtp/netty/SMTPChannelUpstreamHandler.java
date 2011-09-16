@@ -24,10 +24,9 @@ import javax.net.ssl.SSLEngine;
 import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolSessionFactory;
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.impl.AbstractChannelUpstreamHandler;
 import org.apache.james.protocols.impl.NettyProtocolTransport;
-import org.apache.james.protocols.smtp.SMTPResponse;
-import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandler.Sharable;
@@ -75,13 +74,19 @@ public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         Channel channel = ctx.getChannel();
+        ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (e.getCause() instanceof TooLongFrameException) {
-            ctx.getChannel().write(new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, "Line length exceeded. See RFC 2821 #4.5.3.1."));
+            Response r = session.newLineTooLongResponse();
+            if (r != null) ctx.getChannel().write(r);
         } else {
             if (channel.isConnected()) {
-                ctx.getChannel().write(new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "Unable to process request")).addListener(ChannelFutureListener.CLOSE);
+                Response r = session.newFatalErrorResponse();
+                if (r != null) {
+                    ctx.getChannel().write(r).addListener(ChannelFutureListener.CLOSE);
+                } else {
+                    ctx.getChannel().close();
+                }
             }
-            ProtocolSession session = (ProtocolSession) ctx.getAttachment();
             if (session != null) {
                 session.getLogger().debug("Unable to process request", e.getCause());
             } else {

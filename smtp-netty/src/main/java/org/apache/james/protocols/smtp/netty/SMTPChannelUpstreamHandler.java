@@ -24,6 +24,7 @@ import javax.net.ssl.SSLEngine;
 import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.impl.AbstractChannelUpstreamHandler;
+import org.apache.james.protocols.impl.NettyProtocolTransport;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -67,7 +68,8 @@ public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
                 engine.setEnabledCipherSuites(enabledCipherSuites);
             }
         }
-        return new SMTPNettySession(conf, logger, ctx.getChannel(), engine);
+        
+        return new SMTPNettySession(conf, logger, new NettyProtocolTransport(ctx.getChannel(), engine));
     }
 
     @Override

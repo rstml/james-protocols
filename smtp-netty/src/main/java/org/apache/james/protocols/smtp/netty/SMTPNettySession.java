@@ -22,14 +22,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.SSLEngine;
-
 import org.apache.james.protocols.api.LineHandler;
+import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.impl.AbstractSession;
-import org.apache.james.protocols.impl.LineHandlerUpstreamHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.jboss.netty.channel.Channel;
 import org.slf4j.Logger;
 
 /**
@@ -44,10 +41,8 @@ public class SMTPNettySession extends AbstractSession implements SMTPSession {
 
     private SMTPConfiguration theConfigData;
 
-    private int lineHandlerCount = 0;
-
-    public SMTPNettySession(SMTPConfiguration theConfigData, Logger logger, Channel channel, SSLEngine engine) {
-        super(logger, channel, engine);
+    public SMTPNettySession(SMTPConfiguration theConfigData, Logger logger, ProtocolTransport transport) {
+        super(logger, transport);
         this.theConfigData = theConfigData;
         connectionState = new HashMap<String, Object>();
 
@@ -100,22 +95,14 @@ public class SMTPNettySession extends AbstractSession implements SMTPSession {
      * @see org.apache.james.protocols.smtp.SMTPSession#popLineHandler()
      */
     public void popLineHandler() {
-        if (lineHandlerCount > 0) {
-            getChannel().getPipeline().remove("lineHandler" + lineHandlerCount);
-            lineHandlerCount--;
-        }
+        transport.popLineHandler();
     }
 
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#pushLineHandler(org.apache.james.smtpserver.protocol.LineHandler)
      */
     public void pushLineHandler(LineHandler<SMTPSession> overrideCommandHandler) {
-        lineHandlerCount++;
-        // Add the linehandler in front of the coreHandler so we can be sure 
-        // it is executed with the same ExecutorHandler as the coreHandler (if one exist)
-        // 
-        // See JAMES-1277
-        getChannel().getPipeline().addBefore("coreHandler", "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler<SMTPSession>(this, overrideCommandHandler));
+        transport.pushLineHandler(overrideCommandHandler, this);
     }
 
     /**
@@ -197,7 +184,7 @@ public class SMTPNettySession extends AbstractSession implements SMTPSession {
      * org.apache.james.protocols.smtp.SMTPSession#getPushedLineHandlerCount()
      */
     public int getPushedLineHandlerCount() {
-        return lineHandlerCount;
+        return transport.getPushedLineHandlerCount();
     }
     
 }

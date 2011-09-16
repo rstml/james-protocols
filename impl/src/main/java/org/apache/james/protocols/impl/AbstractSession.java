@@ -21,15 +21,9 @@ package org.apache.james.protocols.impl;
 
 import java.net.InetSocketAddress;
 
-import javax.net.ssl.SSLEngine;
-
+import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.StartTlsResponse;
 import org.apache.james.protocols.api.TLSSupportedSession;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
-import org.jboss.netty.handler.ssl.SslHandler;
 import org.slf4j.Logger;
 
 /**
@@ -38,27 +32,21 @@ import org.slf4j.Logger;
  * 
  */
 public abstract class AbstractSession implements TLSSupportedSession {
-    protected Channel channel;
     protected InetSocketAddress socketAddress;
     private Logger logger;
     private SessionLog pLog = null;
     
-    protected SSLEngine engine;
     protected String user;
 
     private String id;
+    protected ProtocolTransport transport;
 
     
-    public AbstractSession(Logger logger, Channel channel, SSLEngine engine) {
-        this.channel = channel;
-        this.socketAddress = (InetSocketAddress) channel.getRemoteAddress();
+    public AbstractSession(Logger logger, ProtocolTransport transport) {
+        this.transport = transport;
+        this.socketAddress = transport.getRemoteAddress();
         this.logger = logger;
-        this.engine = engine;
-        this.id = channel.getId() + "";
-    }
-
-    public AbstractSession(Logger logger, Channel channel) {
-        this(logger, channel, null);
+        this.id = transport.getId();
     }
 
     /**
@@ -90,31 +78,26 @@ public abstract class AbstractSession implements TLSSupportedSession {
     }
 
     /**
-     * Return underlying {@link Channel}
+     * Return underlying {@link ProtocolTransport}
      * 
      * @return session
      */
-    public Channel getChannel() {
-        return channel;
+    public ProtocolTransport getProtocolTransport() {
+        return transport;
     }
 
     /**
      * @see org.apache.james.api.protocol.TLSSupportedSession#isStartTLSSupported()
      */
     public boolean isStartTLSSupported() {
-        return engine != null;
+        return transport.isStartTLSSupported();
     }
 
     /**
      * @see org.apache.james.api.protocol.TLSSupportedSession#isTLSStarted()
      */
     public boolean isTLSStarted() {
-        
-        if (isStartTLSSupported()) {
-            return channel.getPipeline().get("sslHandler") != null;
-        }
-        
-        return false;
+        return transport.isTLSStarted();
     }
 
     /**
@@ -133,23 +116,7 @@ public abstract class AbstractSession implements TLSSupportedSession {
      * @see org.apache.james.api.protocol.ProtocolSession#writeResponse(org.apache.james.api.protocol.Response)
      */
     public void writeResponse(final Response response) {
-        if (response != null && channel.isConnected()) {
-           ChannelFuture cf = channel.write(response);
-           if (response.isEndSession()) {
-                // close the channel if needed after the message was written out
-                cf.addListener(ChannelFutureListener.CLOSE);
-           } 
-           if (response instanceof StartTlsResponse) {
-               if (isStartTLSSupported()) {
-                   channel.setReadable(false);
-                   SslHandler filter = new SslHandler(engine);
-                   filter.getEngine().setUseClientMode(false);
-                   resetState();
-                   channel.getPipeline().addFirst("sslHandler", filter);
-                   channel.setReadable(true);
-               }
-           }
-        }
+        transport.writeResponse(response, this);
     }
 
     /*

@@ -29,14 +29,14 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 /**
  * {@link ChannelUpstreamHandler} implementation which will call a given {@link LineHandler} implementation
  *
- * @param <Session>
+ * @param <S>
  */
-public class LineHandlerUpstreamHandler<Session extends ProtocolSession> extends SimpleChannelUpstreamHandler {
+public class LineHandlerUpstreamHandler<S extends ProtocolSession> extends SimpleChannelUpstreamHandler {
 
-    private final LineHandler<Session> handler;
-	private final Session session;
+    private final LineHandler<S> handler;
+    private final S session;
     
-    public LineHandlerUpstreamHandler(Session session, LineHandler<Session> handler) {
+    public LineHandlerUpstreamHandler(S session, LineHandler<S> handler) {
         this.handler = handler;
         this.session = session;
     }

@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.ProtocolTransport;
-import org.apache.james.protocols.impl.AbstractSession;
+import org.apache.james.protocols.api.AbstractSession;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.slf4j.Logger;

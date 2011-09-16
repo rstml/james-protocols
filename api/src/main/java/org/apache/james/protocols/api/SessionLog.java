@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.impl;
+package org.apache.james.protocols.api;
 
 import org.slf4j.Logger;
 import org.slf4j.Marker;

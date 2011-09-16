@@ -19,12 +19,17 @@
 package org.apache.james.protocols.smtp.netty;
 
 
+import java.nio.charset.Charset;
+
 import javax.net.ssl.SSLContext;
 
+import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.impl.AbstractAsyncServer;
+import org.apache.james.protocols.impl.AbstractResponseEncoder;
 import org.apache.james.protocols.impl.AbstractSSLAwareChannelPipelineFactory;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
+import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPServerMBean;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
@@ -40,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SMTPServer extends AbstractAsyncServer implements SMTPServerMBean {
 
-    private SMTPProtocolHandlerChain chain;
+    private ProtocolHandlerChain chain;
     
     private Logger logger = LoggerFactory.getLogger(SMTPServer.class);
 
@@ -57,8 +62,8 @@ public class SMTPServer extends AbstractAsyncServer implements SMTPServerMBean {
     private final SMTPConfiguration theConfigData;
 
 
-    private final static SMTPResponseEncoder SMTP_RESPONSE_ENCODER = new SMTPResponseEncoder();
-    private SMTPChannelUpstreamHandler coreHandler;
+    private final static OneToOneEncoder SMTP_RESPONSE_ENCODER = new AbstractResponseEncoder(SMTPResponse.class, Charset.forName("US-ASCII"));
+    private ChannelUpstreamHandler coreHandler;
 
    
     

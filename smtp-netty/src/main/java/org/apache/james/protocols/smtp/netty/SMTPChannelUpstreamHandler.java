@@ -27,13 +27,12 @@ import org.apache.james.protocols.impl.AbstractChannelUpstreamHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
-import org.apache.james.protocols.smtp.SMTPSession;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
+import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.handler.codec.frame.TooLongFrameException;
 import org.slf4j.Logger;
 
@@ -61,15 +60,14 @@ public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
 
     @Override
     protected ProtocolSession createSession(ChannelHandlerContext ctx) throws Exception {
+        SSLEngine engine = null;
         if (context != null) {
-            SSLEngine engine = context.createSSLEngine();
+            engine = context.createSSLEngine();
             if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
                 engine.setEnabledCipherSuites(enabledCipherSuites);
             }
-            return new SMTPNettySession(conf, logger, ctx.getChannel(), engine);
-        } else {
-            return new SMTPNettySession(conf, logger, ctx.getChannel());
         }
+        return new SMTPNettySession(conf, logger, ctx.getChannel(), engine);
     }
 
     @Override
@@ -81,9 +79,9 @@ public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
             if (channel.isConnected()) {
                 ctx.getChannel().write(new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "Unable to process request")).addListener(ChannelFutureListener.CLOSE);
             }
-            SMTPSession smtpSession = (SMTPSession) ctx.getAttachment();
-            if (smtpSession != null) {
-                smtpSession.getLogger().debug("Unable to process request", e.getCause());
+            ProtocolSession session = (ProtocolSession) ctx.getAttachment();
+            if (session != null) {
+                session.getLogger().debug("Unable to process request", e.getCause());
             } else {
                 logger.debug("Unable to process request", e.getCause());
             }

@@ -54,10 +54,6 @@ public class SMTPNettySession extends AbstractSession implements SMTPSession {
         relayingAllowed = theConfigData.isRelayingAllowed(getRemoteIPAddress());
     }
 
-    public SMTPNettySession(SMTPConfiguration theConfigData, Logger logger, Channel channel) {
-        this(theConfigData, logger, channel, null);
-    }
-
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getConnectionState()
      */

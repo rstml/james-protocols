@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.smtp;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -103,7 +104,24 @@ public class SMTPResponse implements RetCodeResponse {
      * @return all responseLines
      */
     public List<CharSequence> getLines() {
-        return lines;
+        List<CharSequence> responseList = new ArrayList<CharSequence>();
+
+        for (int k = 0; k < lines.size(); k++) {
+            StringBuffer respBuff = new StringBuffer(256);
+            respBuff.append(getRetCode());
+            if (k == lines.size() - 1) {
+                respBuff.append(" ");
+                respBuff.append(lines.get(k));
+
+            } else {
+                respBuff.append("-");
+                respBuff.append(lines.get(k));
+
+            }
+            responseList.add(respBuff.toString());
+        }
+
+        return responseList;
     }
 
     /**
@@ -137,6 +155,6 @@ public class SMTPResponse implements RetCodeResponse {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return getRetCode() + " " + getLines();
+        return getLines().toString();
     }
 }

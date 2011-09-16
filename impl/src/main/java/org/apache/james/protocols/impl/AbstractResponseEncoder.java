@@ -18,11 +18,10 @@
  ****************************************************************/
 package org.apache.james.protocols.impl;
 
-import static org.jboss.netty.buffer.ChannelBuffers.*;
+import static org.jboss.netty.buffer.ChannelBuffers.copiedBuffer;
 
 import java.nio.charset.Charset;
 import java.util.List;
-
 
 import org.apache.james.protocols.api.Response;
 import org.jboss.netty.channel.Channel;
@@ -35,7 +34,7 @@ import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
  *
  * @param <R>
  */
-public abstract class AbstractResponseEncoder<R extends Response> extends OneToOneEncoder{
+public class AbstractResponseEncoder extends OneToOneEncoder{
 
     private Class<? extends Response> classType;
     private Charset charset;
@@ -45,13 +44,12 @@ public abstract class AbstractResponseEncoder<R extends Response> extends OneToO
         this.charset = charset;
     }
     
-    @SuppressWarnings("unchecked")
     @Override
     protected Object encode(ChannelHandlerContext arg0, Channel arg1, Object obj) throws Exception {
         if (classType.isInstance(obj)) {
             StringBuilder builder = new StringBuilder();
-            R response = (R) obj;
-            List<String> lines = getResponse(response);
+            Response response = (Response) obj;
+            List<CharSequence> lines = response.getLines();
             for (int i = 0; i < lines.size(); i++) {
                 builder.append(lines.get(i));
                 if (i < lines.size()) {
@@ -62,9 +60,4 @@ public abstract class AbstractResponseEncoder<R extends Response> extends OneToO
         }
         return obj;
     }
-
-    /**
-     * Return a list which contains the response
-     */
-    protected abstract List<String> getResponse(R response);
 }

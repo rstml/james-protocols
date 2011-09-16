@@ -42,10 +42,10 @@ import org.slf4j.Logger;
  */
 @Sharable
 public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
-    private final Logger logger;
-    private final SMTPConfiguration conf;
-    private final SSLContext context;
-    private String[] enabledCipherSuites;
+    protected final Logger logger;
+    protected final SMTPConfiguration conf;
+    protected final SSLContext context;
+    protected String[] enabledCipherSuites;
 
     public SMTPChannelUpstreamHandler(ProtocolHandlerChain chain, SMTPConfiguration conf, Logger logger) {
         this(chain, conf, logger, null, null);

@@ -134,7 +134,7 @@ public class SMTPServer extends AbstractAsyncServer implements SMTPServerMBean {
     
     @Override
     public synchronized void bind() throws Exception {
-        coreHandler = new SMTPChannelUpstreamHandler(chain, new ProtocolSessionFactory() {
+        coreHandler = new BasicChannelUpstreamHandler(chain, new ProtocolSessionFactory() {
             
             public ProtocolSession newSession(ProtocolTransport transport) {
                 return new SMTPSessionImpl(theConfigData, logger, transport);

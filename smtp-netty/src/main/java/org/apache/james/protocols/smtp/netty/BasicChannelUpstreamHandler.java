@@ -37,20 +37,20 @@ import org.jboss.netty.handler.codec.frame.TooLongFrameException;
 import org.slf4j.Logger;
 
 /**
- * {@link ChannelUpstreamHandler} which is used by the SMTPServer
+ * {@link ChannelUpstreamHandler} which is used by the SMTPServer and other line based protocols
  */
 @Sharable
-public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
+public class BasicChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
     protected final Logger logger;
     protected final SSLContext context;
     protected String[] enabledCipherSuites;
     protected ProtocolSessionFactory sessionFactory;
 
-    public SMTPChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger) {
+    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger) {
         this(chain, sessionFactory, logger, null, null);
     }
 
-    public SMTPChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger, SSLContext context, String[] enabledCipherSuites) {
+    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger, SSLContext context, String[] enabledCipherSuites) {
         super(chain);
         this.sessionFactory = sessionFactory;
         this.logger = logger;

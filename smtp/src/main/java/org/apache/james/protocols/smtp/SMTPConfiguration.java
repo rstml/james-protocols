@@ -41,6 +41,7 @@ public interface SMTPConfiguration {
      *
      * @return the reset length
      */
+    @Deprecated
     int getResetLength();
 
     /**

@@ -40,8 +40,11 @@ import org.apache.james.protocols.smtp.core.RsetCmdHandler;
 import org.apache.james.protocols.smtp.core.SMTPCommandDispatcherLineHandler;
 import org.apache.james.protocols.smtp.core.VrfyCmdHandler;
 import org.apache.james.protocols.smtp.core.WelcomeMessageHandler;
+import org.apache.james.protocols.smtp.core.esmtp.AuthCmdHandler;
 import org.apache.james.protocols.smtp.core.esmtp.EhloCmdHandler;
 import org.apache.james.protocols.smtp.core.esmtp.MailSizeEsmtpExtension;
+import org.apache.james.protocols.smtp.core.esmtp.StartTlsCmdHandler;
+import org.apache.james.protocols.smtp.hook.AuthHook;
 import org.apache.james.protocols.smtp.hook.Hook;
 import org.apache.james.protocols.smtp.hook.MessageHook;
 
@@ -60,7 +63,8 @@ public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
     private final List<Object> defaultHandlers = new ArrayList<Object>();
     private final List<Hook> hooks = new ArrayList<Hook>();
     private final List<Object> handlers = new ArrayList<Object>();
-
+    private boolean authHandler = false;
+    
     public SMTPProtocolHandlerChain() throws WiringException {
         defaultHandlers.add(new SMTPCommandDispatcherLineHandler());
         defaultHandlers.add(new ExpnCmdHandler());
@@ -79,7 +83,9 @@ public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
         defaultHandlers.add(new PostmasterAbuseRcptHook());
         defaultHandlers.add(new ReceivedDataLineFilter());
         defaultHandlers.add(new DataLineMessageHookHandler());
+        defaultHandlers.add(new StartTlsCmdHandler());
         copy();
+        
         wireExtensibleHandlers();
     }
 
@@ -90,6 +96,10 @@ public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
      * @throws WiringException
      */
     public final synchronized void addHook(Hook hook) throws WiringException {
+        if (hook instanceof AuthHook && !authHandler) {
+            defaultHandlers.add(new AuthCmdHandler());
+            authHandler = true;
+        }
         addHook(hooks.size(), hook);
     }
 

@@ -30,6 +30,7 @@ import org.jboss.netty.handler.codec.frame.Delimiters;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.jboss.netty.handler.connection.ConnectionLimitUpstreamHandler;
 import org.jboss.netty.handler.connection.ConnectionPerIpLimitUpstreamHandler;
+import org.jboss.netty.handler.execution.ExecutionHandler;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 import org.jboss.netty.util.HashedWheelTimer;
 
@@ -46,12 +47,20 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     private final HashedWheelTimer timer = new HashedWheelTimer();
     private ChannelGroupHandler groupHandler;
 	private int timeout;
+    private ExecutionHandler eHandler;
     public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp, ChannelGroup channels) {
+        this(timeout, maxConnections, maxConnectsPerIp, channels, null);
+    }
+    
+    public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp, ChannelGroup channels, ExecutionHandler eHandler) {
         connectionLimitHandler = new ConnectionLimitUpstreamHandler(maxConnections);
         connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(maxConnectsPerIp);
         groupHandler = new ChannelGroupHandler(channels);
         this.timeout = timeout;
+        this.eHandler = eHandler;
     }
+    
+    
     
     
     /*
@@ -77,6 +86,10 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
         pipeline.addLast("streamer", new ChunkedWriteHandler());
         pipeline.addLast("timeoutHandler", new TimeoutHandler(timer, timeout));
 
+        if (eHandler != null) {
+            pipeline.addLast("executionHandler", eHandler);
+        }
+        
         pipeline.addLast("coreHandler", createHandler());
 
 

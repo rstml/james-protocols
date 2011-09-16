@@ -24,6 +24,9 @@ import java.nio.charset.Charset;
 import javax.net.ssl.SSLContext;
 
 import org.apache.james.protocols.api.ProtocolHandlerChain;
+import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.ProtocolSessionFactory;
+import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.impl.AbstractAsyncServer;
 import org.apache.james.protocols.impl.AbstractResponseEncoder;
 import org.apache.james.protocols.impl.AbstractSSLAwareChannelPipelineFactory;
@@ -31,6 +34,7 @@ import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPServerMBean;
+import org.apache.james.protocols.smtp.SMTPSessionImpl;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -130,7 +134,12 @@ public class SMTPServer extends AbstractAsyncServer implements SMTPServerMBean {
     
     @Override
     public synchronized void bind() throws Exception {
-        coreHandler = new SMTPChannelUpstreamHandler(chain, theConfigData, logger, context, null);
+        coreHandler = new SMTPChannelUpstreamHandler(chain, new ProtocolSessionFactory() {
+            
+            public ProtocolSession newSession(ProtocolTransport transport) {
+                return new SMTPSessionImpl(theConfigData, logger, transport);
+            }
+        }, logger, context, null);
         super.bind();
     }
 

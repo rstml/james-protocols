@@ -23,12 +23,11 @@ import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.impl.AbstractChannelUpstreamHandler;
 import org.apache.james.protocols.impl.NettyProtocolTransport;
-import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
-import org.apache.james.protocols.smtp.SMTPSessionImpl;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandler.Sharable;
@@ -44,17 +43,17 @@ import org.slf4j.Logger;
 @Sharable
 public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
     protected final Logger logger;
-    protected final SMTPConfiguration conf;
     protected final SSLContext context;
     protected String[] enabledCipherSuites;
+    protected ProtocolSessionFactory sessionFactory;
 
-    public SMTPChannelUpstreamHandler(ProtocolHandlerChain chain, SMTPConfiguration conf, Logger logger) {
-        this(chain, conf, logger, null, null);
+    public SMTPChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger) {
+        this(chain, sessionFactory, logger, null, null);
     }
 
-    public SMTPChannelUpstreamHandler(ProtocolHandlerChain chain, SMTPConfiguration conf, Logger logger, SSLContext context, String[] enabledCipherSuites) {
+    public SMTPChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger, SSLContext context, String[] enabledCipherSuites) {
         super(chain);
-        this.conf = conf;
+        this.sessionFactory = sessionFactory;
         this.logger = logger;
         this.context = context;
         this.enabledCipherSuites = enabledCipherSuites;
@@ -70,7 +69,7 @@ public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
             }
         }
         
-        return new SMTPSessionImpl(conf, logger, new NettyProtocolTransport(ctx.getChannel(), engine));
+        return sessionFactory.newSession(new NettyProtocolTransport(ctx.getChannel(), engine));
     }
 
     @Override

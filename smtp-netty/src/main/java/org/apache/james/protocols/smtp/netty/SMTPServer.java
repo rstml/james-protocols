@@ -30,6 +30,7 @@ import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.impl.AbstractAsyncServer;
 import org.apache.james.protocols.impl.AbstractResponseEncoder;
 import org.apache.james.protocols.impl.AbstractSSLAwareChannelPipelineFactory;
+import org.apache.james.protocols.impl.BasicChannelUpstreamHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPResponse;

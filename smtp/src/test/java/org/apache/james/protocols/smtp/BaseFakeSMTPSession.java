@@ -208,4 +208,12 @@ public class BaseFakeSMTPSession implements SMTPSession {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
+    public Response newLineTooLongResponse() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
+    public Response newFatalErrorResponse() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
 }

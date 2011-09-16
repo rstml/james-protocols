@@ -30,9 +30,9 @@ import org.apache.james.protocols.smtp.SMTPSession;
 import org.slf4j.Logger;
 
 /**
- * {@link SMTPSession} implementation for use with Netty
+ * {@link SMTPSession} implementation
  */
-public class SMTPNettySession extends AbstractSession implements SMTPSession {
+public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
     public final static String SMTP_SESSION = "SMTP_SESSION";
 
     private boolean relayingAllowed;
@@ -41,7 +41,7 @@ public class SMTPNettySession extends AbstractSession implements SMTPSession {
 
     private SMTPConfiguration theConfigData;
 
-    public SMTPNettySession(SMTPConfiguration theConfigData, Logger logger, ProtocolTransport transport) {
+    public SMTPSessionImpl(SMTPConfiguration theConfigData, Logger logger, ProtocolTransport transport) {
         super(logger, transport);
         this.theConfigData = theConfigData;
         connectionState = new HashMap<String, Object>();
@@ -177,9 +177,7 @@ public class SMTPNettySession extends AbstractSession implements SMTPSession {
         return theConfigData.useHeloEhloEnforcement();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see
      * org.apache.james.protocols.smtp.SMTPSession#getPushedLineHandlerCount()
      */

@@ -69,7 +69,7 @@ public class SMTPChannelUpstreamHandler extends AbstractChannelUpstreamHandler {
             }
         }
         
-        return new SMTPNettySession(conf, logger, new NettyProtocolTransport(ctx.getChannel(), engine));
+        return new SMTPSessionImpl(conf, logger, new NettyProtocolTransport(ctx.getChannel(), engine));
     }
 
     @Override

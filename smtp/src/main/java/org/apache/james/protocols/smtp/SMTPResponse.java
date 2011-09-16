@@ -27,7 +27,7 @@ import org.apache.james.protocols.api.RetCodeResponse;
 /**
  * Contains an SMTP result
  */
-public final class SMTPResponse implements RetCodeResponse {
+public class SMTPResponse implements RetCodeResponse {
 
     private String retCode = null;
     private List<CharSequence> lines = null;

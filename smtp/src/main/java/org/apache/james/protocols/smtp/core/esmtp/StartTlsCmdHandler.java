@@ -19,7 +19,6 @@
 
 package org.apache.james.protocols.smtp.core.esmtp;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +29,7 @@ import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
+import org.apache.james.protocols.smtp.SMTPStartTLSResponse;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 
 /**
@@ -65,21 +65,12 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
             } else {
                 SMTPResponse response;
                 if ((parameters == null) || (parameters.length() == 0)) {
-                    response = new SMTPResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS");
+                    response = new SMTPStartTLSResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS");
                 } else {
                     response = new SMTPResponse("501 " + DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Syntax error (no parameters allowed) with STARTTLS command");
                 }
-                session.writeResponse(response);
-                try {
-                    if (!session.isTLSStarted()) {
-                        session.startTLS();
-                        // force reset
-                        session.resetState();
-                    }
-                    
-                } catch (IOException e) {
-                    return new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "TLS not available due to temporary reason");
-                }
+                return response;
+                
             }
 
         } else {
@@ -88,7 +79,6 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
             SMTPResponse response = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
             return response;
         }
-        return null;
     }
 
     /**

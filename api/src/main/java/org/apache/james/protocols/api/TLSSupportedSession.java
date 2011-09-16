@@ -20,10 +20,12 @@
 
 package org.apache.james.protocols.api;
 
-import java.io.IOException;
 
 /**
- * Session which supports TLS 
+ * Session which supports STARTTLS. Implementations of this interface must take special 
+ * care of handling {@link StartTlsResponse}'s. Once such a response was written to the client
+ * the server MUST take care of start the TLS encryption before do any futher processing
+ * 
  * 
  *
  */
@@ -58,11 +60,13 @@ public interface TLSSupportedSession extends ProtocolSession{
      */
     boolean isTLSStarted();
 
+   
     /**
-     * Start TLS encryption 
+     * Write the response back to the client. Special care MUST be take to handle {@link StartTlsResponse} instances.
      * 
-     * @throws IOException
+     * 
+     * @param response
      */
-    void startTLS() throws IOException;
+    void writeResponse(Response response);
     
 }

@@ -19,12 +19,12 @@
 
 package org.apache.james.protocols.impl;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.StartTlsResponse;
 import org.apache.james.protocols.api.TLSSupportedSession;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
@@ -118,21 +118,6 @@ public abstract class AbstractSession implements TLSSupportedSession {
     }
 
     /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#startTLS()
-     */
-    public void startTLS() throws IOException {
-        if (isStartTLSSupported() && isTLSStarted() == false) {
-            channel.setReadable(false);
-            SslHandler filter = new SslHandler(engine);
-            filter.getEngine().setUseClientMode(false);
-            resetState();
-            channel.getPipeline().addFirst("sslHandler", filter);
-            channel.setReadable(true);
-        }
-        
-    }
-
-    /**
      * @see org.apache.james.api.protocol.ProtocolSession#getLogger()
      */
     public Logger getLogger() {
@@ -153,6 +138,16 @@ public abstract class AbstractSession implements TLSSupportedSession {
            if (response.isEndSession()) {
                 // close the channel if needed after the message was written out
                 cf.addListener(ChannelFutureListener.CLOSE);
+           } 
+           if (response instanceof StartTlsResponse) {
+               if (isStartTLSSupported()) {
+                   channel.setReadable(false);
+                   SslHandler filter = new SslHandler(engine);
+                   filter.getEngine().setUseClientMode(false);
+                   resetState();
+                   channel.getPipeline().addFirst("sslHandler", filter);
+                   channel.setReadable(true);
+               }
            }
         }
     }

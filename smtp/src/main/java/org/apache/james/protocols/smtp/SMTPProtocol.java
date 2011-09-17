@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.smtp.netty;
+package org.apache.james.protocols.smtp;
 
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolHandlerChain;

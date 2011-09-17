@@ -21,7 +21,9 @@ package org.apache.james.protocols.smtp.netty;
 
 import javax.net.ssl.SSLContext;
 
+import org.apache.james.protocols.impl.NettyServer;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
+import org.apache.james.protocols.smtp.SMTPProtocol;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPServerMBean;
 

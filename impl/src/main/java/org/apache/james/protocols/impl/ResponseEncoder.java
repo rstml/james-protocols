@@ -34,12 +34,12 @@ import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
  *
  * @param <R>
  */
-public class AbstractResponseEncoder extends OneToOneEncoder{
+public class ResponseEncoder extends OneToOneEncoder{
 
     private Class<? extends Response> classType;
     private Charset charset;
 
-    public AbstractResponseEncoder(Class< ? extends Response> classType, Charset charset) {
+    public ResponseEncoder(Class< ? extends Response> classType, Charset charset) {
         this.classType = classType;
         this.charset = charset;
     }

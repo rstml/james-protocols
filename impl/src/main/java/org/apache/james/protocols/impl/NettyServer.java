@@ -25,7 +25,7 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.impl.AbstractAsyncServer;
-import org.apache.james.protocols.impl.AbstractResponseEncoder;
+import org.apache.james.protocols.impl.ResponseEncoder;
 import org.apache.james.protocols.impl.AbstractSSLAwareChannelPipelineFactory;
 import org.apache.james.protocols.impl.BasicChannelUpstreamHandler;
 import org.jboss.netty.channel.ChannelPipelineFactory;
@@ -63,7 +63,7 @@ public class NettyServer extends AbstractAsyncServer {
         super();
         this.protocol = protocol;
         this.context = context;
-        this.responseEncoder = new AbstractResponseEncoder(protocol.getResponseClass(), Charset.forName("US-ASCII"));
+        this.responseEncoder = new ResponseEncoder(protocol.getResponseClass(), Charset.forName("US-ASCII"));
     }
     
     protected ExecutionHandler createExecutionHandler(int size) {

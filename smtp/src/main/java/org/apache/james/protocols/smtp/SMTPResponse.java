@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.protocols.api.RetCodeResponse;
+import org.apache.james.protocols.api.Response;
 
 /**
  * Contains an SMTP result
  */
-public class SMTPResponse implements RetCodeResponse {
+public class SMTPResponse implements Response {
 
     private String retCode = null;
     private List<CharSequence> lines = null;

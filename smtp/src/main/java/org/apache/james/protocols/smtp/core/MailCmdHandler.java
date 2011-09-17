@@ -30,7 +30,6 @@ import java.util.StringTokenizer;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.RetCodeResponse;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -61,7 +60,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
     public Response onCommand(SMTPSession session, Request request) {
         Response response = super.onCommand(session, request);
         // Check if the response was not ok
-        if (((RetCodeResponse) response).getRetCode().equals(SMTPRetCode.MAIL_OK) == false) {
+        if (response.getRetCode().equals(SMTPRetCode.MAIL_OK) == false) {
             // cleanup the session
             session.getState().remove(SMTPSession.SENDER);
         }

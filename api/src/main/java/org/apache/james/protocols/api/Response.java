@@ -27,7 +27,19 @@ import java.util.List;
  *
  */
 public interface Response {
+    /**
+     * Return return-code
+     * @return
+     */
+    String getRetCode();
 
+
+    /**
+     * Set the return-code used for this response
+     * 
+     * @param retCode
+     */
+    void setRetCode(String retCode);
     
     /**
      * Append line to response

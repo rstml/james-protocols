@@ -22,14 +22,13 @@ import org.apache.james.protocols.api.CommandHandler;
 import org.apache.james.protocols.api.CommandHandlerResultHandler;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.RetCodeResponse;
 
 /**
  * 
  * 
  *
  */
-public abstract class AbstractCommandHandlerResultLogger<R extends RetCodeResponse, S extends ProtocolSession> implements CommandHandlerResultHandler<R, S> {
+public abstract class AbstractCommandHandlerResultLogger<R extends Response, S extends ProtocolSession> implements CommandHandlerResultHandler<R, S> {
 
     
 

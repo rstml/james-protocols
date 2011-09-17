@@ -27,6 +27,7 @@ import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.impl.AbstractChannelUpstreamHandler;
 import org.apache.james.protocols.impl.NettyProtocolTransport;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandler.Sharable;
@@ -84,7 +85,7 @@ public class BasicChannelUpstreamHandler extends AbstractChannelUpstreamHandler 
                 if (r != null) {
                     ctx.getChannel().write(r).addListener(ChannelFutureListener.CLOSE);
                 } else {
-                    ctx.getChannel().close();
+                    ctx.getChannel().write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
                 }
             }
             if (session != null) {

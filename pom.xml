@@ -37,7 +37,6 @@
     <module>api</module>
     <module>smtp</module>
     <module>impl</module>
-    <module>smtp-netty</module>
   </modules>
   <ciManagement>
     <system>hudson</system>

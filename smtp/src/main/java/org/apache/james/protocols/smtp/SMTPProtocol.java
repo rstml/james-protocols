@@ -26,7 +26,6 @@ import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
-import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPSessionImpl;
 import org.slf4j.Logger;
@@ -34,12 +33,12 @@ import org.slf4j.LoggerFactory;
 
 public class SMTPProtocol implements Protocol {
 
-    private SMTPProtocolHandlerChain chain;
+    private ProtocolHandlerChain chain;
     private SMTPConfiguration config;
     private Logger logger = LoggerFactory.getLogger(SMTPProtocol.class);
 
 
-    public SMTPProtocol(SMTPProtocolHandlerChain chain, SMTPConfiguration config) {
+    public SMTPProtocol(ProtocolHandlerChain chain, SMTPConfiguration config) {
         this.chain = chain;
         this.config = config;
     }

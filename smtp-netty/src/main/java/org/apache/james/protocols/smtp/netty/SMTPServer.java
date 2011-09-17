@@ -38,7 +38,7 @@ public class SMTPServer extends NettyServer implements SMTPServerMBean {
     
     
     public SMTPServer(SMTPConfiguration theConfigData, SMTPProtocolHandlerChain chain, SSLContext context, boolean starttls) {
-        super(new StartTLSSMTPConfiguration(theConfigData, starttls), chain, context);
+        super(new SMTPProtocol(chain, new StartTLSSMTPConfiguration(theConfigData, starttls)), context);
         this.starttls = starttls;
     }
     

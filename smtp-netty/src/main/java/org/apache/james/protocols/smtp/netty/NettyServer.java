@@ -23,17 +23,11 @@ import java.nio.charset.Charset;
 
 import javax.net.ssl.SSLContext;
 
-import org.apache.james.protocols.api.ProtocolHandlerChain;
-import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.ProtocolSessionFactory;
-import org.apache.james.protocols.api.ProtocolTransport;
+import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.impl.AbstractAsyncServer;
 import org.apache.james.protocols.impl.AbstractResponseEncoder;
 import org.apache.james.protocols.impl.AbstractSSLAwareChannelPipelineFactory;
 import org.apache.james.protocols.impl.BasicChannelUpstreamHandler;
-import org.apache.james.protocols.smtp.SMTPConfiguration;
-import org.apache.james.protocols.smtp.SMTPResponse;
-import org.apache.james.protocols.smtp.SMTPSessionImpl;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -48,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NettyServer extends AbstractAsyncServer {
 
-    private ProtocolHandlerChain chain;
+    private Protocol protocol;
     
     private Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
@@ -56,25 +50,20 @@ public class NettyServer extends AbstractAsyncServer {
 
     private ExecutionHandler eHandler;
 
-   
-    /**
-     * The configuration data to be passed to the handler
-     */
-    private final SMTPConfiguration theConfigData;
-
-    private final static OneToOneEncoder SMTP_RESPONSE_ENCODER = new AbstractResponseEncoder(SMTPResponse.class, Charset.forName("US-ASCII"));
+    private OneToOneEncoder responseEncoder;
+    
     private ChannelUpstreamHandler coreHandler;
 
-    public NettyServer(SMTPConfiguration theConfigData, ProtocolHandlerChain chain) {
-        this(theConfigData, chain, null);
+    public NettyServer(Protocol protocol) {
+        this(protocol, null);
     }
     
     
-    public NettyServer(SMTPConfiguration theConfigData, ProtocolHandlerChain chain, SSLContext context) {
+    public NettyServer(Protocol protocol, SSLContext context) {
         super();
-        this.chain  = chain;
+        this.protocol = protocol;
         this.context = context;
-        this.theConfigData = theConfigData;
+        this.responseEncoder = new AbstractResponseEncoder(protocol.getResponseClass(), Charset.forName("US-ASCII"));
     }
     
     protected ExecutionHandler createExecutionHandler(int size) {
@@ -101,12 +90,7 @@ public class NettyServer extends AbstractAsyncServer {
     
     @Override
     public synchronized void bind() throws Exception {
-        coreHandler = new BasicChannelUpstreamHandler(chain, new ProtocolSessionFactory() {
-            
-            public ProtocolSession newSession(ProtocolTransport transport) {
-                return new SMTPSessionImpl(theConfigData, logger, transport);
-            }
-        }, logger, context, null);
+        coreHandler = new BasicChannelUpstreamHandler(protocol.getProtocolChain(), protocol.getProtocolSessionFactory(), logger, context, null);
         super.bind();
     }
 
@@ -122,12 +106,12 @@ public class NettyServer extends AbstractAsyncServer {
 
             @Override
             protected OneToOneEncoder createEncoder() {
-                return SMTP_RESPONSE_ENCODER;
+                return responseEncoder;
             }
 
             @Override
             protected boolean isSSLSocket() {
-                return context != null && !theConfigData.isStartTLSSupported();
+                return context != null && !protocol.isStartTLSSupported();
             }
 
             @Override

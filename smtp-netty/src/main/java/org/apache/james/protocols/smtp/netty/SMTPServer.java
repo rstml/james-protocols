@@ -19,109 +19,37 @@
 package org.apache.james.protocols.smtp.netty;
 
 
-import java.nio.charset.Charset;
-
 import javax.net.ssl.SSLContext;
 
-import org.apache.james.protocols.api.ProtocolHandlerChain;
-import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.ProtocolSessionFactory;
-import org.apache.james.protocols.api.ProtocolTransport;
-import org.apache.james.protocols.impl.AbstractAsyncServer;
-import org.apache.james.protocols.impl.AbstractResponseEncoder;
-import org.apache.james.protocols.impl.AbstractSSLAwareChannelPipelineFactory;
-import org.apache.james.protocols.impl.BasicChannelUpstreamHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
-import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPServerMBean;
-import org.apache.james.protocols.smtp.SMTPSessionImpl;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.ChannelUpstreamHandler;
-import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
-import org.jboss.netty.handler.execution.ExecutionHandler;
-import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * NIO SMTPServer which use Netty
  */
-public class SMTPServer extends AbstractAsyncServer implements SMTPServerMBean {
-
-    private ProtocolHandlerChain chain;
-    
-    private Logger logger = LoggerFactory.getLogger(SMTPServer.class);
-
-    private SSLContext context;
+public class SMTPServer extends NettyServer implements SMTPServerMBean {
 
     private boolean starttls;
-    
-    private ExecutionHandler eHandler;
 
-   
-    /**
-     * The configuration data to be passed to the handler
-     */
-    private final SMTPConfiguration theConfigData;
-
-
-    private final static OneToOneEncoder SMTP_RESPONSE_ENCODER = new AbstractResponseEncoder(SMTPResponse.class, Charset.forName("US-ASCII"));
-    private ChannelUpstreamHandler coreHandler;
-
-   
-    
     public SMTPServer(SMTPConfiguration theConfigData, SMTPProtocolHandlerChain chain) {
         this(theConfigData, chain, null, false);
     }
     
     
     public SMTPServer(SMTPConfiguration theConfigData, SMTPProtocolHandlerChain chain, SSLContext context, boolean starttls) {
-        super();
-        this.chain  = chain;
-        this.context = context;
+        super(new StartTLSSMTPConfiguration(theConfigData, starttls), chain, context);
         this.starttls = starttls;
-        if (context != null && starttls) {
-            this.theConfigData = new StartTLSSMTPConfiguration(theConfigData);
-        } else {
-            this.theConfigData = theConfigData;
-        }
     }
     
-    protected ExecutionHandler createExecutionHandler(int size) {
-        return new ExecutionHandler(new OrderedMemoryAwareThreadPoolExecutor(size, 0, 0));
-    }
-    
-    
-    public void setUseExecutionHandler(boolean useHandler, int size) {
-        if (isBound()) throw new IllegalStateException("Server running already");
-        if (useHandler) {
-            eHandler =createExecutionHandler(size);
-        } else {
-            if (eHandler != null) {
-                eHandler.releaseExternalResources();
-            }
-            eHandler = null;
-        }
-    }
-    
-  
-    protected ChannelUpstreamHandler createCoreHandler() {
-        return coreHandler;
-    }
-
-
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.smtp.SMTPServerMBean#isEnabled()
      */
     public boolean isEnabled() {
         return isBound();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.smtp.SMTPServerMBean#getSocketType()
      */
     public String getSocketType() {
@@ -132,52 +60,14 @@ public class SMTPServer extends AbstractAsyncServer implements SMTPServerMBean {
         }
     }
 
-    
-    @Override
-    public synchronized void bind() throws Exception {
-        coreHandler = new BasicChannelUpstreamHandler(chain, new ProtocolSessionFactory() {
-            
-            public ProtocolSession newSession(ProtocolTransport transport) {
-                return new SMTPSessionImpl(theConfigData, logger, transport);
-            }
-        }, logger, context, null);
-        super.bind();
-    }
-
-
-    @Override
-    protected ChannelPipelineFactory createPipelineFactory(ChannelGroup group) {
-        return new AbstractSSLAwareChannelPipelineFactory(getTimeout(), 0, getBacklog(), group, eHandler) {
-
-            @Override
-            protected ChannelUpstreamHandler createHandler() {
-                return coreHandler;
-            }
-
-            @Override
-            protected OneToOneEncoder createEncoder() {
-                return SMTP_RESPONSE_ENCODER;
-            }
-
-            @Override
-            protected boolean isSSLSocket() {
-                return context != null && !starttls;
-            }
-
-            @Override
-            protected SSLContext getSSLContext() {
-                return context;
-            }
-        };
-
-    }
-
     private final static class StartTLSSMTPConfiguration implements SMTPConfiguration {
 
         private SMTPConfiguration config;
+        private boolean startTls;
 
-        public StartTLSSMTPConfiguration(SMTPConfiguration config) {
+        public StartTLSSMTPConfiguration(SMTPConfiguration config, boolean startTls) {
             this.config = config;
+            this.startTls = startTls;
         }
         
         public String getHelloName() {
@@ -213,8 +103,9 @@ public class SMTPServer extends AbstractAsyncServer implements SMTPServerMBean {
         }
 
         public boolean isStartTLSSupported() {
-            return true;
+            return this.startTls;
         }
         
     }
+
 }

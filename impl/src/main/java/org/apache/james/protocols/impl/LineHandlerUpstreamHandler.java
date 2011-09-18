@@ -21,6 +21,8 @@ package org.apache.james.protocols.impl;
 import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.MessageEvent;
@@ -54,7 +56,7 @@ public class LineHandlerUpstreamHandler<S extends ProtocolSession> extends Simpl
         }
 
         boolean disconnect = handler.onLine(session, line);
-        if (disconnect) ctx.getChannel().disconnect();
+        if (disconnect) ctx.getChannel().write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         
     }
 

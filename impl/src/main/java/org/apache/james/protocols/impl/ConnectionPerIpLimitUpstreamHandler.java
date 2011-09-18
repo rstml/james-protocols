@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.jboss.netty.handler.connection;
+package org.apache.james.protocols.impl;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;

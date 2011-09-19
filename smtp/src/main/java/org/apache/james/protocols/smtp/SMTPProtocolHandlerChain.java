@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.james.protocols.api.AbstractProtocolHandlerChain;
-import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.api.WiringException;
+import org.apache.james.protocols.api.handler.AbstractProtocolHandlerChain;
+import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.smtp.core.DataCmdHandler;
 import org.apache.james.protocols.smtp.core.DataLineMessageHookHandler;
 import org.apache.james.protocols.smtp.core.ExpnCmdHandler;

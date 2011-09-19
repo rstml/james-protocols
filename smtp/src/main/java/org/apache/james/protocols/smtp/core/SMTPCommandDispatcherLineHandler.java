@@ -22,8 +22,8 @@ package org.apache.james.protocols.smtp.core;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.james.protocols.api.AbstractCommandDispatcher;
-import org.apache.james.protocols.api.CommandHandler;
+import org.apache.james.protocols.api.handler.AbstractCommandDispatcher;
+import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.smtp.SMTPSession;
 
 
@@ -42,21 +42,21 @@ public class SMTPCommandDispatcherLineHandler extends AbstractCommandDispatcher<
 
 
     /**
-     * @see org.apache.james.protocols.api.AbstractCommandDispatcher#getUnknownCommandHandlerIdentifier()
+     * @see org.apache.james.protocols.api.handler.AbstractCommandDispatcher#getUnknownCommandHandlerIdentifier()
      */
     protected String getUnknownCommandHandlerIdentifier() {
         return UnknownCmdHandler.UNKNOWN_COMMAND;
     }
 
     /**
-     * @see org.apache.james.protocols.api.AbstractCommandDispatcher#getMandatoryCommands()
+     * @see org.apache.james.protocols.api.handler.AbstractCommandDispatcher#getMandatoryCommands()
      */
     protected List<String> getMandatoryCommands() {
         return Arrays.asList(mandatoryCommands);
     }
 
     /**
-     * @see org.apache.james.protocols.api.AbstractCommandDispatcher#getUnknownCommandHandler()
+     * @see org.apache.james.protocols.api.handler.AbstractCommandDispatcher#getUnknownCommandHandler()
      */
     protected CommandHandler<SMTPSession> getUnknownCommandHandler() {
         return unknownHandler;

@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
 
 
 /**

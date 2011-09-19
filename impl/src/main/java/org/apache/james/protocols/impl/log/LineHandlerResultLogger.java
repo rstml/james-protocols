@@ -18,9 +18,9 @@
  ****************************************************************/
 package org.apache.james.protocols.impl.log;
 
-import org.apache.james.protocols.api.LineHandler;
-import org.apache.james.protocols.api.LineHandlerResultHandler;
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.handler.LineHandler;
+import org.apache.james.protocols.api.handler.LineHandlerResultHandler;
 
 /**
  * Log disconnects caused by {@link LineHandler} via INFO. The rest via DEBUG

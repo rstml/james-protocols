@@ -18,7 +18,7 @@
  ****************************************************************/
 package org.apache.james.protocols.smtp.hook;
 
-import org.apache.james.protocols.api.ProtocolHandler;
+import org.apache.james.protocols.api.handler.ProtocolHandler;
 
 /**
  * Just and marker interface for the different Hooks

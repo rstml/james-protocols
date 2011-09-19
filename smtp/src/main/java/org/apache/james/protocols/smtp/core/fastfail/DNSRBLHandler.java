@@ -24,7 +24,7 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.util.Collection;
 import java.util.StringTokenizer;
 
-import org.apache.james.protocols.api.ConnectHandler;
+import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;

@@ -19,6 +19,8 @@
 
 package org.apache.james.protocols.api;
 
+import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
+
 /**
  * Define a protocol
  */

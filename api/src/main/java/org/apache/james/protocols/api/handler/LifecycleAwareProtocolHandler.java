@@ -16,32 +16,30 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
+package org.apache.james.protocols.api.handler;
 
-
-
-package org.apache.james.protocols.api;
-
-
-import java.util.Collection;
-
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
 
 /**
- * Custom command handlers must implement this interface
- * The command handlers will be Server wide common to all the handlers,
- * therefore the command handlers must store all the state information
- * in the Session object
+ * This interface allows to handle lifecycles for handlers and hooks
+ *
  */
- public interface CommandHandler<Session extends ProtocolSession> extends ProtocolHandler{
-    /**
-     * Handle the command
-    **/
-    Response onCommand(Session session, Request request);
+public interface LifecycleAwareProtocolHandler extends ProtocolHandler{
+
     
     /**
-     * Return a Collection of implemented commands
+     * Init with the given {@link Configuration}
      * 
-     * @return Collection which contains implemented commands
+     * @param config
+     * @throws ConfigurationException
      */
-    Collection<String> getImplCommands();
+    public void init(Configuration config) throws ConfigurationException;
+    
+    /**
+     * Destroy object
+     */
+    public void destroy();
+
 
 }

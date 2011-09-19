@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -27,6 +27,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.james.protocols.api.BaseRequest;
+import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.WiringException;
 
 
 
@@ -82,7 +87,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
 
     /**
      * @throws WiringException 
-     * @see org.apache.james.protocols.api.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
@@ -178,7 +183,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     }
 
     /**
-     * @see org.apache.james.protocols.api.ExtensibleHandler#getMarkerInterfaces()
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */
     @SuppressWarnings("unchecked")
     public List<Class<?>> getMarkerInterfaces() {

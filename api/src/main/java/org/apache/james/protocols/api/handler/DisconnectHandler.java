@@ -19,23 +19,17 @@
 
 
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
 
-import java.util.LinkedList;
+import org.apache.james.protocols.api.ProtocolSession;
 
-/**
- * Chain which can be used to get all Handlers for a given Class.
- *
- */
-public interface ProtocolHandlerChain {
 
+public interface DisconnectHandler<Session extends ProtocolSession> extends ProtocolHandler{
     /**
-     * Returns a list of handler of the requested type.
-     * @param <T>
-     * 
-     * @param type the type of handler we're interested in
-     * @return a List of handlers
-     */
-    abstract <T> LinkedList<T> getHandlers(Class<T> type);
+     * Get called on disconnect
+     *
+     * @param session
+    **/
+    void onDisconnect(Session session);
 
 }

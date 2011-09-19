@@ -17,23 +17,24 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+
+
+package org.apache.james.protocols.api.handler;
+
+import java.util.List;
 
 /**
- * Implementations of this Interface will get called after a full line (terminated with \r\n) was received.
- * 
- * Only one {@link LineHandler} will get called per line
+ * Provides a mean to bundle a set of handlers (defined by their classnames) within
+ * a single object.
+ * This is used for the default set of CoreCommands.
  */
-public interface LineHandler<Session extends ProtocolSession> extends ProtocolHandler{
-     
-    /**
-     * Processing the give line. The line includes the CRLF delimiter.
-     * If true is returned the connection is closed
-     * 
-     * @param session not null
-     * @param line not null 
-     * @return disconnect
-     */
-    boolean onLine(Session session, byte[] line);
+public interface HandlersPackage extends ProtocolHandler{
     
+    /**
+     * Return a List which contains a set of CommandHandlers
+     * 
+     * @return Map
+     */
+    List<String> getHandlers();
+
 }

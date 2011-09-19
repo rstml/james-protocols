@@ -22,10 +22,10 @@ package org.apache.james.protocols.smtp.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.james.protocols.api.CommandHandler;
-import org.apache.james.protocols.api.ExtensibleHandler;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -211,7 +211,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
     
 
     /**
-     * @see org.apache.james.protocols.api.ExtensibleHandler#getMarkerInterfaces()
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */
     public List<Class<?>> getMarkerInterfaces() {
         List<Class<?>> classes = new ArrayList<Class<?>>(2);
@@ -228,7 +228,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
     protected abstract Class<Hook> getHookInterface();
 
     /**
-     * @see org.apache.james.protocols.api.ExtensibleHandler#wireExtensions(java.lang.Class,
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class,
      *      java.util.List)
      */
     @SuppressWarnings("unchecked")

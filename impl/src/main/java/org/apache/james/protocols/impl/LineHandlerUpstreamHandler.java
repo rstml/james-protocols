@@ -18,8 +18,8 @@
  ****************************************************************/
 package org.apache.james.protocols.impl;
 
-import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.handler.LineHandler;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelFutureListener;

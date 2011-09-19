@@ -18,10 +18,10 @@
  ****************************************************************/
 package org.apache.james.protocols.impl.log;
 
-import org.apache.james.protocols.api.CommandHandler;
-import org.apache.james.protocols.api.CommandHandlerResultHandler;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.api.handler.CommandHandlerResultHandler;
 
 /**
  * 

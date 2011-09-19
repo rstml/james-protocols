@@ -16,25 +16,28 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
+package org.apache.james.protocols.api.handler;
 
-
-
-package org.apache.james.protocols.api;
-
-import java.util.List;
+import org.apache.james.protocols.api.ProtocolSession;
 
 /**
- * Provides a mean to bundle a set of handlers (defined by their classnames) within
- * a single object.
- * This is used for the default set of CoreCommands.
+ * Handler which can be used to gather statistics for {@link ConnectHandler} or 
+ * modify the return type of them
+ * 
+ *
+ * @param <S>
  */
-public interface HandlersPackage extends ProtocolHandler{
+public interface ConnectHandlerResultHandler<S extends ProtocolSession> extends ProtocolHandler{
     
     /**
-     * Return a List which contains a set of CommandHandlers
+     * Called after the {@link ConnectHandler} returned a result
      * 
-     * @return Map
+     * @param session
+     * @param response
+     * @param executionTime
+     * @param handler
+     * @return result
      */
-    List<String> getHandlers();
+    boolean onResponse(ProtocolSession session, boolean response, long executionTime, ConnectHandler<S> handler);
 
 }

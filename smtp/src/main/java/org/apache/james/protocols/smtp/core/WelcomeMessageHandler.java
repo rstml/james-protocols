@@ -22,7 +22,7 @@ package org.apache.james.protocols.smtp.core;
 
 import java.util.Date;
 
-import org.apache.james.protocols.api.ConnectHandler;
+import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;

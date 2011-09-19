@@ -26,9 +26,9 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.protocols.api.ExtensibleHandler;
-import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.WiringException;
+import org.apache.james.protocols.api.handler.ExtensibleHandler;
+import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.MailEnvelopeImpl;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -142,7 +142,7 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
     }
     
     /**
-     * @see org.apache.james.protocols.api.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
@@ -157,7 +157,7 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
     }
 
     /**
-     * @see org.apache.james.protocols.api.ExtensibleHandler#getMarkerInterfaces()
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */
     public List<Class<?>> getMarkerInterfaces() {
         List<Class<?>> classes = new LinkedList<Class<?>>();

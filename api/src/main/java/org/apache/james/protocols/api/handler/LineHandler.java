@@ -17,17 +17,25 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
 
-public interface CommandHandlerResultHandler<R extends Response, S extends ProtocolSession> extends ProtocolHandler{
+import org.apache.james.protocols.api.ProtocolSession;
 
+/**
+ * Implementations of this Interface will get called after a full line (terminated with \r\n) was received.
+ * 
+ * Only one {@link LineHandler} will get called per line
+ */
+public interface LineHandler<Session extends ProtocolSession> extends ProtocolHandler{
+     
     /**
-     * Get called when a {@link Response} was returned from the {@link CommandHandler}
+     * Processing the give line. The line includes the CRLF delimiter.
+     * If true is returned the connection is closed
      * 
-     * @param session
-     * @param response
-     * @param handler
-     * @return response
+     * @param session not null
+     * @param line not null 
+     * @return disconnect
      */
-    Response onResponse(ProtocolSession session, R response, long executionTime, CommandHandler<S> handler);
+    boolean onLine(Session session, byte[] line);
+    
 }

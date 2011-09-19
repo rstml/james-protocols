@@ -16,30 +16,26 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.api;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
+
+
+package org.apache.james.protocols.api.handler;
+
+import java.util.LinkedList;
 
 /**
- * This interface allows to handle lifecycles for handlers and hooks
+ * Chain which can be used to get all Handlers for a given Class.
  *
  */
-public interface LifecycleAwareProtocolHandler extends ProtocolHandler{
+public interface ProtocolHandlerChain {
 
-    
     /**
-     * Init with the given {@link Configuration}
+     * Returns a list of handler of the requested type.
+     * @param <T>
      * 
-     * @param config
-     * @throws ConfigurationException
+     * @param type the type of handler we're interested in
+     * @return a List of handlers
      */
-    public void init(Configuration config) throws ConfigurationException;
-    
-    /**
-     * Destroy object
-     */
-    public void destroy();
-
+    abstract <T> LinkedList<T> getHandlers(Class<T> type);
 
 }

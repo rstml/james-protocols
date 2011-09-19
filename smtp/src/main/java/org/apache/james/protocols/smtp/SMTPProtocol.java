@@ -20,11 +20,11 @@
 package org.apache.james.protocols.smtp;
 
 import org.apache.james.protocols.api.Protocol;
-import org.apache.james.protocols.api.ProtocolHandlerChain;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPSessionImpl;

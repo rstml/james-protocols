@@ -16,26 +16,21 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.api;
 
-/**
- * Handler which can be used to gather statistics for {@link ConnectHandler} or 
- * modify the return type of them
- * 
- *
- * @param <S>
- */
-public interface ConnectHandlerResultHandler<S extends ProtocolSession> extends ProtocolHandler{
-    
+package org.apache.james.protocols.api.handler;
+
+import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Response;
+
+public interface CommandHandlerResultHandler<R extends Response, S extends ProtocolSession> extends ProtocolHandler{
+
     /**
-     * Called after the {@link ConnectHandler} returned a result
+     * Get called when a {@link Response} was returned from the {@link CommandHandler}
      * 
      * @param session
      * @param response
-     * @param executionTime
      * @param handler
-     * @return result
+     * @return response
      */
-    boolean onResponse(ProtocolSession session, boolean response, long executionTime, ConnectHandler<S> handler);
-
+    Response onResponse(ProtocolSession session, R response, long executionTime, CommandHandler<S> handler);
 }

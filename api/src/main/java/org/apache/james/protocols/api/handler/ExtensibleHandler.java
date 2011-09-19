@@ -17,9 +17,11 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
 
 import java.util.List;
+
+import org.apache.james.protocols.api.WiringException;
 
 
 

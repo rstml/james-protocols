@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import org.apache.james.protocols.api.CommandHandler;
+import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;

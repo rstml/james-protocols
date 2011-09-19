@@ -21,6 +21,8 @@ package org.apache.james.protocols.api;
 
 import java.net.InetSocketAddress;
 
+import org.apache.james.protocols.api.handler.LineHandler;
+
 /**
  * ProtocolTransport is used by each ProtocolSession to communicate with the underlying transport.
  * Transport implementations will provide their own implementation of the transport.

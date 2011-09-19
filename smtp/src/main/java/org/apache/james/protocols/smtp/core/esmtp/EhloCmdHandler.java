@@ -83,7 +83,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
     }
 
     /**
-     * @see org.apache.james.protocols.api.ExtensibleHandler#getMarkerInterfaces()
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */
     public List<Class<?>> getMarkerInterfaces() {
         List<Class<?>> classes = super.getMarkerInterfaces();
@@ -92,7 +92,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
     }
 
     /**
-     * @see org.apache.james.protocols.api.ExtensibleHandler#wireExtensions(java.lang.Class,
+     * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class,
      *      java.util.List)
      */
     public void wireExtensions(Class interfaceName, List extension) {

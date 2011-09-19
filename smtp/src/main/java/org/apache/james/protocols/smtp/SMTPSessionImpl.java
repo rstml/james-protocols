@@ -22,10 +22,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.AbstractSession;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.slf4j.Logger;

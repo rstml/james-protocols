@@ -17,7 +17,9 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
+
+import org.apache.james.protocols.api.ProtocolSession;
 
 /**
  * Handler which can be used to gather statistics for {@link LineHandler} or 

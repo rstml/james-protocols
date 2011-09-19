@@ -16,49 +16,25 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.api;
 
-import org.apache.commons.configuration.Configuration;
+
+
+package org.apache.james.protocols.api.handler;
+
+import org.apache.james.protocols.api.ProtocolSession;
 
 /**
- * Implementations of this interface are responsible for loading instances
- * of {@link ProtocolHandler}. This includes to inject all needed resources and 
- * execute any lifecycle methods
- * 
- *
+ * Custom connect handlers must implement this interface
+ * The connect handlers will be server-wide common to all the Handlers ,
+ * therefore the handlers must store all the state information
+ * in the Session object
  */
-public interface ProtocolHandlerLoader {
-
+public interface ConnectHandler<Session extends ProtocolSession> extends ProtocolHandler{
     /**
-     * Load the {@link ProtocolHandler} and make sure all lifecycle methods are called and all
-     * needed services injected.
+     * Handle connection and disconnect if true is returned
      * 
-     * 
-     * @param name
-     * @param config
-     * @return handler
-     * @throws LoadingException
-     */
-    public ProtocolHandler load(String name, Configuration config) throws LoadingException;
-    
-    
-    /**
-     * Exception which will get thrown if the loading of a {@link ProtocolHandler} failed 
-     * 
-     *
-     */
-    public class LoadingException extends Exception {
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 1710169767810301710L;
+     * @return disconnect 
+    **/
+    boolean onConnect(Session session);
 
-        public LoadingException(String msg, Throwable t) {
-            super(msg, t);
-        }
-        
-        public LoadingException(String msg) {
-            super(msg);
-        }
-    }
 }

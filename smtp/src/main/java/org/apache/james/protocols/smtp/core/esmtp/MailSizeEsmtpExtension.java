@@ -22,7 +22,7 @@ package org.apache.james.protocols.smtp.core.esmtp;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.protocols.api.LineHandler;
+import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;

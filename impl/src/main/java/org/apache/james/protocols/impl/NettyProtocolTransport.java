@@ -23,11 +23,11 @@ import java.net.InetSocketAddress;
 
 import javax.net.ssl.SSLEngine;
 
-import org.apache.james.protocols.api.LineHandler;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StartTlsResponse;
+import org.apache.james.protocols.api.handler.LineHandler;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;

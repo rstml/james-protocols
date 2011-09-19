@@ -19,15 +19,33 @@
 
 
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
 
 
-public interface DisconnectHandler<Session extends ProtocolSession> extends ProtocolHandler{
+import java.util.Collection;
+
+import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Request;
+import org.apache.james.protocols.api.Response;
+
+
+/**
+ * Custom command handlers must implement this interface
+ * The command handlers will be Server wide common to all the handlers,
+ * therefore the command handlers must store all the state information
+ * in the Session object
+ */
+ public interface CommandHandler<Session extends ProtocolSession> extends ProtocolHandler{
     /**
-     * Get called on disconnect
-     *
-     * @param session
+     * Handle the command
     **/
-    void onDisconnect(Session session);
+    Response onCommand(Session session, Request request);
+    
+    /**
+     * Return a Collection of implemented commands
+     * 
+     * @return Collection which contains implemented commands
+     */
+    Collection<String> getImplCommands();
 
 }

@@ -26,9 +26,9 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.protocols.api.WiringException;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
+import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.smtp.MailEnvelopeImpl;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;

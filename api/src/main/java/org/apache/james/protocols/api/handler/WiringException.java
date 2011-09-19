@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.handler;
 
 /**
  * Indicates an issue prevent the successful wiring of the components

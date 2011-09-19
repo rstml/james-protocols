@@ -21,7 +21,6 @@ package org.apache.james.protocols.api.handler;
 
 import java.util.List;
 
-import org.apache.james.protocols.api.WiringException;
 
 
 

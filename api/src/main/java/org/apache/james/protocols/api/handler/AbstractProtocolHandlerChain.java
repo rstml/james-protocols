@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.protocols.api.WiringException;
 
 /**
  * Abstract base class for {@link ProtocolHandlerChain} implementations

@@ -21,9 +21,9 @@ package org.apache.james.protocols.api;
 
 import java.net.InetSocketAddress;
 
+
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.TLSSupportedSession;
 import org.slf4j.Logger;
 
 /**
@@ -31,7 +31,7 @@ import org.slf4j.Logger;
  * 
  * 
  */
-public abstract class AbstractSession implements TLSSupportedSession {
+public abstract class AbstractSession implements ProtocolSession {
     protected InetSocketAddress socketAddress;
     private Logger logger;
     private SessionLog pLog = null;

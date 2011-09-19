@@ -50,7 +50,8 @@ public interface ProtocolSession {
     void resetState();
     
     /**
-     * Write the response back to the client
+     * Write the response back to the client. Special care MUST be take to handle {@link StartTlsResponse} instances.
+     * 
      * 
      * @param response
      */
@@ -90,4 +91,33 @@ public interface ProtocolSession {
      * @return Response
      */
     Response newFatalErrorResponse();
+    
+    /**
+     * Returns the user name associated with this interaction.
+     *
+     * @return the user name
+     */
+    String getUser();
+
+    /**
+     * Sets the user name associated with this interaction.
+     *
+     * @param user the user name
+     */
+    void setUser(String user);
+
+    /**
+     * Return true if StartTLS is supported by the configuration
+     * 
+     * @return supported
+     */
+    boolean isStartTLSSupported();
+    
+    /**
+     * Return true if the starttls was started
+     * 
+     * @return true
+     */
+    boolean isTLSStarted();
+
 }

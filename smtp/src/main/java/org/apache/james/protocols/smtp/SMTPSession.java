@@ -22,14 +22,14 @@ package org.apache.james.protocols.smtp;
 import java.util.Map;
 
 import org.apache.james.protocols.api.LineHandler;
-import org.apache.james.protocols.api.TLSSupportedSession;
+import org.apache.james.protocols.api.ProtocolSession;
 
 /**
  * All the handlers access this interface to communicate with
  * SMTPHandler object
  */
 
-public interface SMTPSession extends TLSSupportedSession{
+public interface SMTPSession extends ProtocolSession{
 
     // Keys used to store/lookup data in the internal state hash map
     /** Sender's email address */

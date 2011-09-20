@@ -20,21 +20,15 @@
 package org.apache.james.protocols.smtp;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.AbstractResponse;
 
 /**
  * Contains an SMTP result
  */
-public class SMTPResponse implements Response {
+public class SMTPResponse extends AbstractResponse {
 
-    private String retCode = null;
-    private List<CharSequence> lines = null;
-    private String rawLine = null;
-    private boolean endSession = false;
-    
     /**
      * Construct a new SMTPResponse. The given code and description can not be null, if null an IllegalArgumentException
      * get thrown
@@ -43,12 +37,9 @@ public class SMTPResponse implements Response {
      * @param description the description 
      */
     public SMTPResponse(String code, CharSequence description) {
+        super(code, description);
         if (code == null) throw new IllegalArgumentException("SMTPResponse code can not be null");
         if (description == null) throw new IllegalArgumentException("SMTPResponse description can not be null");
-    
-        this.setRetCode(code);
-        this.appendLine(description);
-        this.rawLine = code + " " + description;
     }
     
     /**
@@ -57,51 +48,39 @@ public class SMTPResponse implements Response {
      * 
      * @param rawLine the raw SMTPResponse
      */
+    /**
+     * Construct a new SMTPResponse. The given rawLine need to be in format [SMTPResponseReturnCode SMTResponseDescription].
+     * If this is not the case an IllegalArgumentException get thrown.
+     * 
+     * @param rawLine the raw SMTPResponse
+     */
     public SMTPResponse(String rawLine) {
-        String args[] = rawLine.split(" ");
+        super(extractCode(rawLine), extractResponse(rawLine));
+    }
+    
+
+    private  static String extractCode(String raw) {
+        String args[] = raw.split(" ");
         if (args != null && args.length > 1) {
-            this.setRetCode(args[0]);
-            this.appendLine(new StringBuilder(rawLine.substring(args[0].length()+1)));
+            return args[0];
+            
         } else {
-            throw new IllegalArgumentException("Invalid SMTPResponse format. Format should be [SMTPCode SMTPReply]");
+            throw new IllegalArgumentException("Invalid Response format. Format should be [Code Description]");
         }
-        this.rawLine = rawLine;
     }
     
-    /**
-     * Append the responseLine to the SMTPResponse
-     * 
-     * @param line the responseLine to append
-     */
-    public void appendLine(CharSequence line) {
-        if (lines == null) {
-            lines = new LinkedList<CharSequence>();
+    private  static String extractResponse(String raw) {
+        String args[] = raw.split(" ");
+        if (args != null && args.length > 1) {
+            return args[2];
+            
+        } else {
+            throw new IllegalArgumentException("Invalid Response format. Format should be [Code Description]");
         }
-        lines.add(line);
     }
-    
-    /**
-     * Return the SMTPCode 
-     * 
-     * @return the SMTPCode
-     */
-    public String getRetCode() {
-        return retCode;
-    }
-
-    /**
-     * Set the SMTPCode
-     *  
-     * @param retCode the SMTPCode
-     */
-    public void setRetCode(String retCode) {
-        this.retCode = retCode;
-    }
-
-    /**
-     * Return a List of all responseLines stored in this SMTPResponse
-     * 
-     * @return all responseLines
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Response#getLines()
      */
     public List<CharSequence> getLines() {
         List<CharSequence> responseList = new ArrayList<CharSequence>();
@@ -124,37 +103,5 @@ public class SMTPResponse implements Response {
         return responseList;
     }
 
-    /**
-     * Return the raw representation of the Stored SMTPResponse
-     * 
-     * @return rawLine the raw SMTPResponse
-     */
-    public String getRawLine() {
-        return rawLine;
-    }
 
-    /**
-     * Return true if the session is ended
-     * 
-     * @return true if session is ended
-     */
-    public boolean isEndSession() {
-        return endSession;
-    }
-
-    /**
-     * Set to true to end the session
-     * 
-     * @param endSession
-     */
-    public void setEndSession(boolean endSession) {
-        this.endSession = endSession;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return getLines().toString();
-    }
 }

@@ -66,6 +66,14 @@ public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
     private boolean authHandler = false;
     
     public SMTPProtocolHandlerChain() throws WiringException {
+        defaultHandlers.addAll(initDefaultHandlers());
+        copy();
+        
+        wireExtensibleHandlers();
+    }
+
+    protected List<Object> initDefaultHandlers() {
+        List<Object> defaultHandlers = new ArrayList<Object>();
         defaultHandlers.add(new SMTPCommandDispatcherLineHandler());
         defaultHandlers.add(new ExpnCmdHandler());
         defaultHandlers.add(new EhloCmdHandler());
@@ -84,10 +92,9 @@ public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
         defaultHandlers.add(new ReceivedDataLineFilter());
         defaultHandlers.add(new DataLineMessageHookHandler());
         defaultHandlers.add(new StartTlsCmdHandler());
-        copy();
-        
-        wireExtensibleHandlers();
+        return defaultHandlers;
     }
+    
 
     /**
      * Add the hook to the chain

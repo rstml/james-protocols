@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -34,7 +35,7 @@ import org.apache.james.protocols.smtp.hook.HookResult;
 /**
  * Handles EHLO command
  */
-public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
+public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> implements EhloExtension{
 
     /**
      * The name of the command handled by the command handler
@@ -63,10 +64,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
 
         processExtensions(session, resp);
 
-        resp.appendLine("PIPELINING");
-        resp.appendLine("ENHANCEDSTATUSCODES");
-        // see http://issues.apache.org/jira/browse/JAMES-419
-        resp.appendLine("8BITMIME");
+
  
         return resp;
 
@@ -164,6 +162,21 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
      */
     protected HookResult callHook(HeloHook rawHook, SMTPSession session, String parameters) {
         return rawHook.doHelo(session, parameters);
+    }
+
+
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
+     */
+    public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
+        List<String> extensions = new ArrayList<String>();
+        extensions.add("PIPELINING");
+        extensions.add("ENHANCEDSTATUSCODES");
+        // see http://issues.apache.org/jira/browse/JAMES-419
+        extensions.add("8BITMIME");
+        return extensions;
     }
 
 }

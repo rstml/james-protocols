@@ -33,20 +33,6 @@ public interface Response {
      */
     String getRetCode();
 
-
-    /**
-     * Set the return-code used for this response
-     * 
-     * @param retCode
-     */
-    void setRetCode(String retCode);
-    
-    /**
-     * Append line to response
-     * 
-     * @param line 
-     */
-    void appendLine(CharSequence line);
    
     /**
      * Return a List of all response lines stored in this Response
@@ -68,11 +54,5 @@ public interface Response {
      * @return true if session is ended
      */
     boolean isEndSession();
-    /**
-     * Set to true to end the session
-     * 
-     * @param endSession
-     */
-    void setEndSession(boolean endSession);
 
 }

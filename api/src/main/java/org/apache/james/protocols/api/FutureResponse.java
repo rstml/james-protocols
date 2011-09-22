@@ -17,23 +17,50 @@
  * under the License.                                           *
  ****************************************************************/
 
-
-
-package org.apache.james.protocols.api.handler;
-
-import org.apache.james.protocols.api.ProtocolSession;
+package org.apache.james.protocols.api;
 
 /**
- * Custom connect handlers must implement this interface
- * The connect handlers will be server-wide common to all the Handlers ,
- * therefore the handlers must store all the state information
- * in the Session object
+ * An special {@link Response} which allows to populate it in an async fashion. It also allows to register listeners which will get notified once the 
+ * {@link FutureResponse} is ready
+ * 
+ *
  */
-public interface ConnectHandler<Session extends ProtocolSession> extends ProtocolHandler{
-    /**
-     * Handle connection and disconnect if true is returned
-     * 
-    **/
-    void onConnect(Session session);
+public interface FutureResponse extends Response{
 
+    /**
+     * Add a {@link ResponseListener} which will get notified once {@link #isReady()} is true
+     * 
+     * @param listener
+     */
+    public void addListener(ResponseListener listener);
+    
+    /**
+     * Remote a {@link ResponseListener}
+     * 
+     * @param listener
+     */
+    public void removeListener(ResponseListener listener);
+    
+    /**
+     * Return <code>true</code> once the {@link FutureResponse} is ready and calling any of the get methods will not block any more.
+     * 
+     * @return ready
+     */
+    public boolean isReady();
+    
+    
+    /**
+     * Listener which will get notified once the {@link FutureResponse#isReady()} returns <code>true</code>
+     * 
+     *
+     */
+    public interface ResponseListener {
+
+        /**
+         * The {@link Response} is ready for processing
+         * 
+         * @param response
+         */
+        public void onResponse(Response response);
+    }
 }

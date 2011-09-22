@@ -36,8 +36,7 @@ public interface ConnectHandlerResultHandler<S extends ProtocolSession> extends 
      * @param response
      * @param executionTime
      * @param handler
-     * @return result
      */
-    boolean onResponse(ProtocolSession session, boolean response, long executionTime, ConnectHandler<S> handler);
+    void onResponse(ProtocolSession session, long executionTime, ConnectHandler<S> handler);
 
 }

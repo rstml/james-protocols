@@ -95,16 +95,13 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                 ConnectHandler cHandler = connectHandlers.get(i);
                 
                 long start = System.currentTimeMillis();
-                boolean disconnect = connectHandlers.get(i).onConnect(session);
+                connectHandlers.get(i).onConnect(session);
                 long executionTime = System.currentTimeMillis() - start;
                 
                 for (int a = 0; a < resultHandlers.size(); a++) {
-                    disconnect = resultHandlers.get(a).onResponse(session, disconnect, executionTime, cHandler);
+                    resultHandlers.get(a).onResponse(session, executionTime, cHandler);
                 }
-                if (disconnect)  {
-                    ctx.getChannel().disconnect();
-                    break;
-                }
+               
             }
         }
         super.channelConnected(ctx, e);
@@ -151,13 +148,12 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             
             LineHandler lHandler=  (LineHandler) lineHandlers.getLast();
             long start = System.currentTimeMillis();            
-            boolean disconnect = lHandler.onLine(pSession,line);
+            lHandler.onLine(pSession,line);
             long executionTime = System.currentTimeMillis() - start;
 
             for (int i = 0; i < resultHandlers.size(); i++) {
-                disconnect = resultHandlers.get(i).onResponse(pSession, disconnect, executionTime, lHandler);
+                resultHandlers.get(i).onResponse(pSession, executionTime, lHandler);
             }
-            if (disconnect) ctx.getChannel().disconnect();
 
         }
         

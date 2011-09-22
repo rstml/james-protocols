@@ -60,7 +60,7 @@ public class AuthCmdHandler
 
     private abstract class AbstractSMTPLineHandler implements LineHandler<SMTPSession> {
 
-        public boolean onLine(SMTPSession session, byte[] l) {
+        public void onLine(SMTPSession session, byte[] l) {
             SMTPResponse res;
             try {
                 res = handleCommand(session, new String(l,"US-ASCII"));
@@ -68,7 +68,6 @@ public class AuthCmdHandler
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            return false;
 
            
         }

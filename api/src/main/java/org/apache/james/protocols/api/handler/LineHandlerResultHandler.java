@@ -35,12 +35,11 @@ public interface LineHandlerResultHandler<S extends ProtocolSession> extends Pro
      * Called after the {@link LineHandler} returned a result
      * 
      * @param session
-     * @param response
      * @param executionTime
      * @param handler
      * @return result
      */
-    boolean onResponse(ProtocolSession session, boolean response, long executionTime, LineHandler<S> handler);
+    void onResponse(ProtocolSession session, long executionTime, LineHandler<S> handler);
 
     
 }

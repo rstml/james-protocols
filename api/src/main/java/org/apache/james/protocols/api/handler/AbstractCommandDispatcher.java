@@ -29,7 +29,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.james.protocols.api.BaseRequest;
+import org.apache.james.protocols.api.FutureResponse;
+import org.apache.james.protocols.api.FutureResponse.ResponseListener;
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 
 
@@ -125,7 +128,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      * (non-Javadoc)
      * @see org.apache.james.api.protocol.LineHandler#onLine(org.apache.james.api.protocol.ProtocolSession, byte[])
      */
-    public boolean onLine(Session session, byte[] line) {
+    public void onLine(final Session session, byte[] line) {
         String curCommandName = null;
         String curCommandArgument = null;
         String cmdString;
@@ -146,37 +149,55 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
             }
             List<CommandHandler<Session>> commandHandlers = getCommandHandlers(curCommandName, session);
             // fetch the command handlers registered to the command
-            int count = commandHandlers.size();
-            for (int i = 0; i < count; i++) {
-                CommandHandler<Session> cHandler = commandHandlers.get(i);
-
-                long start = System.currentTimeMillis();
-                Response response = cHandler.onCommand(session, new BaseRequest(curCommandName, curCommandArgument));
-                long executionTime = System.currentTimeMillis() - start;
-
-                // if the response is received, stop processing of command
-                // handlers
-                if (response != null) {
-                    
-                    // now process the result handlers
-                    for (int a = 0; a < rHandlers.size(); a++) {
-                        response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
-                    }
-                    session.writeResponse(response);
-
-                    break;
-                }
-            }
+            
+            BaseRequest request = new BaseRequest(curCommandName, curCommandArgument);
+            Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
+            executeHandlers(handlers, session, request);
 
         } catch (UnsupportedEncodingException e) {
             // Should never happen
            session.getLogger().error("Unable to handle encoding" ,e );
         }
         
-        return false;
        
     }
 
+    private void executeHandlers(final Iterator<CommandHandler<Session>> handlers, final Session session, final Request request) {
+        final CommandHandler<Session> cHandler = handlers.next();
+        
+
+        final long start = System.currentTimeMillis();
+        Response response = cHandler.onCommand(session, request);
+        if (response instanceof FutureResponse) {
+            ((FutureResponse) response).addListener(new ResponseListener() {
+                
+                public void onResponse(Response response) {
+                    long executionTime = System.currentTimeMillis() - start;
+                    handleResponse(handlers, session, response, request, cHandler, executionTime);
+                }
+            });
+        } else {
+            long executionTime = System.currentTimeMillis() - start;
+            handleResponse(handlers, session, response, request, cHandler, executionTime);
+        }
+    }
+    
+    private void handleResponse(Iterator<CommandHandler<Session>> handlers, Session session, Response response, Request request, CommandHandler<Session> cHandler, long executionTime) {
+
+        // if the response is received, stop processing of command
+        // handlers
+        if (response != null) {
+            
+            // now process the result handlers
+            for (int a = 0; a < rHandlers.size(); a++) {
+                response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
+            }
+            session.writeResponse(response);
+        } else {
+            executeHandlers(handlers, session, request);
+        }
+        
+    }
     protected String getLineDecodingCharset() {
         return "US-ASCII";
     }

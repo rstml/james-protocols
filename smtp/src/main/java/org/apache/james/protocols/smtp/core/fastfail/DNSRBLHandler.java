@@ -70,9 +70,8 @@ public class DNSRBLHandler implements  ConnectHandler<SMTPSession>, RcptHook{
      * check if the remote Ip address is block listed
      *
     **/
-    public boolean onConnect(SMTPSession session) {
+    public void onConnect(SMTPSession session) {
         checkDNSRBL(session, session.getRemoteIPAddress());
-        return false;
     }
     
     /**

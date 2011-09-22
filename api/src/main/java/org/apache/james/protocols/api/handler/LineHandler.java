@@ -34,8 +34,7 @@ public interface LineHandler<Session extends ProtocolSession> extends ProtocolHa
      * 
      * @param session not null
      * @param line not null 
-     * @return disconnect
      */
-    boolean onLine(Session session, byte[] line);
+    void onLine(Session session, byte[] line);
     
 }

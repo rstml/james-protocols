@@ -109,7 +109,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
 
             addToMap(getUnknownCommandHandlerIdentifier(), getUnknownCommandHandler());
 
-            if (commandHandlerMap.size() < 2) {
+            if (commandHandlerMap.size() < 1) {
                 throw new WiringException("No commandhandlers configured");
             } else {
                 List<String> mandatoryCommands = getMandatoryCommands();

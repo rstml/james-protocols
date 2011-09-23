@@ -38,8 +38,6 @@ public class SMTPResponse extends AbstractResponse {
      */
     public SMTPResponse(String code, CharSequence description) {
         super(code, description);
-        if (code == null) throw new IllegalArgumentException("SMTPResponse code can not be null");
-        if (description == null) throw new IllegalArgumentException("SMTPResponse description can not be null");
     }
     
     /**
@@ -55,7 +53,7 @@ public class SMTPResponse extends AbstractResponse {
      * @param rawLine the raw SMTPResponse
      */
     public SMTPResponse(String rawLine) {
-        super(extractCode(rawLine), extractResponse(rawLine));
+        this(extractCode(rawLine), extractResponse(rawLine));
     }
     
 
@@ -75,7 +73,7 @@ public class SMTPResponse extends AbstractResponse {
             return args[2];
             
         } else {
-            throw new IllegalArgumentException("Invalid Response format. Format should be [Code Description]");
+            return null;
         }
     }
     /*

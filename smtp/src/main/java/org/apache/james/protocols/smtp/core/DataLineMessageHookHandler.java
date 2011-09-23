@@ -26,6 +26,9 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.james.protocols.api.FutureResponse;
+import org.apache.james.protocols.api.FutureResponse.ResponseListener;
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.handler.WiringException;
@@ -56,7 +59,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
      * (non-Javadoc)
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
-    public void onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
+    public void onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
         MailEnvelopeImpl env = (MailEnvelopeImpl) session.getState().get(DataCmdHandler.MAILENV);
         OutputStream out = env.getMessageOutputStream();
         try {
@@ -66,7 +69,18 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
                 out.flush();
                 out.close();
                 
-                session.writeResponse(processExtensions(session, env));
+                SMTPResponse response = processExtensions(session, env);
+                if (response instanceof FutureResponse) {
+                    ((FutureResponse) response).addListener(new ResponseListener() {
+                        
+                        public void onResponse(Response response) {
+                            session.resetState();
+                        }
+                    });
+                } else {
+                    session.resetState();
+                }
+                session.writeResponse(response);
 
             // DotStuffing.
             } else if (line[0] == 46 && line[1] == 46) {
@@ -87,11 +101,8 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
             session.getLogger().error(
                     "Unknown error occurred while processing DATA.", e);
             session.writeResponse(response);
-            return;
-        } finally {
-            // do the clean up
             session.resetState();
-        }
+        } 
     }
 
 

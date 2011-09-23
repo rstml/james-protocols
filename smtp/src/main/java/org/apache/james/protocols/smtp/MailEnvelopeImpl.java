@@ -90,7 +90,9 @@ public class MailEnvelopeImpl implements MailEnvelope{
      * @see org.apache.james.smtpserver.protocol.MailEnvelope#getMessageOutputStream()
      */
     public OutputStream getMessageOutputStream() {
-        this.outputStream = new ByteArrayOutputStream(100000);
+        if (outputStream == null) {
+            this.outputStream = new ByteArrayOutputStream(100000);
+        }
         return outputStream;
     }
 

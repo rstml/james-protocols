@@ -44,7 +44,7 @@ import org.apache.james.protocols.smtp.hook.MessageHook;
  * error to the client to report the problem while trying to queue the message 
  *
  */
-public final class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHandler {
+public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHandler {
 
     
     private List messageHandlers;
@@ -66,8 +66,7 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
                 out.flush();
                 out.close();
                 
-                processExtensions(session, env);
-                session.popLineHandler();
+                session.writeResponse(processExtensions(session, env));
 
             // DotStuffing.
             } else if (line[0] == 46 && line[1] == 46) {
@@ -89,6 +88,9 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
                     "Unknown error occurred while processing DATA.", e);
             session.writeResponse(response);
             return;
+        } finally {
+            // do the clean up
+            session.resetState();
         }
     }
 
@@ -96,13 +98,13 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
     /**
      * @param session
      */
-    private void processExtensions(SMTPSession session, MailEnvelopeImpl mail) {
-        boolean match = false;
-        if(mail != null && messageHandlers != null) {
-            try {
+    protected SMTPResponse processExtensions(SMTPSession session, MailEnvelopeImpl mail) {
+        try {
+
+            if (mail != null && messageHandlers != null) {
                 int count = messageHandlers.size();
-                for(int i =0; i < count; i++) {
-                    MessageHook rawHandler =  (MessageHook) messageHandlers.get(i);
+                for (int i = 0; i < count; i++) {
+                    MessageHook rawHandler = (MessageHook) messageHandlers.get(i);
                     session.getLogger().debug("executing message handler " + rawHandler);
 
                     long start = System.currentTimeMillis();
@@ -113,34 +115,33 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
                         for (int i2 = 0; i2 < rHooks.size(); i2++) {
                             Object rHook = rHooks.get(i2);
                             session.getLogger().debug("executing hook " + rHook);
-                            
+
                             hRes = ((HookResultHook) rHook).onHookResult(session, hRes, executionTime, rawHandler);
                         }
                     }
-                    
+
                     SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(hRes);
-                    
-                    //if the response is received, stop processing of command handlers
-                    if(response != null) {
-                        session.writeResponse(response);
-                        match = true;
-                        break;
+
+                    // if the response is received, stop processing of command
+                    // handlers
+                    if (response != null) {
+                        return response;
                     }
                 }
-                if (match == false) {
-                    // Not queue the message!
-                    SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(new HookResult(HookReturnCode.DENY));
-                    session.writeResponse(response);
-                    
-                }
-            } finally {
-               
-                //do the clean up
-                session.resetState();
+
+                // Not queue the message!
+                SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(new HookResult(HookReturnCode.DENY));
+                return response;
+
+          
             }
+        } finally {
+
+            session.popLineHandler();
         }
+        return null;
     }
-    
+
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
@@ -148,14 +149,17 @@ public final class DataLineMessageHookHandler implements DataLineFilter, Extensi
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
         if (MessageHook.class.equals(interfaceName)) {
             this.messageHandlers = extension;
-            if (messageHandlers.size() == 0) {
-                throw new WiringException("No messageHandler configured");
-            }
+            checkMessageHookCount(messageHandlers);
         } else if (HookResultHook.class.equals(interfaceName)) {
             this.rHooks = extension;
         }
     }
 
+    protected void checkMessageHookCount(List messageHandlers) throws WiringException {
+        if (messageHandlers.size() == 0) {
+            throw new WiringException("No messageHandler configured");
+        }
+    }
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */

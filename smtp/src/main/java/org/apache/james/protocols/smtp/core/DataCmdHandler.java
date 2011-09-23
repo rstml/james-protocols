@@ -29,6 +29,7 @@ import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.handler.WiringException;
+import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.MailEnvelopeImpl;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -107,14 +108,20 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
      */
     @SuppressWarnings("unchecked")
     protected SMTPResponse doDATA(SMTPSession session, String argument) {
-        MailEnvelopeImpl env = new MailEnvelopeImpl();
-        env.setRecipients(new ArrayList<MailAddress>((Collection)session.getState().get(SMTPSession.RCPT_LIST)));
-        env.setSender((MailAddress) session.getState().get(SMTPSession.SENDER));
+        MailEnvelope env = createEnvelope(session, (MailAddress) session.getState().get(SMTPSession.SENDER), new ArrayList<MailAddress>((Collection)session.getState().get(SMTPSession.RCPT_LIST)));
         session.getState().put(MAILENV, env);
         session.pushLineHandler(lineHandler);
         
         return new SMTPResponse(SMTPRetCode.DATA_READY, "Ok Send data ending with <CRLF>.<CRLF>");
     }
+    
+    protected MailEnvelope createEnvelope(SMTPSession session, MailAddress sender, List<MailAddress> recipients) {
+        MailEnvelopeImpl env = new MailEnvelopeImpl();
+        env.setRecipients(recipients);
+        env.setSender(sender);
+        return env;
+    }
+    
     
     /**
      * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()

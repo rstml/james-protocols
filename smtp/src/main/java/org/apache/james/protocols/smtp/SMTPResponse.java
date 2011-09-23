@@ -29,6 +29,9 @@ import org.apache.james.protocols.api.AbstractResponse;
  */
 public class SMTPResponse extends AbstractResponse {
 
+    protected SMTPResponse() {
+        
+    }
     /**
      * Construct a new SMTPResponse. The given code and description can not be null, if null an IllegalArgumentException
      * get thrown

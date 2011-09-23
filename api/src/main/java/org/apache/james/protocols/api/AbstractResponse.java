@@ -35,6 +35,10 @@ public abstract class AbstractResponse implements Response{
     protected String rawLine = null;
     private boolean endSession = false;
     
+    protected AbstractResponse() {
+        
+    }
+    
     /**
      * Construct a new SMTPResponse. The given code and description can not be null, if null an IllegalArgumentException
      * get thrown

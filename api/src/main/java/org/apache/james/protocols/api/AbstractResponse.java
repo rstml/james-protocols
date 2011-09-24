@@ -31,7 +31,7 @@ public abstract class AbstractResponse implements Response{
 
 
     private String retCode = null;
-    protected List<CharSequence> lines = null;
+    protected List<CharSequence> lines = new LinkedList<CharSequence>();;
     protected String rawLine = null;
     private boolean endSession = false;
     
@@ -61,9 +61,6 @@ public abstract class AbstractResponse implements Response{
      * @param line the responseLine to append
      */
     public void appendLine(CharSequence line) {
-        if (lines == null) {
-            lines = new LinkedList<CharSequence>();
-        }
         lines.add(line);
     }
     

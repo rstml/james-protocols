@@ -62,7 +62,8 @@ public interface Response {
 
    
     /**
-     * Return a List of all response lines stored in this Response
+     * Return a List of all response lines stored in this Response. This should be used for encoding
+     * the {@link Response} before sending it to the client.
      * 
      * @return all responseLines
      */

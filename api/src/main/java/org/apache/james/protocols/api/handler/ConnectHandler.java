@@ -22,6 +22,7 @@
 package org.apache.james.protocols.api.handler;
 
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Response;
 
 /**
  * Custom connect handlers must implement this interface
@@ -33,7 +34,10 @@ public interface ConnectHandler<Session extends ProtocolSession> extends Protoco
     /**
      * Handle connection and disconnect if true is returned
      * 
+     * @param session
+     * @return response or null
+     * 
     **/
-    void onConnect(Session session);
+    Response onConnect(Session session);
 
 }

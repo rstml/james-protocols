@@ -95,11 +95,14 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                 ConnectHandler cHandler = connectHandlers.get(i);
                 
                 long start = System.currentTimeMillis();
-                connectHandlers.get(i).onConnect(session);
+                Response response = connectHandlers.get(i).onConnect(session);
                 long executionTime = System.currentTimeMillis() - start;
                 
                 for (int a = 0; a < resultHandlers.size(); a++) {
                     resultHandlers.get(a).onResponse(session, executionTime, cHandler);
+                }
+                if (response != null) {
+                    session.writeResponse(response);
                 }
                
             }
@@ -148,11 +151,14 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             
             LineHandler lHandler=  (LineHandler) lineHandlers.getLast();
             long start = System.currentTimeMillis();            
-            lHandler.onLine(pSession,line);
+            Response response = lHandler.onLine(pSession,line);
             long executionTime = System.currentTimeMillis() - start;
 
             for (int i = 0; i < resultHandlers.size(); i++) {
                 resultHandlers.get(i).onResponse(pSession, executionTime, lHandler);
+            }
+            if (response != null) {
+                pSession.writeResponse(response);
             }
 
         }

@@ -22,6 +22,7 @@ package org.apache.james.protocols.smtp.core;
 
 import java.util.Date;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -41,7 +42,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
     /**
      * @see org.apache.james.smtpserver.protocol.ConnectHandler#onConnect(SMTPSession)
      */
-    public void onConnect(SMTPSession session) {
+    public Response onConnect(SMTPSession session) {
         String smtpGreeting = session.getSMTPGreeting();
 
         SMTPResponse welcomeResponse;
@@ -59,7 +60,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
         } else {
             welcomeResponse = new SMTPResponse(SMTPRetCode.SERVICE_READY,smtpGreeting);
         }
-        session.writeResponse(welcomeResponse);
+        return welcomeResponse;
     }
     
     protected String getProductName() {

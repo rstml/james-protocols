@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.api;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,6 +28,32 @@ import java.util.List;
  *
  */
 public interface Response {
+    
+    /**
+     * Special {@link Response} implementation which will just disconnect the client
+     */
+    public static final Response DISCONNECT = new Response() {
+
+        public String getRetCode() {
+            return "";
+        }
+
+        @SuppressWarnings("unchecked")
+        public List<CharSequence> getLines() {
+            return Collections.EMPTY_LIST;
+        }
+
+        public String getRawLine() {
+            return "";
+        }
+
+        public boolean isEndSession() {
+            return true;
+        }
+        
+    };
+    
+    
     /**
      * Return return-code
      * @return

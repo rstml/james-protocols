@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.james.protocols.api.handler.LineHandler;
+import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.mailet.base.RFC2822Headers;
 import org.apache.mailet.base.RFC822DateFormat;
@@ -46,12 +47,12 @@ public class ReceivedDataLineFilter implements DataLineFilter {
      * (non-Javadoc)
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
-    public void onLine(SMTPSession session,  byte[] line, LineHandler<SMTPSession> next) {
+    public SMTPResponse onLine(SMTPSession session,  byte[] line, LineHandler<SMTPSession> next) {
         if (session.getState().containsKey(HEADERS_WRITTEN) == false) {
             addNewReceivedMailHeaders(session, next);
             session.getState().put(HEADERS_WRITTEN, true);
         }
-        next.onLine(session, line);
+        return (SMTPResponse) next.onLine(session, line);
     }
 
     private void addNewReceivedMailHeaders(SMTPSession session, LineHandler<SMTPSession> next) {

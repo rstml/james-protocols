@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.MailEnvelope;
+import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.DataLineFilter;
@@ -136,7 +137,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
      * (non-Javadoc)
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
-    public void onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
+    public SMTPResponse onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
         Boolean failed = (Boolean) session.getState().get(MESG_FAILED);
         // If we already defined we failed and sent a reply we should simply
         // wait for a CRLF.CRLF to be sent by the client.
@@ -170,6 +171,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                 session.getState().put("CURRENT_SIZE", newSize);
             }
         }
+        return null;
     }
 
     /**

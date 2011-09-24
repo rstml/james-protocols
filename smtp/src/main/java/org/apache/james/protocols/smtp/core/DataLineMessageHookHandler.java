@@ -59,7 +59,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
      * (non-Javadoc)
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
-    public void onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
+    public SMTPResponse onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
         MailEnvelopeImpl env = (MailEnvelopeImpl) session.getState().get(DataCmdHandler.MAILENV);
         OutputStream out = env.getMessageOutputStream();
         try {
@@ -80,8 +80,8 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
                 } else {
                     session.resetState();
                 }
-                session.writeResponse(response);
-
+                return response;
+                
             // DotStuffing.
             } else if (line[0] == 46 && line[1] == 46) {
                 out.write(line,1,line.length-1);
@@ -94,15 +94,16 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
             }
             out.flush();
         } catch (IOException e) {
-            SMTPResponse response;
-            response = new SMTPResponse(SMTPRetCode.LOCAL_ERROR,DSNStatus.getStatus(DSNStatus.TRANSIENT,
+            SMTPResponse response = new SMTPResponse(SMTPRetCode.LOCAL_ERROR,DSNStatus.getStatus(DSNStatus.TRANSIENT,
                             DSNStatus.UNDEFINED_STATUS) + " Error processing message: " + e.getMessage());
             
             session.getLogger().error(
                     "Unknown error occurred while processing DATA.", e);
-            session.writeResponse(response);
+            
             session.resetState();
+            return response;
         } 
+        return null;
     }
 
 

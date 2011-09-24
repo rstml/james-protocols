@@ -36,7 +36,7 @@ import org.apache.mailet.MailAddress;
 /**
   * Connect handler for DNSRBL processing
   */
-public class DNSRBLHandler implements  ConnectHandler<SMTPSession>, RcptHook{
+public class DNSRBLHandler implements  RcptHook{
 
     
     /**
@@ -65,14 +65,6 @@ public class DNSRBLHandler implements  ConnectHandler<SMTPSession>, RcptHook{
     }
 
    
-    
-    /**
-     * check if the remote Ip address is block listed
-     *
-    **/
-    public void onConnect(SMTPSession session) {
-        checkDNSRBL(session, session.getRemoteIPAddress());
-    }
     
     /**
      * Set the whitelist array
@@ -196,7 +188,8 @@ public class DNSRBLHandler implements  ConnectHandler<SMTPSession>, RcptHook{
      * @see org.apache.james.protocols.smtp.hook.RcptHook#doRcpt(org.apache.james.protocols.smtp.SMTPSession, org.apache.mailet.MailAddress, org.apache.mailet.MailAddress)
      */
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
-        
+        checkDNSRBL(session, session.getRemoteIPAddress());
+
         if (!session.isRelayingAllowed()) {
             String blocklisted = (String) session.getConnectionState().get(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME);
     

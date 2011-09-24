@@ -21,6 +21,7 @@
 
 package org.apache.james.protocols.smtp.core;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -38,5 +39,5 @@ public interface DataLineFilter extends ProtocolHandler{
      * @param line
      * @param next
      */
-    void onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next);
+    Response onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next);
 }

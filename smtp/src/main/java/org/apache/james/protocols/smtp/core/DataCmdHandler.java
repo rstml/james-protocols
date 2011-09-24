@@ -49,12 +49,13 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
          * (non-Javadoc)
          * @see org.apache.james.api.protocol.LineHandler#onLine(org.apache.james.api.protocol.ProtocolSession, byte[])
          */
-        public void onLine(SMTPSession session, byte[] line) {
+        public SMTPResponse onLine(SMTPSession session, byte[] line) {
             
             // Discard everything until the end of DATA session
             if (line.length == 3 && line[0] == 46) {
                 session.popLineHandler();
             }
+            return null;
         }
     }
 
@@ -72,8 +73,8 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
          * (non-Javadoc)
          * @see org.apache.james.api.protocol.LineHandler#onLine(org.apache.james.api.protocol.ProtocolSession, byte[])
          */
-        public void onLine(SMTPSession session, byte[] line) {
-            filter.onLine(session, line, next);
+        public Response onLine(SMTPSession session, byte[] line) {
+            return filter.onLine(session, line, next);
         }
                 
     }

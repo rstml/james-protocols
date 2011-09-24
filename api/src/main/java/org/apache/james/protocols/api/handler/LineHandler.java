@@ -20,6 +20,7 @@
 package org.apache.james.protocols.api.handler;
 
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Response;
 
 /**
  * Implementations of this Interface will get called after a full line (terminated with \r\n) was received.
@@ -34,7 +35,8 @@ public interface LineHandler<Session extends ProtocolSession> extends ProtocolHa
      * 
      * @param session not null
      * @param line not null 
+     * @return response or null
      */
-    void onLine(Session session, byte[] line);
+    Response onLine(Session session, byte[] line);
     
 }

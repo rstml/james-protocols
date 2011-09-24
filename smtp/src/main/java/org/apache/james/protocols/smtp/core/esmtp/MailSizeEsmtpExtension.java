@@ -138,14 +138,15 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
     public SMTPResponse onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
-        Boolean failed = (Boolean) session.getState().get(MESG_FAILED);
+        SMTPResponse response = null;
+    	Boolean failed = (Boolean) session.getState().get(MESG_FAILED);
         // If we already defined we failed and sent a reply we should simply
         // wait for a CRLF.CRLF to be sent by the client.
         if (failed != null && failed.booleanValue()) {
             // TODO
         } else {
             if (line.length == 3 && line[0] == 46) {
-                next.onLine(session, line);
+                response = (SMTPResponse) next.onLine(session, line);
             } else {
                 Long currentSize = (Long) session.getState().get("CURRENT_SIZE");
                 Long newSize;
@@ -163,15 +164,15 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     session.getState().put(MESG_FAILED, Boolean.TRUE);
                     // then let the client know that the size
                     // limit has been hit.
-                    next.onLine(session, ".\r\n".getBytes());
+                    response = (SMTPResponse) next.onLine(session, ".\r\n".getBytes());
                 } else {
-                    next.onLine(session, line);
+                    response = (SMTPResponse) next.onLine(session, line);
                 }
                 
                 session.getState().put("CURRENT_SIZE", newSize);
             }
         }
-        return null;
+        return response;
     }
 
     /**

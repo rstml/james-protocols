@@ -18,19 +18,21 @@
  ****************************************************************/
 package org.apache.james.protocols.smtp.core;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
-import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.mailet.base.RFC2822Headers;
 import org.apache.mailet.base.RFC822DateFormat;
 
 public class ReceivedDataLineFilter implements DataLineFilter {
 
+    private final static Charset CHARSET = Charset.forName("US-ASCII");
+    
     private final static String SOFTWARE_TYPE = "JAMES SMTP Server ";
 
     // Replace this with something usefull
@@ -47,15 +49,21 @@ public class ReceivedDataLineFilter implements DataLineFilter {
      * (non-Javadoc)
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
-    public SMTPResponse onLine(SMTPSession session,  byte[] line, LineHandler<SMTPSession> next) {
+    public Response onLine(SMTPSession session,  byte[] line, LineHandler<SMTPSession> next) {
         if (session.getState().containsKey(HEADERS_WRITTEN) == false) {
-            addNewReceivedMailHeaders(session, next);
+            Response response = addNewReceivedMailHeaders(session, next);
+
             session.getState().put(HEADERS_WRITTEN, true);
+            
+            if (response != null) {
+                return response;
+            }
         }
-        return (SMTPResponse) next.onLine(session, line);
+        Response resp =  next.onLine(session, line);
+        return resp;
     }
 
-    private void addNewReceivedMailHeaders(SMTPSession session, LineHandler<SMTPSession> next) {
+    private Response addNewReceivedMailHeaders(SMTPSession session, LineHandler<SMTPSession> next) {
         StringBuilder headerLineBuffer = new StringBuilder();
 
         String heloMode = (String) session.getConnectionState().get(
@@ -74,11 +82,10 @@ public class ReceivedDataLineFilter implements DataLineFilter {
 
         headerLineBuffer.append(" ([").append(session.getRemoteIPAddress())
                 .append("])").append("\r\n");
-        try {
-            next.onLine(session, headerLineBuffer.toString().getBytes("US-ASCII"));
-        } catch (UnsupportedEncodingException e1) {
-            // should never happen
-            e1.printStackTrace();
+            
+        Response response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+        if (response != null) {
+            return response;
         }
         headerLineBuffer.delete(0, headerLineBuffer.length());
 
@@ -104,38 +111,38 @@ public class ReceivedDataLineFilter implements DataLineFilter {
         }
 
         headerLineBuffer.append(" ID ").append(session.getSessionID());
-        try {
 
-            if (((Collection) session.getState().get(SMTPSession.RCPT_LIST)).size() == 1) {
-                // Only indicate a recipient if they're the only recipient
-                // (prevents email address harvesting and large headers in
-                // bulk email)
-                headerLineBuffer.append("\r\n");
-                next.onLine(session, headerLineBuffer.toString().getBytes("US-ASCII"));
-                headerLineBuffer.delete(0, headerLineBuffer.length());
+        if (((Collection) session.getState().get(SMTPSession.RCPT_LIST)).size() == 1) {
+            // Only indicate a recipient if they're the only recipient
+            // (prevents email address harvesting and large headers in
+            // bulk email)
+            headerLineBuffer.append("\r\n");  
+            next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+            headerLineBuffer.delete(0, headerLineBuffer.length());
 
-                headerLineBuffer.delete(0, headerLineBuffer.length());
-                headerLineBuffer.append("          for <").append(((List) session.getState().get(SMTPSession.RCPT_LIST)).get(0).toString()).append(">;").append("\r\n");
-
-                next.onLine(session, headerLineBuffer.toString().getBytes("US-ASCII"));
-                headerLineBuffer.delete(0, headerLineBuffer.length());
-
-                headerLineBuffer.delete(0, headerLineBuffer.length());
-            } else {
-                // Put the ; on the end of the 'by' line
-                headerLineBuffer.append(";");
-                headerLineBuffer.append("\r\n");
-
-                next.onLine(session, headerLineBuffer.toString().getBytes("US-ASCII"));
-
-                headerLineBuffer.delete(0, headerLineBuffer.length());
+            headerLineBuffer.delete(0, headerLineBuffer.length());
+            headerLineBuffer.append("          for <").append(((List) session.getState().get(SMTPSession.RCPT_LIST)).get(0).toString()).append(">;").append("\r\n");
+            response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+           
+            if (response != null) {
+                return response; 
             }
-            headerLineBuffer = null;
-            next.onLine(session, ("          " + rfc822DateFormat.format(new Date()) + "\r\n").getBytes("US-ASCII"));
-        } catch (UnsupportedEncodingException e) {
-            // Should never happen
-            e.printStackTrace();
+            headerLineBuffer.delete(0, headerLineBuffer.length());
+            headerLineBuffer.delete(0, headerLineBuffer.length());
             
+        } else {
+            // Put the ; on the end of the 'by' line
+            headerLineBuffer.append(";");
+            headerLineBuffer.append("\r\n");
+
+            response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+            if (response != null) {
+                return response;
+            }
+            headerLineBuffer.delete(0, headerLineBuffer.length());
         }
+        headerLineBuffer = null;
+        return next.onLine(session, ("          " + rfc822DateFormat.format(new Date()) + "\r\n").getBytes(CHARSET));
+
     }
 }

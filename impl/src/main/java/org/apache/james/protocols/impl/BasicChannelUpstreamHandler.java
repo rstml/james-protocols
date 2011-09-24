@@ -226,6 +226,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             } else {
                 logger.debug("Unable to process request", e.getCause());
             }
+            e.getCause().printStackTrace();
             cleanup(ctx);            
         }
     }

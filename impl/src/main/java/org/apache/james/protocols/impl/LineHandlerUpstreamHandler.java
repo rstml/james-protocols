@@ -19,6 +19,7 @@
 package org.apache.james.protocols.impl;
 
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -53,7 +54,10 @@ public class LineHandlerUpstreamHandler<S extends ProtocolSession> extends Simpl
             buf.getBytes(0, line);
         }
 
-        handler.onLine(session, line);        
+        Response response = handler.onLine(session, line); 
+        if (response != null) {
+            session.writeResponse(response);
+        }
     }
 
 }

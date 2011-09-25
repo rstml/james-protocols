@@ -32,7 +32,6 @@ public abstract class AbstractResponse implements Response{
 
     private String retCode = null;
     protected final List<CharSequence> lines = new LinkedList<CharSequence>();;
-    protected String rawLine = null;
     private boolean endSession = false;
     
     protected AbstractResponse() {
@@ -50,7 +49,6 @@ public abstract class AbstractResponse implements Response{
         if (code == null) throw new IllegalArgumentException("code can not be null");    
         this.setRetCode(code);
         this.appendLine(description);
-        this.rawLine = code + " " + description;
     }
     
 
@@ -83,15 +81,6 @@ public abstract class AbstractResponse implements Response{
     }
 
    
-    /**
-     * Return the raw representation of the Stored SMTPResponse
-     * 
-     * @return rawLine the raw SMTPResponse
-     */
-    public String getRawLine() {
-        return rawLine;
-    }
-
     /**
      * Return true if the session is ended
      * 

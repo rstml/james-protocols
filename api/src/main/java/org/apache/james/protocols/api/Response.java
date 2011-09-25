@@ -43,10 +43,6 @@ public interface Response {
             return Collections.EMPTY_LIST;
         }
 
-        public String getRawLine() {
-            return "";
-        }
-
         public boolean isEndSession() {
             return true;
         }
@@ -69,12 +65,6 @@ public interface Response {
      */
     List<CharSequence> getLines();
 
-    /**
-     * Return the raw representation of the stored Response
-     * 
-     * @return rawLine the raw Response
-     */
-    String getRawLine();
 
     /**
      * Return true if the session is ended

@@ -19,8 +19,6 @@
 
 package org.apache.james.protocols.smtp;
 
-import java.util.Map;
-
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.handler.LineHandler;
 
@@ -39,8 +37,6 @@ public interface SMTPSession extends ProtocolSession{
     /** HELO or EHLO */
     final static String CURRENT_HELO_MODE = "CURRENT_HELO_MODE";
     final static String CURRENT_HELO_NAME = "CURRENT_HELO_NAME";
-    /** the Session state */
-    final static String SESSION_STATE_MAP = "SESSION_STATE_MAP";
 
     /**
      * Returns the service wide hello name
@@ -107,13 +103,6 @@ public interface SMTPSession extends ProtocolSession{
      */
     int getRcptCount();
     
-    /**
-     * Returns Map that consists of the state of the SMTPSession per connection
-     *
-     * @return map of the current SMTPSession state per connection
-     */
-    Map<String,Object> getConnectionState();
-
     /**
      * Put a new line handler in the chain
      * @param overrideCommandHandler

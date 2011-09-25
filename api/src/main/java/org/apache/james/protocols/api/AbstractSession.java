@@ -20,6 +20,8 @@
 package org.apache.james.protocols.api;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 
 import org.apache.james.protocols.api.FutureResponse.ResponseListener;
@@ -33,6 +35,9 @@ import org.slf4j.Logger;
  * 
  */
 public abstract class AbstractSession implements ProtocolSession {
+    /** the Session state */
+    final static String SESSION_STATE_MAP = "SESSION_STATE_MAP";
+
     protected InetSocketAddress socketAddress;
     private Logger logger;
     private SessionLog pLog = null;
@@ -42,12 +47,15 @@ public abstract class AbstractSession implements ProtocolSession {
     private String id;
     protected ProtocolTransport transport;
 
+    private Map<String, Object> connectionState;
+
     
     public AbstractSession(Logger logger, ProtocolTransport transport) {
         this.transport = transport;
         this.socketAddress = transport.getRemoteAddress();
         this.logger = logger;
         this.id = transport.getId();
+        this.connectionState = new HashMap<String, Object>();
     }
 
     /**
@@ -138,5 +146,24 @@ public abstract class AbstractSession implements ProtocolSession {
     }
     
     
+    /**
+     * @see org.apache.james.protocols.smtp.SMTPSession#getConnectionState()
+     */
+    public Map<String, Object> getConnectionState() {
+        return connectionState;
+    }
+
+    /**
+     * @see org.apache.james.protocols.smtp.SMTPSession#getState()
+     */
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getState() {
+        Map<String, Object> res = (Map<String, Object>) getConnectionState().get(SESSION_STATE_MAP);
+        if (res == null) {
+            res = new HashMap<String, Object>();
+            getConnectionState().put(SESSION_STATE_MAP, res);
+        }
+        return res;
+    }
 
 }

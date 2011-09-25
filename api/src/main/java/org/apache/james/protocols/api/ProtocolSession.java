@@ -44,6 +44,15 @@ public interface ProtocolSession {
      */
     Map<String, Object> getState();
     
+    
+    /**
+     * Returns Map that consists of the state of the {@link ProtocolSession} per connection
+     *
+     * @return map of the current {@link ProtocolSession} state per connection
+     */
+    Map<String,Object> getConnectionState();
+
+    
     /**
      * Reset the state
      */

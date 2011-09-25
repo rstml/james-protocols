@@ -19,8 +19,6 @@
 package org.apache.james.protocols.smtp;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.AbstractSession;
@@ -38,37 +36,15 @@ public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
 
     private boolean relayingAllowed;
 
-    private Map<String, Object> connectionState;
 
     private SMTPConfiguration theConfigData;
 
     public SMTPSessionImpl(SMTPConfiguration theConfigData, Logger logger, ProtocolTransport transport) {
         super(logger, transport);
         this.theConfigData = theConfigData;
-        connectionState = new HashMap<String, Object>();
-
         relayingAllowed = theConfigData.isRelayingAllowed(getRemoteIPAddress());
     }
 
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getConnectionState()
-     */
-    public Map<String, Object> getConnectionState() {
-        return connectionState;
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getState()
-     */
-    @SuppressWarnings("unchecked")
-    public Map<String, Object> getState() {
-        Map<String, Object> res = (Map<String, Object>) getConnectionState().get(SMTPSession.SESSION_STATE_MAP);
-        if (res == null) {
-            res = new HashMap<String, Object>();
-            getConnectionState().put(SMTPSession.SESSION_STATE_MAP, res);
-        }
-        return res;
-    }
 
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#isRelayingAllowed()

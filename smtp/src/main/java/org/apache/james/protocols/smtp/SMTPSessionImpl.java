@@ -133,14 +133,6 @@ public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#sleep(long)
-     */
-    public void sleep(long ms) {
-        // session.getFilterChain().addAfter("connectionFilter",
-        // "tarpitFilter",new TarpitFilter(ms));
-    }
-
-    /**
      * @see org.apache.james.protocols.smtp.SMTPSession#useAddressBracketsEnforcement()
      */
     public boolean useAddressBracketsEnforcement() {

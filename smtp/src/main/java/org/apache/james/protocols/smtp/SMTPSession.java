@@ -120,12 +120,6 @@ public interface SMTPSession extends ProtocolSession{
      */
     int getPushedLineHandlerCount();
     
-    /**
-     * Sleep for the given ms 
-     * 
-     * @param ms the time to sleep in milliseconds
-     */
-    void sleep(long ms);
     
 }
 

@@ -22,9 +22,9 @@ package org.apache.james.protocols.smtp.core.esmtp;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.MailEnvelope;
-import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.DataLineFilter;
@@ -137,8 +137,8 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
      * (non-Javadoc)
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
-    public SMTPResponse onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
-        SMTPResponse response = null;
+    public Response onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
+        Response response = null;
     	Boolean failed = (Boolean) session.getState().get(MESG_FAILED);
         // If we already defined we failed and sent a reply we should simply
         // wait for a CRLF.CRLF to be sent by the client.
@@ -146,7 +146,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
             // TODO
         } else {
             if (line.length == 3 && line[0] == 46) {
-                response = (SMTPResponse) next.onLine(session, line);
+                response = next.onLine(session, line);
             } else {
                 Long currentSize = (Long) session.getState().get("CURRENT_SIZE");
                 Long newSize;
@@ -164,9 +164,9 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     session.getState().put(MESG_FAILED, Boolean.TRUE);
                     // then let the client know that the size
                     // limit has been hit.
-                    response = (SMTPResponse) next.onLine(session, ".\r\n".getBytes());
+                    response = next.onLine(session, ".\r\n".getBytes());
                 } else {
-                    response = (SMTPResponse) next.onLine(session, line);
+                    response = next.onLine(session, line);
                 }
                 
                 session.getState().put("CURRENT_SIZE", newSize);

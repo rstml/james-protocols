@@ -19,8 +19,19 @@
 
 package org.apache.james.protocols.api;
 
+/**
+ * Factory which is responsible for creating new {@link ProtocolSession}'s 
+ * 
+ *
+ */
 public interface ProtocolSessionFactory {
     
+    /**
+     * Create a new {@link ProtocolSession} for the given {@link ProtocolTransport} 
+     * 
+     * @param transport
+     * @return session
+     */
     ProtocolSession newSession(ProtocolTransport transport);
 
 }

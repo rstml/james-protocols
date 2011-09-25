@@ -29,20 +29,62 @@ import org.apache.james.protocols.api.handler.LineHandler;
  */
 public interface ProtocolTransport {
 
+    /**
+     * Return the {@link InetSocketAddress} of the remote peer
+     * 
+     * @return address
+     */
     InetSocketAddress getRemoteAddress();
 
+    /**
+     * Return the unique id. The id MUST NOT be 100 % unique for ever. It just should just not have the same
+     * id when having concurrent connections
+     * 
+     * @return id
+     */
     String getId();
 
+    /**
+     * Return <code>true</code> if <code>TLS</code> encryption is active
+     * 
+     * @return tlsStarted
+     */
     boolean isTLSStarted();
 
+    /**
+     * Return <code>true</code> if <code>STARTTLS</code> is supported by this {@link ProtocolTransport}
+     * 
+     * @return tlsSupprted
+     */
     boolean isStartTLSSupported();
     
+    /**
+     * Write the {@link Response} to the {@link ProtocolTransport} which will forward it to the connected
+     * peer
+     * 
+     * @param response
+     * @param session
+     */
     void writeResponse(Response response, ProtocolSession session);
 
+    /**
+     * Pop a {@link LineHandler} of the stack
+     */
     void popLineHandler();
 
-    <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler, T smtpNettySession);
+    /**
+     * Push a {@link LineHandler} in.
+     * 
+     * @param overrideCommandHandler
+     * @param session
+     */
+    <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler, T session);
 
+    /**
+     * Return the count of pushed {@link LineHandler}'s
+     * 
+     * @return lineCount
+     */
     int getPushedLineHandlerCount();
 
 }

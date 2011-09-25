@@ -90,14 +90,16 @@ public interface ProtocolSession {
 
     /**
      * Define a response object to be used as reply for a too long input line
-     * @return Response
+     * 
+     * @return Response or null if no response should be written before closing the connection
      */
     Response newLineTooLongResponse();
 
     /**
      * Define a response object to be used as reply during a fatal error.
      * Connection will be closed after this response.
-     * @return Response
+     * 
+     * @return Response or null if no response should be written before closing the connection
      */
     Response newFatalErrorResponse();
     

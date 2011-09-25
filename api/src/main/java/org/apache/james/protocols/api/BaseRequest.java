@@ -51,6 +51,7 @@ public class BaseRequest implements Request{
     }
 
 
+    @Override
     public String toString() {
         if (argument == null) {
             return command;

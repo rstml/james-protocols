@@ -23,6 +23,8 @@ import java.net.InetSocketAddress;
 
 import javax.net.ssl.SSLEngine;
 
+import org.apache.james.protocols.api.FutureResponse;
+import org.apache.james.protocols.api.FutureResponse.ResponseListener;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
@@ -47,14 +49,26 @@ public class NettyProtocolTransport implements ProtocolTransport {
         this.engine = engine;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#getRemoteAddress()
+     */
     public InetSocketAddress getRemoteAddress() {
         return (InetSocketAddress) channel.getRemoteAddress();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#getId()
+     */
     public String getId() {
         return channel.getId() + "";
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#isTLSStarted()
+     */
     public boolean isTLSStarted() {
         if (isStartTLSSupported()) {
             return channel.getPipeline().get("sslHandler") != null;
@@ -62,14 +76,32 @@ public class NettyProtocolTransport implements ProtocolTransport {
         return false;
     }
 
-    /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#isStartTLSSupported()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#isStartTLSSupported()
      */
     public boolean isStartTLSSupported() {
         return engine != null;
     }
 
-    public void writeResponse(Response response, ProtocolSession session) {
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#writeResponse(org.apache.james.protocols.api.Response, org.apache.james.protocols.api.ProtocolSession)
+     */
+    public void writeResponse(Response response, final ProtocolSession session) {
+        if (response instanceof FutureResponse) {
+            ((FutureResponse) response).addListener(new ResponseListener() {
+                
+                public void onResponse(Response response) {
+                    writeResponseToChannel(response, session);                    
+                }
+            });
+        } else {
+            writeResponseToChannel(response, session);
+        }
+    }
+    
+    private void writeResponseToChannel(Response response, ProtocolSession session) {
         if (response != null && channel.isConnected()) {
             ChannelFuture cf = channel.write(response);
             if (response.isEndSession()) {
@@ -89,6 +121,10 @@ public class NettyProtocolTransport implements ProtocolTransport {
          }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#popLineHandler()
+     */
     public void popLineHandler() {
         if (lineHandlerCount > 0) {
             channel.getPipeline().remove("lineHandler" + lineHandlerCount);
@@ -96,6 +132,10 @@ public class NettyProtocolTransport implements ProtocolTransport {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#pushLineHandler(org.apache.james.protocols.api.handler.LineHandler, org.apache.james.protocols.api.ProtocolSession)
+     */
     public <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler,
             T session) {
         lineHandlerCount++;
@@ -106,6 +146,10 @@ public class NettyProtocolTransport implements ProtocolTransport {
         channel.getPipeline().addBefore("coreHandler", "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler<T>(session, overrideCommandHandler));
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#getPushedLineHandlerCount()
+     */
     public int getPushedLineHandlerCount() {
         return lineHandlerCount;
     }

@@ -24,9 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import org.apache.james.protocols.api.FutureResponse.ResponseListener;
 import org.apache.james.protocols.api.ProtocolTransport;
-import org.apache.james.protocols.api.Response;
 import org.slf4j.Logger;
 
 /**
@@ -126,23 +124,6 @@ public abstract class AbstractSession implements ProtocolSession {
         return pLog;
     }
     
-
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.api.protocol.ProtocolSession#writeResponse(org.apache.james.api.protocol.Response)
-     */
-    public void writeResponse(final Response response) {
-        if (response instanceof FutureResponse) {
-            ((FutureResponse) response).addListener(new ResponseListener() {
-
-                public void onResponse(Response response) {
-                    transport.writeResponse(response, AbstractSession.this);
-                }
-            });
-        } else {
-            transport.writeResponse(response, this);
-        }
-    }
 
     /*
      * (non-Javadoc)

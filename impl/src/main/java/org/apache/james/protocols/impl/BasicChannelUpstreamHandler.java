@@ -24,6 +24,7 @@ import java.util.List;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
+import org.apache.james.protocols.api.AbstractSession;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.api.Response;
@@ -102,7 +103,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                     resultHandlers.get(a).onResponse(session, executionTime, cHandler);
                 }
                 if (response != null) {
-                    session.writeResponse(response);
+                    ((AbstractSession)session).getProtocolTransport().writeResponse(response, session);
                 }
                
             }
@@ -158,7 +159,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                 resultHandlers.get(i).onResponse(pSession, executionTime, lHandler);
             }
             if (response != null) {
-                pSession.writeResponse(response);
+                ((AbstractSession)pSession).getProtocolTransport().writeResponse(response, pSession);
             }
 
         }

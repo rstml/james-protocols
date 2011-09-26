@@ -18,6 +18,7 @@
  ****************************************************************/
 package org.apache.james.protocols.impl;
 
+import org.apache.james.protocols.api.AbstractSession;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
@@ -56,7 +57,7 @@ public class LineHandlerUpstreamHandler<S extends ProtocolSession> extends Simpl
 
         Response response = handler.onLine(session, line); 
         if (response != null) {
-            session.writeResponse(response);
+            ((AbstractSession)session).getProtocolTransport().writeResponse(response, session);
         }
     }
 

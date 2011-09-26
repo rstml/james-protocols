@@ -58,14 +58,6 @@ public interface ProtocolSession {
      */
     void resetState();
     
-    /**
-     * Write the response back to the client. Special care MUST be take to handle {@link StartTlsResponse} instances.
-     * 
-     * 
-     * @param response
-     */
-    void writeResponse(Response response);
-
     
     /**
      * Returns host name of the client

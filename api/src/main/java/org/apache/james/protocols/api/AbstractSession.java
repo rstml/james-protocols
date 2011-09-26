@@ -30,13 +30,11 @@ import org.apache.james.protocols.api.Response;
 import org.slf4j.Logger;
 
 /**
- * Abstract implementation of TLSSupportedSession which use Netty
+ * Abstract implementation of {@link ProtocolSession}
  * 
  * 
  */
 public abstract class AbstractSession implements ProtocolSession {
-    /** the Session state */
-    final static String SESSION_STATE_MAP = "SESSION_STATE_MAP";
 
     protected InetSocketAddress socketAddress;
     private Logger logger;
@@ -48,6 +46,7 @@ public abstract class AbstractSession implements ProtocolSession {
     protected ProtocolTransport transport;
 
     private Map<String, Object> connectionState;
+    private Map<String, Object> sessionState;
 
     
     public AbstractSession(Logger logger, ProtocolTransport transport) {
@@ -56,61 +55,69 @@ public abstract class AbstractSession implements ProtocolSession {
         this.logger = logger;
         this.id = transport.getId();
         this.connectionState = new HashMap<String, Object>();
+        this.sessionState = new HashMap<String, Object>();
+
     }
 
-    /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#getRemoteHost()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getRemoteHost()
      */
     public String getRemoteHost() {
         return socketAddress.getHostName();
     }
 
-    /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#getRemoteIPAddress()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getRemoteIPAddress()
      */
     public String getRemoteIPAddress() {
         return socketAddress.getAddress().getHostAddress();
     }
 
-    /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#getUser()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getUser()
      */
     public String getUser() {
         return user;
     }
 
-    /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#setUser(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#setUser(java.lang.String)
      */
     public void setUser(String user) {
         this.user = user;
     }
 
-    /**
-     * Return underlying {@link ProtocolTransport}
+    /*
      * 
-     * @return session
      */
     public ProtocolTransport getProtocolTransport() {
         return transport;
     }
 
-    /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#isStartTLSSupported()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#isStartTLSSupported()
      */
     public boolean isStartTLSSupported() {
         return transport.isStartTLSSupported();
     }
 
-    /**
-     * @see org.apache.james.api.protocol.TLSSupportedSession#isTLSStarted()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#isTLSStarted()
      */
     public boolean isTLSStarted() {
         return transport.isTLSStarted();
     }
 
-    /**
-     * @see org.apache.james.api.protocol.ProtocolSession#getLogger()
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getLogger()
      */
     public Logger getLogger() {
         if (pLog == null) {
@@ -146,24 +153,22 @@ public abstract class AbstractSession implements ProtocolSession {
     }
     
     
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getConnectionState()
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getConnectionState()
      */
     public Map<String, Object> getConnectionState() {
         return connectionState;
     }
 
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getState()
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getState()
      */
     @SuppressWarnings("unchecked")
     public Map<String, Object> getState() {
-        Map<String, Object> res = (Map<String, Object>) getConnectionState().get(SESSION_STATE_MAP);
-        if (res == null) {
-            res = new HashMap<String, Object>();
-            getConnectionState().put(SESSION_STATE_MAP, res);
-        }
-        return res;
+        return sessionState;
     }
 
 }

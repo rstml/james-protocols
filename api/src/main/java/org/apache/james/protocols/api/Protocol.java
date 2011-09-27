@@ -32,6 +32,4 @@ public interface Protocol {
 
     boolean isStartTLSSupported();
 
-    Class<? extends Response> getResponseClass();
-
 }

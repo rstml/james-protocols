@@ -63,7 +63,7 @@ public class NettyServer extends AbstractAsyncServer {
         super();
         this.protocol = protocol;
         this.context = context;
-        this.responseEncoder = new ResponseEncoder(protocol.getResponseClass(), Charset.forName("US-ASCII"));
+        this.responseEncoder = new ResponseEncoder();
     }
     
     protected ExecutionHandler createExecutionHandler(int size) {

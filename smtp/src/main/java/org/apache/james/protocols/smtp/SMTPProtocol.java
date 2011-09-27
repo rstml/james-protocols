@@ -26,7 +26,6 @@ import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
-import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPSessionImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +60,7 @@ public class SMTPProtocol implements Protocol {
     }
 
     public Class<? extends Response> getResponseClass() {
-        return SMTPResponse.class;
+        return Response.class;
     }
 
 }

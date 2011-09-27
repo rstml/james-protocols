@@ -44,6 +44,12 @@ public class ResponseEncoder extends OneToOneEncoder{
         this.charset = charset;
     }
     
+
+    public ResponseEncoder() {
+        this(Response.class, Charset.forName("US-ASCII"));
+    }
+    
+    
     @Override
     protected Object encode(ChannelHandlerContext arg0, Channel arg1, Object obj) throws Exception {
         if (classType.isInstance(obj)) {

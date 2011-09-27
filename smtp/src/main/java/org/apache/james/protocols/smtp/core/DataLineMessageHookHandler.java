@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.FutureResponse.ResponseListener;
-import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.handler.WiringException;
@@ -73,7 +72,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
                 if (response instanceof FutureResponse) {
                     ((FutureResponse) response).addListener(new ResponseListener() {
                         
-                        public void onResponse(Response response) {
+                        public void onResponse(FutureResponse response) {
                             session.resetState();
                         }
                     });

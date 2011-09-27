@@ -57,10 +57,10 @@ public interface FutureResponse extends Response{
     public interface ResponseListener {
 
         /**
-         * The {@link Response} is ready for processing
+         * The {@link FutureResponse} is ready for processing
          * 
          * @param response
          */
-        public void onResponse(Response response);
+        public void onResponse(FutureResponse response);
     }
 }

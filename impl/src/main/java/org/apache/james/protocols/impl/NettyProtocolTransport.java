@@ -92,7 +92,7 @@ public class NettyProtocolTransport implements ProtocolTransport {
         if (response instanceof FutureResponse) {
             ((FutureResponse) response).addListener(new ResponseListener() {
                 
-                public void onResponse(Response response) {
+                public void onResponse(FutureResponse response) {
                     writeResponseToChannel(response, session);                    
                 }
             });

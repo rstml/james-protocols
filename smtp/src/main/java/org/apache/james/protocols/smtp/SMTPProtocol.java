@@ -21,9 +21,7 @@ package org.apache.james.protocols.smtp;
 
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.api.ProtocolTransport;
-import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSessionImpl;
@@ -46,21 +44,13 @@ public class SMTPProtocol implements Protocol {
         return chain;
     }
 
-    public ProtocolSessionFactory getProtocolSessionFactory() {
-        return new ProtocolSessionFactory() {
-            
-            public ProtocolSession newSession(ProtocolTransport transport) {
-                return new SMTPSessionImpl(config, logger, transport);
-            }
-        };
-    }
 
     public boolean isStartTLSSupported() {
         return config.isStartTLSSupported();
     }
 
-    public Class<? extends Response> getResponseClass() {
-        return Response.class;
+    public ProtocolSession newSession(ProtocolTransport transport) {
+        return new SMTPSessionImpl(config, logger, transport);
     }
 
 }

@@ -25,8 +25,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.AbstractSession;
+import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
@@ -56,16 +56,16 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     protected final Logger logger;
     protected final SSLContext context;
     protected String[] enabledCipherSuites;
-    protected ProtocolSessionFactory sessionFactory;
+    protected Protocol protocol;
     protected ProtocolHandlerChain chain;
 
-    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger) {
-        this(chain, sessionFactory, logger, null, null);
+    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, Protocol protocol, Logger logger) {
+        this(chain, protocol, logger, null, null);
     }
 
-    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, ProtocolSessionFactory sessionFactory, Logger logger, SSLContext context, String[] enabledCipherSuites) {
+    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, Protocol protocol, Logger logger, SSLContext context, String[] enabledCipherSuites) {
         this.chain = chain;
-        this.sessionFactory = sessionFactory;
+        this.protocol = protocol;
         this.logger = logger;
         this.context = context;
         this.enabledCipherSuites = enabledCipherSuites;
@@ -204,7 +204,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             }
         }
         
-        return sessionFactory.newSession(new NettyProtocolTransport(ctx.getChannel(), engine));
+        return protocol.newSession(new NettyProtocolTransport(ctx.getChannel(), engine));
     }
 
     @Override

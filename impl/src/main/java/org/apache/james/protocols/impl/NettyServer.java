@@ -90,7 +90,7 @@ public class NettyServer extends AbstractAsyncServer {
     
     @Override
     public synchronized void bind() throws Exception {
-        coreHandler = new BasicChannelUpstreamHandler(protocol.getProtocolChain(), protocol.getProtocolSessionFactory(), logger, context, null);
+        coreHandler = new BasicChannelUpstreamHandler(protocol.getProtocolChain(), protocol, logger, context, null);
         super.bind();
     }
 

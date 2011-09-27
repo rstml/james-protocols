@@ -26,10 +26,21 @@ import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
  */
 public interface Protocol {
 
+    /**
+     * Return the {@link ProtocolHandlerChain} which is defined for the {@link Protocol}
+     * @return
+     */
     ProtocolHandlerChain getProtocolChain();
 
-    ProtocolSessionFactory getProtocolSessionFactory();
-
+    
+    /**
+     * Create a new {@link ProtocolSession} for the given {@link ProtocolTransport} 
+     * 
+     * @param transport
+     * @return session
+     */
+    ProtocolSession newSession(ProtocolTransport transport);
+    
     boolean isStartTLSSupported();
 
 }

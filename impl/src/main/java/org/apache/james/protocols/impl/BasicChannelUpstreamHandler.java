@@ -25,6 +25,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.AbstractSession;
+import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
@@ -99,6 +100,11 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                 long executionTime = System.currentTimeMillis() - start;
                 
                 for (int a = 0; a < resultHandlers.size(); a++) {
+                    // Disable till PROTOCOLS-37 is implemented
+                    if (response instanceof FutureResponse) {
+                        session.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
+                        break;
+                    } 
                     resultHandlers.get(a).onResponse(session, response, executionTime, cHandler);
                 }
                 if (response != null) {
@@ -156,7 +162,12 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             long executionTime = System.currentTimeMillis() - start;
 
             for (int i = 0; i < resultHandlers.size(); i++) {
-                resultHandlers.get(i).onResponse(pSession, response, executionTime, lHandler);
+                // Disable till PROTOCOLS-37 is implemented
+                if (response instanceof FutureResponse) {
+                    pSession.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
+                    break;
+                } 
+                response = resultHandlers.get(i).onResponse(pSession, response, executionTime, lHandler);
             }
             if (response != null) {
                 // TODO: This kind of sucks but I was able to come up with something more elegant here

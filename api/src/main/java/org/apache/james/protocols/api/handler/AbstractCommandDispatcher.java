@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.james.protocols.api.BaseRequest;
+import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 
@@ -159,6 +160,11 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
 
                 // now process the result handlers
                 for (int a = 0; a < rHandlers.size(); a++) {
+                    // Disable till PROTOCOLS-37 is implemented
+                    if (response instanceof FutureResponse) {
+                        session.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
+                        break;
+                    } 
                     response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
                 }
             }

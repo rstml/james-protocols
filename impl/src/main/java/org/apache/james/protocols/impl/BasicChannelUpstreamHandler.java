@@ -29,11 +29,10 @@ import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolSessionFactory;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
-import org.apache.james.protocols.api.handler.ConnectHandlerResultHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
-import org.apache.james.protocols.api.handler.LineHandlerResultHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
+import org.apache.james.protocols.api.handler.ProtocolHandlerResultHandler;
 import org.apache.james.protocols.impl.NettyProtocolTransport;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -88,7 +87,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         List<ConnectHandler> connectHandlers = chain.getHandlers(ConnectHandler.class);
-        List<ConnectHandlerResultHandler> resultHandlers = chain.getHandlers(ConnectHandlerResultHandler.class);
+        List<ProtocolHandlerResultHandler> resultHandlers = chain.getHandlers(ProtocolHandlerResultHandler.class);
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         session.getLogger().info("Connection established from " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
         if (connectHandlers != null) {
@@ -100,7 +99,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                 long executionTime = System.currentTimeMillis() - start;
                 
                 for (int a = 0; a < resultHandlers.size(); a++) {
-                    resultHandlers.get(a).onResponse(session, executionTime, cHandler);
+                    resultHandlers.get(a).onResponse(session, response, executionTime, cHandler);
                 }
                 if (response != null) {
                     ((AbstractSession)session).getProtocolTransport().writeResponse(response, session);
@@ -134,7 +133,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         ProtocolSession pSession = (ProtocolSession) ctx.getAttachment();
         LinkedList<LineHandler> lineHandlers = chain.getHandlers(LineHandler.class);
-        LinkedList<LineHandlerResultHandler> resultHandlers = chain.getHandlers(LineHandlerResultHandler.class);
+        LinkedList<ProtocolHandlerResultHandler> resultHandlers = chain.getHandlers(ProtocolHandlerResultHandler.class);
 
         
         if (lineHandlers.size() > 0) {
@@ -156,7 +155,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             long executionTime = System.currentTimeMillis() - start;
 
             for (int i = 0; i < resultHandlers.size(); i++) {
-                resultHandlers.get(i).onResponse(pSession, executionTime, lHandler);
+                resultHandlers.get(i).onResponse(pSession, response, executionTime, lHandler);
             }
             if (response != null) {
                 ((AbstractSession)pSession).getProtocolTransport().writeResponse(response, pSession);

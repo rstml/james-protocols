@@ -22,15 +22,15 @@ package org.apache.james.protocols.api.handler;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 
-public interface CommandHandlerResultHandler<R extends Response, S extends ProtocolSession> extends ProtocolHandler{
+public interface ProtocolHandlerResultHandler<R extends Response, S extends ProtocolSession> extends ProtocolHandler{
 
     /**
-     * Get called when a {@link Response} was returned from the {@link CommandHandler}
+     * Get called when a {@link Response} was returned from the {@link ProtocolHandler}
      * 
      * @param session
      * @param response
      * @param handler
      * @return response
      */
-    Response onResponse(ProtocolSession session, R response, long executionTime, CommandHandler<S> handler);
+    Response onResponse(ProtocolSession session, R response, long executionTime, ProtocolHandler handler);
 }

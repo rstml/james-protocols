@@ -45,7 +45,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      */
     private HashMap<String, List<CommandHandler<Session>>> commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
 
-    private List<CommandHandlerResultHandler<Response, Session>> rHandlers = new ArrayList<CommandHandlerResultHandler<Response, Session>>();
+    private List<ProtocolHandlerResultHandler<Response, Session>> rHandlers = new ArrayList<ProtocolHandlerResultHandler<Response, Session>>();
     
     private final Charset charset = Charset.forName(getLineDecodingCharset());
     
@@ -93,7 +93,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      */
     @SuppressWarnings("unchecked")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
-        if (interfaceName.equals(CommandHandlerResultHandler.class)) {
+        if (interfaceName.equals(ProtocolHandlerResultHandler.class)) {
             rHandlers.addAll(extension);
         }
         if (interfaceName.equals(CommandHandler.class)) {
@@ -149,6 +149,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
 
         BaseRequest request = new BaseRequest(curCommandName, curCommandArgument);
         Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
+        
         while (handlers.hasNext()) {
             final long start = System.currentTimeMillis();
             CommandHandler<Session> cHandler = handlers.next();
@@ -181,7 +182,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     public List<Class<?>> getMarkerInterfaces() {
         List res = new LinkedList();
         res.add(CommandHandler.class);
-        res.add(CommandHandlerResultHandler.class);
+        res.add(ProtocolHandlerResultHandler.class);
         return res;
     }
 

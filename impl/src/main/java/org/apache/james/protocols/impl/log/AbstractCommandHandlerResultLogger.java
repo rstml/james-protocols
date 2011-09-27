@@ -21,30 +21,30 @@ package org.apache.james.protocols.impl.log;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
-import org.apache.james.protocols.api.handler.CommandHandlerResultHandler;
+import org.apache.james.protocols.api.handler.ProtocolHandler;
+import org.apache.james.protocols.api.handler.ProtocolHandlerResultHandler;
 
 /**
  * 
  * 
  *
  */
-public abstract class AbstractCommandHandlerResultLogger<R extends Response, S extends ProtocolSession> implements CommandHandlerResultHandler<R, S> {
+public abstract class AbstractCommandHandlerResultLogger<R extends Response, S extends ProtocolSession> implements ProtocolHandlerResultHandler<R, S> {
 
     
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.api.CommandHandlerResultHandler#onResponse(org.apache.james.protocols.api.ProtocolSession, org.apache.james.protocols.api.Response, long, org.apache.james.protocols.api.CommandHandler)
-     */
-    public Response onResponse(ProtocolSession session, R response, long executionTime, CommandHandler<S> handler) {
-        String code = response.getRetCode();
-        String msg = handler.getClass().getName() + ": " + response.toString();
+
+    public Response onResponse(ProtocolSession session, R response, long executionTime, ProtocolHandler handler) {
+        if (handler instanceof CommandHandler) {
+            String code = response.getRetCode();
+            String msg = handler.getClass().getName() + ": " + response.toString();
         
-        // check if the response should log with info 
-        if (logWithInfo(code)) {
-            session.getLogger().info(msg);
-        } else {
-            session.getLogger().debug(msg);
+            // check if the response should log with info 
+            if (logWithInfo(code)) {
+                session.getLogger().info(msg);
+            } else {
+                session.getLogger().debug(msg);
+            }
         }
         return response;
     }

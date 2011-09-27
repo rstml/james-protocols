@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.FutureResponse.ResponseListener;
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.handler.WiringException;
@@ -58,7 +59,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
      * (non-Javadoc)
      * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
      */
-    public SMTPResponse onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
+    public Response onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
         MailEnvelopeImpl env = (MailEnvelopeImpl) session.getState().get(DataCmdHandler.MAILENV);
         OutputStream out = env.getMessageOutputStream();
         try {
@@ -68,7 +69,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
                 out.flush();
                 out.close();
                 
-                SMTPResponse response = processExtensions(session, env);
+                Response response = processExtensions(session, env);
                 if (response instanceof FutureResponse) {
                     ((FutureResponse) response).addListener(new ResponseListener() {
                         
@@ -109,7 +110,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
     /**
      * @param session
      */
-    protected SMTPResponse processExtensions(SMTPSession session, MailEnvelopeImpl mail) {
+    protected Response processExtensions(SMTPSession session, MailEnvelopeImpl mail) {
         try {
 
             if (mail != null && messageHandlers != null) {

@@ -32,7 +32,7 @@ public class SMTPProtocol implements Protocol {
 
     private ProtocolHandlerChain chain;
     private SMTPConfiguration config;
-    private Logger logger = LoggerFactory.getLogger(SMTPProtocol.class);
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
 
     public SMTPProtocol(ProtocolHandlerChain chain, SMTPConfiguration config) {

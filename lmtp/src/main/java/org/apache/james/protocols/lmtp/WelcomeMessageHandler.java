@@ -19,12 +19,11 @@
 
 package org.apache.james.protocols.lmtp;
 
-import org.apache.james.protocols.smtp.core.WelcomeMessageHandler;
 
 /**
  * Greeting for LMTP Server
  */
-public class LhloWelcomeMessageHandler extends WelcomeMessageHandler {
+public class WelcomeMessageHandler extends org.apache.james.protocols.smtp.core.WelcomeMessageHandler {
 
     private final static String SOFTWARE_TYPE = "JAMES Protocols LMTP Server"; // +
 

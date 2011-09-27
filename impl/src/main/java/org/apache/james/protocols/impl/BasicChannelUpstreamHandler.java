@@ -102,6 +102,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                     resultHandlers.get(a).onResponse(session, response, executionTime, cHandler);
                 }
                 if (response != null) {
+                    // TODO: This kind of sucks but I was able to come up with something more elegant here
                     ((AbstractSession)session).getProtocolTransport().writeResponse(response, session);
                 }
                
@@ -158,6 +159,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                 resultHandlers.get(i).onResponse(pSession, response, executionTime, lHandler);
             }
             if (response != null) {
+                // TODO: This kind of sucks but I was able to come up with something more elegant here
                 ((AbstractSession)pSession).getProtocolTransport().writeResponse(response, pSession);
             }
 

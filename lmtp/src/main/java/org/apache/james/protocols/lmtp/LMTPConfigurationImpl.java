@@ -18,41 +18,39 @@
  ****************************************************************/
 package org.apache.james.protocols.lmtp;
 
-import org.apache.james.protocols.smtp.SMTPConfiguration;
+public class LMTPConfigurationImpl extends LMTPConfiguration{
 
-public abstract class LMTPConfiguration implements SMTPConfiguration{
+    private String helloName = "localhost";
+    private long maxMessageSize = 0;
+    private String greeting = "JAMES Protocols LMTP Server";
 
+    @Override
+    public String getHelloName() {
+        return helloName;
+    }
+    
+    public void setHelloName(String helloName) {
+        this.helloName = helloName;
+    }
     
 
     @Override
-    public int getResetLength() {
-        return -1;
+    public long getMaxMessageSize() {
+        return maxMessageSize;
     }
-
+    
+    public void setMaxMessageSize(long maxMessageSize) {
+        this.maxMessageSize = maxMessageSize;
+    }
+    
 
     @Override
-    public boolean isRelayingAllowed(String remoteIP) {
-        return false;
+    public String getSMTPGreeting() {
+        return greeting;
     }
-
-    @Override
-    public boolean isAuthRequired(String remoteIP) {
-        return false;
+    
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
     }
-
-    @Override
-    public boolean useHeloEhloEnforcement() {
-        return false;
-    }
-
-    @Override
-    public boolean useAddressBracketsEnforcement() {
-        return false;
-    }
-
-    @Override
-    public boolean isStartTLSSupported() {
-        return false;
-    }
-
+    
 }

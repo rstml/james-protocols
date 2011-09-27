@@ -60,13 +60,13 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     protected Protocol protocol;
     protected ProtocolHandlerChain chain;
 
-    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, Protocol protocol, Logger logger) {
-        this(chain, protocol, logger, null, null);
+    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger) {
+        this(protocol, logger, null, null);
     }
 
-    public BasicChannelUpstreamHandler(ProtocolHandlerChain chain, Protocol protocol, Logger logger, SSLContext context, String[] enabledCipherSuites) {
-        this.chain = chain;
+    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger, SSLContext context, String[] enabledCipherSuites) {
         this.protocol = protocol;
+        this.chain = protocol.getProtocolChain();
         this.logger = logger;
         this.context = context;
         this.enabledCipherSuites = enabledCipherSuites;

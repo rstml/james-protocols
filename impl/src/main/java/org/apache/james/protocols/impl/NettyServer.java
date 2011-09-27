@@ -19,15 +19,9 @@
 package org.apache.james.protocols.impl;
 
 
-import java.nio.charset.Charset;
-
 import javax.net.ssl.SSLContext;
 
 import org.apache.james.protocols.api.Protocol;
-import org.apache.james.protocols.impl.AbstractAsyncServer;
-import org.apache.james.protocols.impl.ResponseEncoder;
-import org.apache.james.protocols.impl.AbstractSSLAwareChannelPipelineFactory;
-import org.apache.james.protocols.impl.BasicChannelUpstreamHandler;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -90,7 +84,7 @@ public class NettyServer extends AbstractAsyncServer {
     
     @Override
     public synchronized void bind() throws Exception {
-        coreHandler = new BasicChannelUpstreamHandler(protocol.getProtocolChain(), protocol, logger, context, null);
+        coreHandler = new BasicChannelUpstreamHandler(protocol, logger, context, null);
         super.bind();
     }
 

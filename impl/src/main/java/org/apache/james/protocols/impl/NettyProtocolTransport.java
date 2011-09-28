@@ -20,14 +20,11 @@
 package org.apache.james.protocols.impl;
 
 import java.net.InetSocketAddress;
-import java.util.LinkedList;
 
 import javax.net.ssl.SSLEngine;
 
-import org.apache.james.protocols.api.FutureResponse;
-import org.apache.james.protocols.api.FutureResponse.ResponseListener;
+import org.apache.james.protocols.api.AbstractProtocolTransport;
 import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StartTlsResponse;
 import org.apache.james.protocols.api.handler.LineHandler;
@@ -39,14 +36,12 @@ import org.jboss.netty.handler.ssl.SslHandler;
 /**
  * A Netty implementation of a ProtocolTransport
  */
-public class NettyProtocolTransport implements ProtocolTransport {
+public class NettyProtocolTransport extends AbstractProtocolTransport {
     
     private final Channel channel;
     private final SSLEngine engine;
     private int lineHandlerCount = 0;
-    
-    // TODO: Should we limit the size ?
-    private final LinkedList<Response> responses = new LinkedList<Response>();
+
     
     public NettyProtocolTransport(Channel channel, SSLEngine engine) {
         this.channel = channel;
@@ -88,85 +83,6 @@ public class NettyProtocolTransport implements ProtocolTransport {
         return engine != null;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.api.ProtocolTransport#writeResponse(org.apache.james.protocols.api.Response, org.apache.james.protocols.api.ProtocolSession)
-     */
-    public void writeResponse(Response response, final ProtocolSession session) {
-        synchronized (responses) {
-            // just add the response to the queue. We will trigger the write operation later
-            responses.add(response);
-             
-            // trigger the write
-            writeQueuedResponses(session);
-        }
-
-    }
-    
-    /**
-     * Helper method which tries to write all queued {@link Response}'s to the remote client. This method is aware of {@link FutureResponse} and makes sure the {@link Response}'s are written
-     * in the correct order
-     * 
-     * This is related to PROTOCOLS-36
-     * 
-     * @param session
-     */
-    private  void writeQueuedResponses(final ProtocolSession session) {
-        synchronized (responses) {
-            Response queuedResponse = null;
-            
-            // dequeue Responses until non is left
-            while ((queuedResponse = responses.poll()) != null) {
-                
-                // check if we need to take special care of FutureResponses
-                if (queuedResponse instanceof FutureResponse) {
-                    FutureResponse futureResponse =(FutureResponse) queuedResponse;
-                    if (futureResponse.isReady()) {
-                        // future is ready so we can write it without blocking the IO-Thread
-                        writeResponseToChannel(queuedResponse, session);
-                    } else {
-                        
-                        // future is not ready so we need to write it via a ResponseListener otherwise we MAY block the IO-Thread
-                        futureResponse.addListener(new ResponseListener() {
-                            
-                            public void onResponse(FutureResponse response) {
-                                writeResponseToChannel(response, session);
-                                writeQueuedResponses(session);
-                            }
-                        });
-                        
-                        // just break here as we will trigger the dequeue later
-                        break;
-                    }
-                    
-                } else {
-                    // the Response is not a FutureResponse, so just write it back the the remote peer
-                    writeResponseToChannel(queuedResponse, session);
-                }
-            }
-        }
-        
-    }
-    
-    private void writeResponseToChannel(Response response, ProtocolSession session) {
-        if (response != null && channel.isConnected()) {
-            ChannelFuture cf = channel.write(response);
-            if (response.isEndSession()) {
-                 // close the channel if needed after the message was written out
-                 cf.addListener(ChannelFutureListener.CLOSE);
-            } 
-            if (response instanceof StartTlsResponse) {
-                if (isStartTLSSupported()) {
-                    channel.setReadable(false);
-                    SslHandler filter = new SslHandler(engine);
-                    filter.getEngine().setUseClientMode(false);
-                    session.resetState();
-                    channel.getPipeline().addFirst("sslHandler", filter);
-                    channel.setReadable(true);
-                }
-            }
-         }
-    }
 
     /*
      * (non-Javadoc)
@@ -200,5 +116,28 @@ public class NettyProtocolTransport implements ProtocolTransport {
     public int getPushedLineHandlerCount() {
         return lineHandlerCount;
     }
+
+    @Override
+    protected void writeResponseToClient(Response response, ProtocolSession session) {
+        if (response != null && channel.isConnected()) {
+            ChannelFuture cf = channel.write(response);
+            if (response.isEndSession()) {
+                 // close the channel if needed after the message was written out
+                 cf.addListener(ChannelFutureListener.CLOSE);
+            } 
+            if (response instanceof StartTlsResponse) {
+                if (isStartTLSSupported()) {
+                    channel.setReadable(false);
+                    SslHandler filter = new SslHandler(engine);
+                    filter.getEngine().setUseClientMode(false);
+                    session.resetState();
+                    channel.getPipeline().addFirst("sslHandler", filter);
+                    channel.setReadable(true);
+                }
+            }
+         }        
+    }
+    
+    
     
 }

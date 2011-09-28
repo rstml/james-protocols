@@ -26,8 +26,6 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.james.protocols.api.FutureResponse;
-import org.apache.james.protocols.api.FutureResponse.ResponseListener;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
@@ -70,16 +68,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
                 out.close();
                 
                 Response response = processExtensions(session, env);
-                if (response instanceof FutureResponse) {
-                    ((FutureResponse) response).addListener(new ResponseListener() {
-                        
-                        public void onResponse(FutureResponse response) {
-                            session.resetState();
-                        }
-                    });
-                } else {
-                    session.resetState();
-                }
+                session.resetState();
                 return response;
                 
             // DotStuffing.

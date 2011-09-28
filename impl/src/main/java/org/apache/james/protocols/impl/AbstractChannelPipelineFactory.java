@@ -20,14 +20,12 @@ package org.apache.james.protocols.impl;
 
 import static org.jboss.netty.channel.Channels.pipeline;
 
-import org.apache.james.protocols.api.Response;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.handler.codec.frame.DelimiterBasedFrameDecoder;
 import org.jboss.netty.handler.codec.frame.Delimiters;
-import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.jboss.netty.handler.execution.ExecutionHandler;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
 import org.jboss.netty.util.HashedWheelTimer;
@@ -78,6 +76,7 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
         // Add the text line decoder which limit the max line length, don't strip the delimiter and use CRLF as delimiter
         pipeline.addLast("framer", new DelimiterBasedFrameDecoder(MAX_LINE_LENGTH, false, Delimiters.lineDelimiter()));
        
+        // Add the ChunkedWriteHandler to be able to write ChunkInput
         pipeline.addLast("streamer", new ChunkedWriteHandler());
         pipeline.addLast("timeoutHandler", new TimeoutHandler(timer, timeout));
 

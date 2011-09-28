@@ -20,7 +20,7 @@
 package org.apache.james.protocols.impl;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
 
 import javax.net.ssl.SSLEngine;
 
@@ -46,7 +46,7 @@ public class NettyProtocolTransport implements ProtocolTransport {
     private int lineHandlerCount = 0;
     
     // TODO: Should we limit the size ?
-    private final ConcurrentLinkedQueue<Response> responses = new ConcurrentLinkedQueue<Response>();
+    private final LinkedList<Response> responses = new LinkedList<Response>();
     
     public NettyProtocolTransport(Channel channel, SSLEngine engine) {
         this.channel = channel;
@@ -93,11 +93,14 @@ public class NettyProtocolTransport implements ProtocolTransport {
      * @see org.apache.james.protocols.api.ProtocolTransport#writeResponse(org.apache.james.protocols.api.Response, org.apache.james.protocols.api.ProtocolSession)
      */
     public void writeResponse(Response response, final ProtocolSession session) {
-        // just add the response to the queue. We will trigger the write operation later
-        responses.add(response);
-         
-        // trigger the write
-        writeQueuedResponses(session);
+        synchronized (responses) {
+            // just add the response to the queue. We will trigger the write operation later
+            responses.add(response);
+             
+            // trigger the write
+            writeQueuedResponses(session);
+        }
+
     }
     
     /**
@@ -108,38 +111,41 @@ public class NettyProtocolTransport implements ProtocolTransport {
      * 
      * @param session
      */
-    private void writeQueuedResponses(final ProtocolSession session) {
-        Response queuedResponse = null;
-        
-        // dequeue Responses until non is left
-        while ((queuedResponse = responses.poll()) != null) {
+    private  void writeQueuedResponses(final ProtocolSession session) {
+        synchronized (responses) {
+            Response queuedResponse = null;
             
-            // check if we need to take special care of FutureResponses
-            if (queuedResponse instanceof FutureResponse) {
-                FutureResponse futureResponse =(FutureResponse) queuedResponse;
-                if (futureResponse.isReady()) {
-                    // future is ready so we can write it without blocking the IO-Thread
-                    writeResponseToChannel(queuedResponse, session);
-                } else {
-                    
-                    // future is not ready so we need to write it via a ResponseListener otherwise we MAY block the IO-Thread
-                    futureResponse.addListener(new ResponseListener() {
-                        
-                        public void onResponse(FutureResponse response) {
-                            writeResponseToChannel(response, session);
-                            writeQueuedResponses(session);
-                        }
-                    });
-                    
-                    // just break here as we will trigger the dequeue later
-                    break;
-                }
+            // dequeue Responses until non is left
+            while ((queuedResponse = responses.poll()) != null) {
                 
-            } else {
-                // the Response is not a FutureResponse, so just write it back the the remote peer
-                writeResponseToChannel(queuedResponse, session);
+                // check if we need to take special care of FutureResponses
+                if (queuedResponse instanceof FutureResponse) {
+                    FutureResponse futureResponse =(FutureResponse) queuedResponse;
+                    if (futureResponse.isReady()) {
+                        // future is ready so we can write it without blocking the IO-Thread
+                        writeResponseToChannel(queuedResponse, session);
+                    } else {
+                        
+                        // future is not ready so we need to write it via a ResponseListener otherwise we MAY block the IO-Thread
+                        futureResponse.addListener(new ResponseListener() {
+                            
+                            public void onResponse(FutureResponse response) {
+                                writeResponseToChannel(response, session);
+                                writeQueuedResponses(session);
+                            }
+                        });
+                        
+                        // just break here as we will trigger the dequeue later
+                        break;
+                    }
+                    
+                } else {
+                    // the Response is not a FutureResponse, so just write it back the the remote peer
+                    writeResponseToChannel(queuedResponse, session);
+                }
             }
         }
+        
     }
     
     private void writeResponseToChannel(Response response, ProtocolSession session) {

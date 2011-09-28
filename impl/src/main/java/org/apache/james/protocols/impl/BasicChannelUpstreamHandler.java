@@ -28,6 +28,7 @@ import org.apache.james.protocols.api.AbstractSession;
 import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
@@ -36,9 +37,7 @@ import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.api.handler.ProtocolHandlerResultHandler;
 import org.apache.james.protocols.impl.NettyProtocolTransport;
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandler.Sharable;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
@@ -224,15 +223,19 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (e.getCause() instanceof TooLongFrameException) {
             Response r = session.newLineTooLongResponse();
-            if (r != null) ctx.getChannel().write(r);
+            ProtocolTransport transport = ((AbstractSession)session).getProtocolTransport();
+            if (r != null)  {
+                transport.writeResponse(r, session);
+            }
         } else {
             if (channel.isConnected()) {
+                ProtocolTransport transport = ((AbstractSession)session).getProtocolTransport();
+
                 Response r = session.newFatalErrorResponse();
                 if (r != null) {
-                    ctx.getChannel().write(r).addListener(ChannelFutureListener.CLOSE);
-                } else {
-                    ctx.getChannel().write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-                }
+                    transport.writeResponse(r, session);
+                } 
+                transport.writeResponse(Response.DISCONNECT, session);
             }
             if (session != null) {
                 session.getLogger().debug("Unable to process request", e.getCause());

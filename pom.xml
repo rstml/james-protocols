@@ -474,7 +474,7 @@
   </profiles>
 
   <properties>
-    <target.jdk>1.5</target.jdk>
+    <target.jdk>1.6</target.jdk>
   </properties>
   
 </project>

@@ -78,9 +78,6 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
         // Add the text line decoder which limit the max line length, don't strip the delimiter and use CRLF as delimiter
         pipeline.addLast("framer", new DelimiterBasedFrameDecoder(MAX_LINE_LENGTH, false, Delimiters.lineDelimiter()));
        
-        // encoder
-        pipeline.addLast("encoderResponse", createEncoder());
-
         pipeline.addLast("streamer", new ChunkedWriteHandler());
         pipeline.addLast("timeoutHandler", new TimeoutHandler(timer, timeout));
 
@@ -103,13 +100,6 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
      * @return coreHandeler
      */
     protected abstract ChannelUpstreamHandler createHandler();
-    
-    /**
-     * Create the {@link Response} Encoder
-     * 
-     * @return encoder
-     */
-    protected abstract OneToOneEncoder createEncoder();
     
 
 

@@ -19,19 +19,19 @@
 
 package org.apache.james.protocols.impl;
 
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 
 import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.AbstractProtocolTransport;
 import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.StartTlsResponse;
 import org.apache.james.protocols.api.handler.LineHandler;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
 import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.handler.ssl.SslHandler;
+import org.jboss.netty.handler.stream.ChunkedStream;
 
 /**
  * A Netty implementation of a ProtocolTransport
@@ -41,7 +41,6 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
     private final Channel channel;
     private final SSLEngine engine;
     private int lineHandlerCount = 0;
-
     
     public NettyProtocolTransport(Channel channel, SSLEngine engine) {
         this.channel = channel;
@@ -117,25 +116,31 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         return lineHandlerCount;
     }
 
+    
+
     @Override
-    protected void writeResponseToClient(Response response, ProtocolSession session) {
-        if (response != null && channel.isConnected()) {
-            ChannelFuture cf = channel.write(response);
-            if (response.isEndSession()) {
-                 // close the channel if needed after the message was written out
-                 cf.addListener(ChannelFutureListener.CLOSE);
-            } 
-            if (response instanceof StartTlsResponse) {
-                if (isStartTLSSupported()) {
-                    channel.setReadable(false);
-                    SslHandler filter = new SslHandler(engine);
-                    filter.getEngine().setUseClientMode(false);
-                    session.resetState();
-                    channel.getPipeline().addFirst("sslHandler", filter);
-                    channel.setReadable(true);
-                }
-            }
-         }        
+    protected void startTLS(ProtocolSession session) {
+        channel.setReadable(false);
+        SslHandler filter = new SslHandler(engine);
+        filter.getEngine().setUseClientMode(false);
+        channel.getPipeline().addFirst("sslHandler", filter);
+        channel.setReadable(true);        
+    }
+
+    @Override
+    protected void writeToClient(byte[] bytes, ProtocolSession session) {
+        channel.write(ChannelBuffers.wrappedBuffer(bytes));
+    }
+
+    @Override
+    protected void close() {
+        channel.write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+    }
+
+
+    @Override
+    protected void writeToClient(InputStream in, ProtocolSession session) {
+        channel.write(new ChunkedStream(in));
     }
     
     

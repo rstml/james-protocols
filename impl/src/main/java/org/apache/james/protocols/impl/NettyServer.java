@@ -25,7 +25,6 @@ import org.apache.james.protocols.api.Protocol;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
-import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.jboss.netty.handler.execution.ExecutionHandler;
 import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
 import org.slf4j.Logger;
@@ -43,8 +42,6 @@ public class NettyServer extends AbstractAsyncServer {
     protected SSLContext context;
 
     private ExecutionHandler eHandler;
-
-    private OneToOneEncoder responseEncoder;
     
     private ChannelUpstreamHandler coreHandler;
 
@@ -57,7 +54,6 @@ public class NettyServer extends AbstractAsyncServer {
         super();
         this.protocol = protocol;
         this.context = context;
-        this.responseEncoder = new ResponseEncoder();
     }
     
     protected ExecutionHandler createExecutionHandler(int size) {
@@ -96,11 +92,6 @@ public class NettyServer extends AbstractAsyncServer {
             @Override
             protected ChannelUpstreamHandler createHandler() {
                 return coreHandler;
-            }
-
-            @Override
-            protected OneToOneEncoder createEncoder() {
-                return responseEncoder;
             }
 
             @Override

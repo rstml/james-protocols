@@ -34,6 +34,6 @@ public interface UnknownHook extends Hook{
 	 * @param command
 	 * @return result
 	 */
-    HookResult doUnkown(SMTPSession session, String command);
+    HookResult doUnknown(SMTPSession session, String command);
 
 }

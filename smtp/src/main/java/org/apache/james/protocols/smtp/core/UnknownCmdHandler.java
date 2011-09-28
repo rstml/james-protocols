@@ -66,7 +66,7 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
 
     @Override
     protected HookResult callHook(UnknownHook rawHook, SMTPSession session, String parameters) {
-        return rawHook.doUnkown(session, (String) session.getState().get("CURR_COMMAND"));
+        return rawHook.doUnknown(session, (String) session.getState().get("CURR_COMMAND"));
     }
 
     @Override

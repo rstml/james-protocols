@@ -20,6 +20,7 @@
 
 package org.apache.james.protocols.smtp;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -60,15 +61,15 @@ public interface MailEnvelope {
 	 * Return the OutputStream of the message
 	 * 
 	 * @return out
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	OutputStream getMessageOutputStream() throws Exception;
+	OutputStream getMessageOutputStream() throws IOException;
 
 	/**
 	 * Return the InputStream of the message
 	 * 
 	 * @return in
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	InputStream getMessageInputStream() throws Exception;
+	InputStream getMessageInputStream() throws IOException;
 }

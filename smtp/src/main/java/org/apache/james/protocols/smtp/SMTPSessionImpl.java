@@ -76,7 +76,7 @@ public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#pushLineHandler(org.apache.james.smtpserver.protocol.LineHandler)
+     * @see org.apache.james.protocols.smtp.SMTPSession#pushLineHandler(LineHandler)
      */
     public void pushLineHandler(LineHandler<SMTPSession> overrideCommandHandler) {
         transport.pushLineHandler(overrideCommandHandler, this);

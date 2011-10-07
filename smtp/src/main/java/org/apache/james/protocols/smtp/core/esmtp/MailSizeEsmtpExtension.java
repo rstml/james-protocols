@@ -133,9 +133,8 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
     }
 
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
+    /**
+     * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
      */
     public Response onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
         Response response = null;
@@ -176,7 +175,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.hook.MessageHook#onMessage(org.apache.james.protocols.smtp.SMTPSession, org.apache.james.protocols.smtp.MailEnvelopeImpl)
+     * @see org.apache.james.protocols.smtp.hook.MessageHook#onMessage(SMTPSession, MailEnvelope)
      */
     public HookResult onMessage(SMTPSession session, MailEnvelope mail) {
         Boolean failed = (Boolean) session.getState().get(MESG_FAILED);

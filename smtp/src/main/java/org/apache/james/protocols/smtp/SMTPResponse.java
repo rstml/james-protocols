@@ -79,8 +79,8 @@ public class SMTPResponse extends AbstractResponse {
             return null;
         }
     }
-    /*
-     * (non-Javadoc)
+
+    /**
      * @see org.apache.james.protocols.api.Response#getLines()
      */
     public List<CharSequence> getLines() {

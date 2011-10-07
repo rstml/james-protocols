@@ -50,8 +50,10 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
      * 
      * @param session
      *            SMTP session object
-     * @param argument
-     *            the argument passed in with the command by the SMTP client
+     * @param command
+     *            command passed
+     * @param parameters
+     *            parameters passed in with the command by the SMTP client
      */
     @SuppressWarnings("unchecked")
     protected SMTPResponse doCoreCmd(SMTPSession session, String command,
@@ -224,7 +226,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
     }
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();
@@ -241,8 +243,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#callHook(java.lang.Object,
-     *      org.apache.james.protocols.smtp.SMTPSession, java.lang.String)
+     * {@inheritDoc}
      */
     protected HookResult callHook(RcptHook rawHook, SMTPSession session,
             String parameters) {

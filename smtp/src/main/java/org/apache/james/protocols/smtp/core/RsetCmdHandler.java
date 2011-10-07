@@ -68,7 +68,7 @@ public class RsetCmdHandler implements CommandHandler<SMTPSession> {
     }
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();

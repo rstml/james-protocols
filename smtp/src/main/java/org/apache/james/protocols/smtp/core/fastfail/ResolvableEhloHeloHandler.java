@@ -91,9 +91,6 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
         
     }
 
-    /**
-     * @see org.apache.james.smtpserver.core.filter.fastfail.AbstractJunkHandler#check(org.apache.james.protocols.smtp.SMTPSession)
-     */
     protected boolean check(SMTPSession session,MailAddress rcpt) {
         // not reject it
         if (session.getState().get(BAD_EHLO_HELO) == null) {

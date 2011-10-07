@@ -41,25 +41,22 @@ public class SessionLog implements Logger {
         return "ID="+ id + " " + str;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#debug(java.lang.String)
      */
     public void debug(String arg0) {
         logger.debug(getText(arg0));
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.slf4j.Logger#debug(java.lang.String, java.lang.StringThrowable)
+    /**
+     * @see org.slf4j.Logger#debug(String, Throwable)
      */
     public void debug(String arg0, Throwable arg1) {
         logger.debug(getText(arg0), arg1);
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#error(java.lang.String)
      */
     public void error(String arg0) {
@@ -67,8 +64,7 @@ public class SessionLog implements Logger {
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#error(java.lang.String, java.lang.Throwable)
      */
     public void error(String arg0, Throwable arg1) {
@@ -76,8 +72,7 @@ public class SessionLog implements Logger {
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#info(java.lang.String)
      */
     public void info(String arg0) {
@@ -85,8 +80,7 @@ public class SessionLog implements Logger {
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#info(java.lang.String, java.lang.Throwable)
      */
     public void info(String arg0, Throwable arg1) {
@@ -94,56 +88,49 @@ public class SessionLog implements Logger {
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#isDebugEnabled()
      */
     public boolean isDebugEnabled() {
         return logger.isDebugEnabled();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#isErrorEnabled()
      */
     public boolean isErrorEnabled() {
         return logger.isErrorEnabled();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#isInfoEnabled()
      */
     public boolean isInfoEnabled() {
         return logger.isInfoEnabled();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#isTraceEnabled()
      */
     public boolean isTraceEnabled() {
         return logger.isTraceEnabled();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#isWarnEnabled()
      */
     public boolean isWarnEnabled() {
         return logger.isWarnEnabled();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#trace(java.lang.String)
      */
     public void trace(String arg0) {
         logger.trace(getText(arg0));
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#trace(java.lang.String, java.lang.Throwable)
      */
     public void trace(String arg0, Throwable arg1) {
@@ -151,8 +138,7 @@ public class SessionLog implements Logger {
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#warn(java.lang.String)
      */
     public void warn(String arg0) {
@@ -160,8 +146,7 @@ public class SessionLog implements Logger {
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.slf4j.Logger#warn(java.lang.String, java.lang.Throwable)
      */
     public void warn(String arg0, Throwable arg1) {

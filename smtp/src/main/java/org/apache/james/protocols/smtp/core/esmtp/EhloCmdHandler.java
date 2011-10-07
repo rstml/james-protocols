@@ -71,7 +71,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
     }
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();
@@ -158,7 +158,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#callHook(java.lang.Object, org.apache.james.protocols.smtp.SMTPSession, java.lang.String)
+     * {@inheritDoc}
      */
     protected HookResult callHook(HeloHook rawHook, SMTPSession session, String parameters) {
         return rawHook.doHelo(session, parameters);
@@ -166,8 +166,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
 
 
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
      */
     public List<String> getImplementedEsmtpFeatures(SMTPSession session) {

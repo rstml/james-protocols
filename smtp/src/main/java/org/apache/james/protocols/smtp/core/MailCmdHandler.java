@@ -49,13 +49,10 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      */
     private Map<String, MailParametersHook> paramHooks;
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see
-     * org.apache.james.smtpserver.protocol.core.AbstractHookableCmdHandler#
-     * onCommand(org.apache.james.smtpserver.protocol.SMTPSession,
-     * org.apache.james.api.protocol.Request)
+     * org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler
+     * #onCommand(SMTPSession, Request)
      */
     public Response onCommand(SMTPSession session, Request request) {
         Response response = super.onCommand(session, request);
@@ -92,7 +89,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
     }
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();
@@ -261,7 +258,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
 
 
     /**
-     * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#callHook(java.lang.Object, org.apache.james.protocols.smtp.SMTPSession, java.lang.String)
+     * {@inheritDoc}
      */
     protected HookResult callHook(MailHook rawHook, SMTPSession session, String parameters) {
         return rawHook.doMail(session,(MailAddress) session.getState().get(SMTPSession.SENDER));

@@ -45,9 +45,9 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
 
     public static final class DataConsumerLineHandler implements LineHandler<SMTPSession> {
 
-        /*
-         * (non-Javadoc)
-         * @see org.apache.james.api.protocol.LineHandler#onLine(org.apache.james.api.protocol.ProtocolSession, byte[])
+        /**
+         * @see org.apache.james.protocols.api.handler.LineHandler
+         * #onLine(org.apache.james.protocols.api.ProtocolSession, byte[])
          */
         public SMTPResponse onLine(SMTPSession session, byte[] line) {
             
@@ -69,9 +69,9 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
             this.next = next;
         }
         
-        /*
-         * (non-Javadoc)
-         * @see org.apache.james.api.protocol.LineHandler#onLine(org.apache.james.api.protocol.ProtocolSession, byte[])
+        /**
+         * @see org.apache.james.protocols.api.handler.LineHandler
+         * #onLine(org.apache.james.protocols.api.ProtocolSession, byte[])
          */
         public Response onLine(SMTPSession session, byte[] line) {
             return filter.onLine(session, line, next);
@@ -125,7 +125,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
     
     
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();

@@ -42,7 +42,7 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
     public static final String UNKNOWN_COMMAND = "UNKNOWN";
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();

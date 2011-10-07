@@ -41,9 +41,8 @@ public class MailEnvelopeImpl implements MailEnvelope{
 
     private ByteArrayOutputStream outputStream;
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.MailEnvelope#getSize()
+    /**
+     * @see org.apache.james.protocols.smtp.MailEnvelope#getSize()
      */
     public int getSize() {
         if (outputStream == null)
@@ -51,17 +50,15 @@ public class MailEnvelopeImpl implements MailEnvelope{
         return outputStream.size();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.MailEnvelope#getRecipients()
+    /**
+     * @see org.apache.james.protocols.smtp.MailEnvelope#getRecipients()
      */
     public List<MailAddress> getRecipients() {
         return recipients;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.MailEnvelope#getSender()
+    /**
+     * @see org.apache.james.protocols.smtp.MailEnvelope#getSender()
      */
     public MailAddress getSender() {
         return sender;
@@ -85,9 +82,8 @@ public class MailEnvelopeImpl implements MailEnvelope{
         this.sender = sender;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.MailEnvelope#getMessageOutputStream()
+    /**
+     * @see org.apache.james.protocols.smtp.MailEnvelope#getMessageOutputStream()
      */
     public OutputStream getMessageOutputStream() {
         if (outputStream == null) {
@@ -96,9 +92,8 @@ public class MailEnvelopeImpl implements MailEnvelope{
         return outputStream;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.MailEnvelope#getMessageInputStream()
+    /**
+     * @see org.apache.james.protocols.smtp.MailEnvelope#getMessageInputStream()
      */
     public InputStream getMessageInputStream() {
         return new ByteArrayInputStream(outputStream.toByteArray());

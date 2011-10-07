@@ -45,9 +45,8 @@ public class ReceivedDataLineFilter implements DataLineFilter {
     private final static String HEADERS_WRITTEN = "HEADERS_WRITTEN";
 
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
+    /**
+     * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
      */
     public Response onLine(SMTPSession session,  byte[] line, LineHandler<SMTPSession> next) {
         if (session.getState().containsKey(HEADERS_WRITTEN) == false) {

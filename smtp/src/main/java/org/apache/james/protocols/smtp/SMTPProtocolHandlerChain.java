@@ -149,11 +149,9 @@ public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
         return hooks.indexOf(hook);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see
-     * org.apache.james.protocols.api.AbstractProtocolHandlerChain#getHandlers()
+     * org.apache.james.protocols.api.handler.AbstractProtocolHandlerChain#getHandlers()
      */
     @Override
     protected synchronized List<Object> getHandlers() {

@@ -28,7 +28,7 @@ public interface Protocol {
 
     /**
      * Return the {@link ProtocolHandlerChain} which is defined for the {@link Protocol}
-     * @return
+     * @return protocol handler chain
      */
     ProtocolHandlerChain getProtocolChain();
 

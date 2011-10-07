@@ -70,7 +70,7 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
     }
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();
@@ -105,7 +105,7 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#callHook(java.lang.Object, org.apache.james.protocols.smtp.SMTPSession, java.lang.String)
+     * {@inheritDoc}
      */
     protected HookResult callHook(QuitHook rawHook, SMTPSession session, String parameters) {
         return rawHook.doQuit(session);

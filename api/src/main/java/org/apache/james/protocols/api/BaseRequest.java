@@ -34,17 +34,15 @@ public class BaseRequest implements Request{
         
     }
     
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.api.protocol.Request#getArgument()
+    /**
+     * @see org.apache.james.protocols.api.Request#getArgument()
      */
     public String getArgument() {
         return argument;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.api.protocol.Request#getCommand()
+    /**
+     * @see org.apache.james.protocols.api.Request#getCommand()
      */
     public String getCommand() {
         return command;

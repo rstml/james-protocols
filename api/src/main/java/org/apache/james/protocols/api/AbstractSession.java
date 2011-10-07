@@ -57,32 +57,28 @@ public abstract class AbstractSession implements ProtocolSession {
 
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteHost()
      */
     public String getRemoteHost() {
         return socketAddress.getHostName();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteIPAddress()
      */
     public String getRemoteIPAddress() {
         return socketAddress.getAddress().getHostAddress();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getUser()
      */
     public String getUser() {
         return user;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#setUser(java.lang.String)
      */
     public void setUser(String user) {
@@ -96,16 +92,14 @@ public abstract class AbstractSession implements ProtocolSession {
         return transport;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#isStartTLSSupported()
      */
     public boolean isStartTLSSupported() {
         return transport.isStartTLSSupported();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#isTLSStarted()
      */
     public boolean isTLSStarted() {
@@ -113,8 +107,7 @@ public abstract class AbstractSession implements ProtocolSession {
     }
 
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getLogger()
      */
     public Logger getLogger() {
@@ -125,8 +118,7 @@ public abstract class AbstractSession implements ProtocolSession {
     }
     
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getSessionID()
      */
     public String getSessionID() {
@@ -134,17 +126,14 @@ public abstract class AbstractSession implements ProtocolSession {
     }
     
     
-
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getConnectionState()
      */
     public Map<String, Object> getConnectionState() {
         return connectionState;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getState()
      */
     @SuppressWarnings("unchecked")

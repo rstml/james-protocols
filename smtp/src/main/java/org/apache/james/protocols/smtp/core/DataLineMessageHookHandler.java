@@ -53,9 +53,8 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
     private List rHooks;
     
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.smtpserver.protocol.core.DataLineFilter#onLine(org.apache.james.smtpserver.protocol.SMTPSession, byte[], org.apache.james.api.protocol.LineHandler)
+    /**
+     * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
      */
     public Response onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
         MailEnvelopeImpl env = (MailEnvelopeImpl) session.getState().get(DataCmdHandler.MAILENV);

@@ -97,11 +97,20 @@ public interface DNSService {
     InetAddress getByName(String host) throws UnknownHostException;
 
     /**
-     * @see org.xbill.DNS.Address#getHostName(InetAddress)
+     * Determines the hostname for an address
+     * @param addr
+     *             the address record
+     * @return
+     *             the hostname defined in the address record
      */
     String getHostName(InetAddress addr);
     
+
     /**
+     * get the local hosts {@link InetAddress}
+     * @return
+     *             the localhosts inet address
+     * @throws UnknownHostException
      */
     InetAddress getLocalHost() throws UnknownHostException;
 }

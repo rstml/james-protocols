@@ -46,8 +46,8 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
     /**
      * Handle command processing
      * 
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#onCommand(org.apache.james.protocols.smtp.SMTPSession,
-     *      java.lang.String, java.lang.String)
+     * @see org.apache.james.protocols.api.handler.CommandHandler
+     * #onCommand(org.apache.james.protocols.api.ProtocolSession, Request)
      */
     public Response onCommand(SMTPSession session, Request request) {
         String command = request.getCommand();
@@ -193,7 +193,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
      * @param session
      * @param command
      * @param parameters
-     * @return
+     * @return smtp response if a syntax error was detected, otherwise <code>null</code>
      */
     protected abstract SMTPResponse doFilterChecks(SMTPSession session,
             String command, String parameters);
@@ -204,7 +204,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
      * @param session
      * @param command
      * @param parameters
-     * @return
+     * @return smtp response
      */
     protected abstract SMTPResponse doCoreCmd(SMTPSession session,
             String command, String parameters);
@@ -244,7 +244,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
     /**
      * Return a list which holds all hooks for the cmdHandler
      * 
-     * @return
+     * @return list containing all hooks for the cmd handler
      */
     protected List<Hook> getHooks() {
         return hooks;

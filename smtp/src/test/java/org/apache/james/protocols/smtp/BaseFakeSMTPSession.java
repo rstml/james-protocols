@@ -137,16 +137,14 @@ public class BaseFakeSMTPSession implements SMTPSession {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.smtpserver.protocol.SMTPSession#pushLineHandler(org.apache.james.api.protocol.LineHandler)
      */
     public void pushLineHandler(LineHandler<SMTPSession> overrideCommandHandler) {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.api.protocol.LogEnabledSession#writeResponse(org.apache.james.api.protocol.Response)
      */
     public void writeResponse(Response response) {

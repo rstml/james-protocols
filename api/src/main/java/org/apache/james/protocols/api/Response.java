@@ -52,7 +52,7 @@ public interface Response {
     
     /**
      * Return return-code
-     * @return
+     * @return the return code
      */
     String getRetCode();
 

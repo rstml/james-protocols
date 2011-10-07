@@ -116,7 +116,7 @@ public interface SMTPSession extends ProtocolSession{
     
     /**
      * Return the size of the pushed {@link LineHandler}
-     * @return
+     * @return size of the pushed line handler
      */
     int getPushedLineHandlerCount();
     

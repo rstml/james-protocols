@@ -42,8 +42,8 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
     
     // TODO: Should we limit the size ?
     private final LinkedList<Response> responses = new LinkedList<Response>();
-    /*
-     * (non-Javadoc)
+
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#writeResponse(org.apache.james.protocols.api.Response, org.apache.james.protocols.api.ProtocolSession)
      */
     public final void writeResponse(Response response, final ProtocolSession session) {

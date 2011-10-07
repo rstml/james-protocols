@@ -59,8 +59,7 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     
     
     
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.jboss.netty.channel.ChannelPipelineFactory#getPipeline()
      */
     public ChannelPipeline getPipeline() throws Exception {

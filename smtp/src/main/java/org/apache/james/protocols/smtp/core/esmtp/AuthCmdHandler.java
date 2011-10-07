@@ -440,7 +440,7 @@ public class AuthCmdHandler
 
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> implCommands = new ArrayList<String>();
@@ -492,7 +492,7 @@ public class AuthCmdHandler
     /**
      * Return a list which holds all hooks for the cmdHandler
      * 
-     * @return
+     * @return list containing all hooks for the cmd handler
      */
     protected List<AuthHook> getHooks() {
         return hooks;

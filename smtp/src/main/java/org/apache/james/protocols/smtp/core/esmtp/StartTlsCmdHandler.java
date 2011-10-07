@@ -42,7 +42,7 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
     private final static String COMMAND_NAME = "STARTTLS";
 
     /**
-     * @see org.apache.james.smtpserver.protocol.CommandHandler#getImplCommands()
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
         Collection<String> commands = new ArrayList<String>();

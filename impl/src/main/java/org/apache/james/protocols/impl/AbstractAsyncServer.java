@@ -179,7 +179,7 @@ public abstract class AbstractAsyncServer {
     
     /**
      * Return the read/write timeout for the socket.
-     * @return
+     * @return the set timeout
      */
     public synchronized int getTimeout() {
         return timeout;

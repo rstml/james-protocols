@@ -47,24 +47,21 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         this.engine = engine;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#getRemoteAddress()
      */
     public InetSocketAddress getRemoteAddress() {
         return (InetSocketAddress) channel.getRemoteAddress();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#getId()
      */
     public String getId() {
         return channel.getId() + "";
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#isTLSStarted()
      */
     public boolean isTLSStarted() {
@@ -74,8 +71,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#isStartTLSSupported()
      */
     public boolean isStartTLSSupported() {
@@ -83,8 +79,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
     }
 
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#popLineHandler()
      */
     public void popLineHandler() {
@@ -94,8 +89,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         }
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#pushLineHandler(org.apache.james.protocols.api.handler.LineHandler, org.apache.james.protocols.api.ProtocolSession)
      */
     public <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler,
@@ -108,8 +102,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         channel.getPipeline().addBefore("coreHandler", "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler<T>(session, overrideCommandHandler));
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#getPushedLineHandlerCount()
      */
     public int getPushedLineHandlerCount() {

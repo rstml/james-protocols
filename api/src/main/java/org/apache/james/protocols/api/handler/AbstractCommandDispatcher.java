@@ -125,9 +125,8 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
 
     }
     
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.api.protocol.LineHandler#onLine(org.apache.james.api.protocol.ProtocolSession, byte[])
+    /**
+     * @see org.apache.james.protocols.api.handler.LineHandler#onLine(ProtocolSession, byte[])
      */
     public Response onLine(final Session session, byte[] line) {
         String curCommandName = null;

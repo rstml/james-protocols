@@ -40,7 +40,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
     private final static RFC822DateFormat rfc822DateFormat = new RFC822DateFormat();
 
     /**
-     * @see org.apache.james.smtpserver.protocol.ConnectHandler#onConnect(SMTPSession)
+     * @see org.apache.james.protocols.api.handler.ConnectHandler#onConnect(org.apache.james.protocols.api.ProtocolSession)
      */
     public Response onConnect(SMTPSession session) {
         String smtpGreeting = session.getSMTPGreeting();

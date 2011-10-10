@@ -89,7 +89,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
         List<ConnectHandler> connectHandlers = chain.getHandlers(ConnectHandler.class);
         List<ProtocolHandlerResultHandler> resultHandlers = chain.getHandlers(ProtocolHandlerResultHandler.class);
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
-        session.getLogger().info("Connection established from " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
+        session.getLogger().info("Connection established from " + session.getRemoteIPAddress());
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
                 ConnectHandler cHandler = connectHandlers.get(i);
@@ -183,7 +183,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (session != null) {
-            session.getLogger().info("Connection closed for " + session.getRemoteHost() + " (" + session.getRemoteIPAddress()+ ")");
+            session.getLogger().info("Connection closed for " + session.getRemoteIPAddress());
         }
         cleanup(ctx);
 

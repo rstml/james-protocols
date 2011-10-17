@@ -48,10 +48,17 @@ public class LineHandlerUpstreamHandler<S extends ProtocolSession> extends Simpl
         ChannelBuffer buf = (ChannelBuffer) e.getMessage();      
         byte[] line;
         if (buf.hasArray()) {
-            line = buf.array();
+            if (buf.arrayOffset() == 0 && buf.readableBytes() == buf.capacity()) {
+                // we have no offset and the length is the same as the capacity. Its safe to reuse the array without copy it first
+                line = buf.array();
+            } else {
+                // copy the ChannelBuffer to a byte array to process the LineHandler
+                line = new byte[buf.readableBytes()];
+                buf.getBytes(0, line);
+            }
         } else {
             // copy the ChannelBuffer to a byte array to process the LineHandler
-            line = new byte[buf.capacity()];
+            line = new byte[buf.readableBytes()];
             buf.getBytes(0, line);
         }
 

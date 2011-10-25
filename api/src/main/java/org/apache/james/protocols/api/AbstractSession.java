@@ -136,7 +136,6 @@ public abstract class AbstractSession implements ProtocolSession {
     /**
      * @see org.apache.james.protocols.api.ProtocolSession#getState()
      */
-    @SuppressWarnings("unchecked")
     public Map<String, Object> getState() {
         return sessionState;
     }

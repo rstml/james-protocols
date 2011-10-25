@@ -21,8 +21,8 @@ package org.apache.james.protocols.api;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.james.protocols.api.FutureResponse.ResponseListener;
 
@@ -41,20 +41,17 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
 
     
     // TODO: Should we limit the size ?
-    private final LinkedList<Response> responses = new LinkedList<Response>();
+    private final ConcurrentLinkedQueue<Response> responses = new ConcurrentLinkedQueue<Response>();
 
     /**
      * @see org.apache.james.protocols.api.ProtocolTransport#writeResponse(org.apache.james.protocols.api.Response, org.apache.james.protocols.api.ProtocolSession)
      */
     public final void writeResponse(Response response, final ProtocolSession session) {
-        synchronized (responses) {
-            // just add the response to the queue. We will trigger the write operation later
-            responses.add(response);
+        // just add the response to the queue. We will trigger the write operation later
+        responses.add(response);
              
-            // trigger the write
-            writeQueuedResponses(session);
-        }
-
+        // trigger the write
+        writeQueuedResponses(session);
     }
     
     /**
@@ -66,38 +63,37 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
      * @param session
      */
     private  void writeQueuedResponses(final ProtocolSession session) {
-        synchronized (responses) {
-            Response queuedResponse = null;
+        Response queuedResponse = null;
             
-            // dequeue Responses until non is left
-            while ((queuedResponse = responses.poll()) != null) {
+        // dequeue Responses until non is left
+        while ((queuedResponse = responses.poll()) != null) {
                 
-                // check if we need to take special care of FutureResponses
-                if (queuedResponse instanceof FutureResponse) {
-                    FutureResponse futureResponse =(FutureResponse) queuedResponse;
-                    if (futureResponse.isReady()) {
-                        // future is ready so we can write it without blocking the IO-Thread
-                        writeResponseToClient(queuedResponse, session);
-                    } else {
-                        
-                        // future is not ready so we need to write it via a ResponseListener otherwise we MAY block the IO-Thread
-                        futureResponse.addListener(new ResponseListener() {
-                            
-                            public void onResponse(FutureResponse response) {
-                                writeResponseToClient(response, session);
-                                writeQueuedResponses(session);
-                            }
-                        });
-                        
-                        // just break here as we will trigger the dequeue later
-                        break;
-                    }
-                    
-                } else {
-                    // the Response is not a FutureResponse, so just write it back the the remote peer
+            // check if we need to take special care of FutureResponses
+            if (queuedResponse instanceof FutureResponse) {
+                FutureResponse futureResponse =(FutureResponse) queuedResponse;
+                if (futureResponse.isReady()) {
+                    // future is ready so we can write it without blocking the IO-Thread
                     writeResponseToClient(queuedResponse, session);
+                } else {
+                        
+                    // future is not ready so we need to write it via a ResponseListener otherwise we MAY block the IO-Thread
+                    futureResponse.addListener(new ResponseListener() {
+                            
+                        public void onResponse(FutureResponse response) {
+                            writeResponseToClient(response, session);
+                            writeQueuedResponses(session);
+                        }
+                    });
+                        
+                    // just break here as we will trigger the dequeue later
+                    break;
                 }
+                    
+            } else {
+                // the Response is not a FutureResponse, so just write it back the the remote peer
+                writeResponseToClient(queuedResponse, session);
             }
+            
         }
         
     }

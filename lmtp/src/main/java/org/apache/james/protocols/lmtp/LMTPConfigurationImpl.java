@@ -23,6 +23,7 @@ public class LMTPConfigurationImpl extends LMTPConfiguration{
     private String helloName = "localhost";
     private long maxMessageSize = 0;
     private String greeting = "JAMES Protocols LMTP Server";
+	private boolean startTLSsupported = false;
 
     @Override
     public String getHelloName() {
@@ -53,4 +54,12 @@ public class LMTPConfigurationImpl extends LMTPConfiguration{
         this.greeting = greeting;
     }
     
+    @Override
+    public boolean isStartTLSSupported() {
+        return startTLSsupported;
+    }
+
+    public void setStartTLSSupported(boolean startTLSsupported) {
+        this.startTLSsupported  = startTLSsupported;
+    }
 }

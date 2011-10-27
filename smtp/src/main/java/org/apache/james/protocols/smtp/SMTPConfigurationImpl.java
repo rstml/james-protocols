@@ -28,13 +28,10 @@ public class SMTPConfigurationImpl implements SMTPConfiguration{
     private boolean bracketsEnforcement = true;
     private String greeting = "JAMES SMTP Protocols";
     private boolean enforceHeloEhlo = true;
+	private boolean startTLSsupported = false;
     
     public String getHelloName() {
         return helloName;
-    }
-
-    public int getResetLength() {
-        return -1;
     }
 
     public long getMaxMessageSize() {
@@ -76,8 +73,12 @@ public class SMTPConfigurationImpl implements SMTPConfiguration{
     }
     
     
+    @Override
     public boolean isStartTLSSupported() {
-        return false;
+        return startTLSsupported;
     }
 
+    public void setStartTLSSupported(boolean startTLSsupported) {
+        this.startTLSsupported = startTLSsupported;
+    }
 }

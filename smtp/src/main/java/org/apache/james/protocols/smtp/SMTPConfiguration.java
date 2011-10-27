@@ -37,14 +37,6 @@ public interface SMTPConfiguration {
     String getHelloName();
 
     /**
-     * Returns the service wide reset length in bytes.
-     *
-     * @return the reset length
-     */
-    @Deprecated
-    int getResetLength();
-
-    /**
      * Returns the service wide maximum message size in bytes.
      *
      * @return the maximum message size
@@ -92,7 +84,9 @@ public interface SMTPConfiguration {
     boolean useAddressBracketsEnforcement();
     
     /**
+     * Return <code>true</code> if STARTTLS is supported.
      * 
+     * @return starttls
      */
     boolean isStartTLSSupported();
 

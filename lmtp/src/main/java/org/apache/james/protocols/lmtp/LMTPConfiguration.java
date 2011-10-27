@@ -22,14 +22,6 @@ import org.apache.james.protocols.smtp.SMTPConfiguration;
 
 public abstract class LMTPConfiguration implements SMTPConfiguration{
 
-    
-
-    @Override
-    public int getResetLength() {
-        return -1;
-    }
-
-
     @Override
     public boolean isRelayingAllowed(String remoteIP) {
         return false;
@@ -49,10 +41,4 @@ public abstract class LMTPConfiguration implements SMTPConfiguration{
     public boolean useAddressBracketsEnforcement() {
         return false;
     }
-
-    @Override
-    public boolean isStartTLSSupported() {
-        return false;
-    }
-
 }

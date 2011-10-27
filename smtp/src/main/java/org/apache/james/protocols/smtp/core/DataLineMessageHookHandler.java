@@ -67,6 +67,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
                 out.close();
                 
                 Response response = processExtensions(session, env);
+                session.popLineHandler();
                 session.resetState();
                 return response;
                 
@@ -99,46 +100,43 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
      * @param session
      */
     protected Response processExtensions(SMTPSession session, MailEnvelopeImpl mail) {
-        try {
+       
 
-            if (mail != null && messageHandlers != null) {
-                int count = messageHandlers.size();
-                for (int i = 0; i < count; i++) {
-                    MessageHook rawHandler = (MessageHook) messageHandlers.get(i);
-                    session.getLogger().debug("executing message handler " + rawHandler);
+        if (mail != null && messageHandlers != null) {
+            int count = messageHandlers.size();
+            for (int i = 0; i < count; i++) {
+                MessageHook rawHandler = (MessageHook) messageHandlers.get(i);
+                session.getLogger().debug("executing message handler " + rawHandler);
 
-                    long start = System.currentTimeMillis();
-                    HookResult hRes = rawHandler.onMessage(session, mail);
-                    long executionTime = System.currentTimeMillis() - start;
+                long start = System.currentTimeMillis();
+                HookResult hRes = rawHandler.onMessage(session, mail);
+                long executionTime = System.currentTimeMillis() - start;
 
-                    if (rHooks != null) {
-                        for (int i2 = 0; i2 < rHooks.size(); i2++) {
-                            Object rHook = rHooks.get(i2);
-                            session.getLogger().debug("executing hook " + rHook);
+                if (rHooks != null) {
+                    for (int i2 = 0; i2 < rHooks.size(); i2++) {
+                        Object rHook = rHooks.get(i2);
+                        session.getLogger().debug("executing hook " + rHook);
 
-                            hRes = ((HookResultHook) rHook).onHookResult(session, hRes, executionTime, rawHandler);
-                        }
-                    }
-
-                    SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(hRes);
-
-                    // if the response is received, stop processing of command
-                    // handlers
-                    if (response != null) {
-                        return response;
+                        hRes = ((HookResultHook) rHook).onHookResult(session, hRes, executionTime, rawHandler);
                     }
                 }
 
-                // Not queue the message!
-                SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(new HookResult(HookReturnCode.DENY));
-                return response;
+                SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(hRes);
+
+                // if the response is received, stop processing of command
+                // handlers
+                if (response != null) {
+                    return response;
+                }
+            }
+
+            // Not queue the message!
+            SMTPResponse response = AbstractHookableCmdHandler.calcDefaultSMTPResponse(new HookResult(HookReturnCode.DENY));
+            return response;
 
           
-            }
-        } finally {
-
-            session.popLineHandler();
         }
+        
         return null;
     }
 

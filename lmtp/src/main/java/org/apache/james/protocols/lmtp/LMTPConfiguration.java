@@ -50,9 +50,12 @@ public abstract class LMTPConfiguration implements SMTPConfiguration{
         return false;
     }
 
+
     @Override
     public boolean isStartTLSSupported() {
         return false;
     }
+    
+    
 
 }

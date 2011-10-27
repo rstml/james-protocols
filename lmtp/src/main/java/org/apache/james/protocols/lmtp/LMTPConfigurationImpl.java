@@ -52,5 +52,4 @@ public class LMTPConfigurationImpl extends LMTPConfiguration{
     public void setGreeting(String greeting) {
         this.greeting = greeting;
     }
-    
 }

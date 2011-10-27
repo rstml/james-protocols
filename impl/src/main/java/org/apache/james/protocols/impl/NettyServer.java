@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
  */
 public class NettyServer extends AbstractAsyncServer {
 
-    private Protocol protocol;
+    protected Protocol protocol;
     
-    private Logger logger = LoggerFactory.getLogger(NettyServer.class);
+    protected Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
     protected SSLContext context;
 
@@ -64,7 +64,7 @@ public class NettyServer extends AbstractAsyncServer {
     public void setUseExecutionHandler(boolean useHandler, int size) {
         if (isBound()) throw new IllegalStateException("Server running already");
         if (useHandler) {
-            eHandler =createExecutionHandler(size);
+            eHandler = createExecutionHandler(size);
         } else {
             if (eHandler != null) {
                 eHandler.releaseExternalResources();
@@ -75,12 +75,12 @@ public class NettyServer extends AbstractAsyncServer {
     
   
     protected ChannelUpstreamHandler createCoreHandler() {
-        return coreHandler;
+        return new BasicChannelUpstreamHandler(protocol, logger, context, null);
     }
     
     @Override
     public synchronized void bind() throws Exception {
-        coreHandler = new BasicChannelUpstreamHandler(protocol, logger, context, null);
+        coreHandler = createCoreHandler();
         super.bind();
     }
 

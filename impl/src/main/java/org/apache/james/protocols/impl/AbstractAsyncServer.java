@@ -31,6 +31,7 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.ServerSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.jboss.netty.util.ExternalResourceReleasable;
 
 /**
  * Abstract base class for Servers which want to use async io
@@ -122,6 +123,10 @@ public abstract class AbstractAsyncServer {
      */
     public synchronized void unbind() {
         if (started == false) return;
+        ChannelPipelineFactory factory = bootstrap.getPipelineFactory();
+        if (factory instanceof ExternalResourceReleasable) {
+            ((ExternalResourceReleasable) factory).releaseExternalResources();
+        }
         channels.close().awaitUninterruptibly();
         bootstrap.releaseExternalResources();
         started = false;

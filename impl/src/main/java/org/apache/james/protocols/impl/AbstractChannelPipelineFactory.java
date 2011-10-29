@@ -28,6 +28,7 @@ import org.jboss.netty.handler.codec.frame.DelimiterBasedFrameDecoder;
 import org.jboss.netty.handler.codec.frame.Delimiters;
 import org.jboss.netty.handler.execution.ExecutionHandler;
 import org.jboss.netty.handler.stream.ChunkedWriteHandler;
+import org.jboss.netty.util.ExternalResourceReleasable;
 import org.jboss.netty.util.HashedWheelTimer;
 
 /**
@@ -35,7 +36,7 @@ import org.jboss.netty.util.HashedWheelTimer;
  * 
  *
  */
-public abstract class AbstractChannelPipelineFactory implements ChannelPipelineFactory{
+public abstract class AbstractChannelPipelineFactory implements ChannelPipelineFactory, ExternalResourceReleasable{
 
     public final static int MAX_LINE_LENGTH = 8192;
     private final ConnectionLimitUpstreamHandler connectionLimitHandler;
@@ -98,6 +99,11 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
      * @return coreHandeler
      */
     protected abstract ChannelUpstreamHandler createHandler();
+
+    @Override
+    public void releaseExternalResources() {
+        timer.stop();
+    }
     
 
 

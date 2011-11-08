@@ -338,7 +338,7 @@ public class AuthCmdHandler
                 
                 if (res != null) {
                     if (SMTPRetCode.AUTH_FAILED.equals(res.getRetCode())) {
-                        session.getLogger().error("AUTH method "+authType+" failed");
+                        session.getLogger().info("AUTH method "+authType+" failed");
                     } else if (SMTPRetCode.AUTH_OK.equals(res.getRetCode())) {
                         if (session.getLogger().isDebugEnabled()) {
                             // TODO: Make this string a more useful debug message

@@ -37,11 +37,20 @@ import org.apache.james.protocols.smtp.core.SMTPCommandDispatcherLineHandler;
 import org.apache.james.protocols.smtp.core.VrfyCmdHandler;
 import org.apache.james.protocols.smtp.core.esmtp.MailSizeEsmtpExtension;
 import org.apache.james.protocols.smtp.core.esmtp.StartTlsCmdHandler;
+import org.apache.james.protocols.smtp.hook.Hook;
 
 public class LMTPProtocolHandlerChain extends SMTPProtocolHandlerChain{
 
-    public LMTPProtocolHandlerChain() throws WiringException {
+    public LMTPProtocolHandlerChain() {
         super();
+    }
+
+    public LMTPProtocolHandlerChain(boolean addDefault) {
+        super(addDefault);
+    }
+
+    public LMTPProtocolHandlerChain(Hook... hooks) throws WiringException {
+        super(hooks);
     }
 
     @Override

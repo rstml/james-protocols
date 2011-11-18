@@ -42,6 +42,7 @@
         <module>smtp</module>
         <module>lmtp</module>
         <module>impl</module>
+        <module>pop3</module>
     </modules>
 
     <scm>
@@ -59,6 +60,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.james.protocols</groupId>
+                <artifactId>protocols-pop3</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.james.protocols</groupId>
                 <artifactId>protocols-lmtp</artifactId>

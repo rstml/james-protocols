@@ -86,5 +86,19 @@ public interface ProtocolTransport {
      * @return lineCount
      */
     int getPushedLineHandlerCount();
+    
+    
+    /**
+     * Set the {@link ProtocolTransport} readable or not. If its not readable then no new lines should get processed 
+     * 
+     * @param readable
+     */
+    void setReadable(boolean readable);
 
+    /**
+     * Return <code>true</code> if the channel is readable
+     * 
+     * @return
+     */
+    boolean isReadable();
 }

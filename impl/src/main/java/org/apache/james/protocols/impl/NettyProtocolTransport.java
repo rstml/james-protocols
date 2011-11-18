@@ -135,6 +135,16 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
     protected void writeToClient(InputStream in, ProtocolSession session) {
         channel.write(new ChunkedStream(in));
     }
+
+	@Override
+	public void setReadable(boolean readable) {
+		channel.setReadable(readable);
+	}
+
+	@Override
+	public boolean isReadable() {
+		return channel.isReadable();
+	}
     
     
     

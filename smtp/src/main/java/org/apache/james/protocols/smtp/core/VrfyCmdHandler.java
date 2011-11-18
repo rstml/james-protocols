@@ -21,8 +21,9 @@
 
 package org.apache.james.protocols.smtp.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
@@ -36,8 +37,9 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
   * Command handler for handling VRFY command
   */
 public class VrfyCmdHandler implements CommandHandler<SMTPSession> {
+    
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("VRFY"));
 
-    private static final String COMMAND_NAME = "VRFY";
 
     /**
      * Handler method called upon receipt of a VRFY command.
@@ -54,10 +56,7 @@ public class VrfyCmdHandler implements CommandHandler<SMTPSession> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add(COMMAND_NAME);
-        
-        return implCommands;
+    	return COMMANDS;
     }
 
 }

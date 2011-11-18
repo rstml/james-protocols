@@ -19,8 +19,9 @@
 
 package org.apache.james.protocols.smtp.core.esmtp;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.smtp.SMTPResponse;
@@ -40,7 +41,9 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
      * The name of the command handled by the command handler
      */
     private final static String COMMAND_NAME = "EHLO";
-
+    private final static Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_NAME));
+    // see http://issues.apache.org/jira/browse/JAMES-419
+    private final static List<String> ESMTP_FEATURES = Collections.unmodifiableList(Arrays.asList("PIPELINING", "ENHANCEDSTATUSCODES", "8BITMIME"));
     private List<EhloExtension> ehloExtensions;
 
     /**
@@ -56,7 +59,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
     private SMTPResponse doEHLO(SMTPSession session, String argument) {
         SMTPResponse resp = new SMTPResponse(SMTPRetCode.MAIL_OK, new StringBuilder(session.getHelloName()).append(" Hello ").append(argument)
                 .append(" [")
-                .append(session.getRemoteIPAddress()).append("])"));
+                .append(session.getRemoteAddress().getAddress().getHostAddress()).append("])"));
         
         session.getConnectionState().put(SMTPSession.CURRENT_HELO_MODE,
                 COMMAND_NAME);
@@ -73,10 +76,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add(COMMAND_NAME);
-
-        return implCommands;
+        return COMMANDS;
     }
 
     /**
@@ -169,12 +169,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
      * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
      */
     public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
-        List<String> extensions = new ArrayList<String>();
-        extensions.add("PIPELINING");
-        extensions.add("ENHANCEDSTATUSCODES");
-        // see http://issues.apache.org/jira/browse/JAMES-419
-        extensions.add("8BITMIME");
-        return extensions;
+        return ESMTP_FEATURES;
     }
 
 }

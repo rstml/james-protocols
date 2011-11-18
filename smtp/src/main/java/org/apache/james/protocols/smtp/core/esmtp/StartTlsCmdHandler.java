@@ -19,8 +19,9 @@
 
 package org.apache.james.protocols.smtp.core.esmtp;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.api.Request;
@@ -40,14 +41,14 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
      * The name of the command handled by the command handler
      */
     private final static String COMMAND_NAME = "STARTTLS";
+    private final static Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_NAME));
+    private final static List<String> FEATURES = Collections.unmodifiableList(Arrays.asList(COMMAND_NAME));
 
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+        return COMMANDS;
     }
 
     /**
@@ -84,13 +85,14 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
     /**
      * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
      */
+    @SuppressWarnings("unchecked")
     public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
-        List<String> esmtpextensions = new ArrayList<String>();
         // SMTP STARTTLS
         if (!session.isTLSStarted() && session.isStartTLSSupported()) {
-            esmtpextensions.add("STARTTLS");
+            return FEATURES;
+        } else {
+            return Collections.EMPTY_LIST;
         }
-        return esmtpextensions;
 
     }
 

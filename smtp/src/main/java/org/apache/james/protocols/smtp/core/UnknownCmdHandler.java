@@ -21,8 +21,9 @@
 
 package org.apache.james.protocols.smtp.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -40,15 +41,13 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
      * The name of the command handled by the command handler
      */
     public static final String UNKNOWN_COMMAND = "UNKNOWN";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(UNKNOWN_COMMAND));
 
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add(UNKNOWN_COMMAND);
-
-        return implCommands;
+        return COMMANDS;
     }
 
     @Override

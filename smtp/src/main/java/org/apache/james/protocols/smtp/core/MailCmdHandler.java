@@ -19,8 +19,9 @@
 
 package org.apache.james.protocols.smtp.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.apache.mailet.MailAddress;
  * Handles MAIL command
  */
 public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("MAIL"));
 
     /**
      * A map of parameterHooks
@@ -92,10 +94,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add("MAIL");
-
-        return implCommands;
+    	return COMMANDS;
     }
 
     /**

@@ -23,8 +23,9 @@ package org.apache.james.protocols.smtp.core.esmtp;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -57,7 +58,10 @@ import org.apache.james.protocols.smtp.hook.MailParametersHook;
  */
 public class AuthCmdHandler
     implements CommandHandler<SMTPSession>, EhloExtension, ExtensibleHandler, MailParametersHook {
-
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("AUTH"));
+    private static final String[] MAIL_PARAMS = { "AUTH" };
+    private static final List<String> ESMTP_FEATURES = Collections.unmodifiableList(Arrays.asList("AUTH LOGIN PLAIN", "AUTH=LOGIN PLAIN"));
+    
     private final static Charset CHARSET = Charset.forName("US-ASCII");
     private abstract class AbstractSMTPLineHandler implements LineHandler<SMTPSession> {
 
@@ -443,10 +447,7 @@ public class AuthCmdHandler
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add("AUTH");
-        
-        return implCommands;
+        return COMMANDS;
     }
 
     /**
@@ -454,12 +455,9 @@ public class AuthCmdHandler
      */
     public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
         if (session.isAuthSupported()) {
-            List<String> resp = new LinkedList<String>();
-            resp.add("AUTH LOGIN PLAIN");
-            resp.add("AUTH=LOGIN PLAIN");
-            return resp;
+            return ESMTP_FEATURES;
         } else {
-            return null;
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -511,7 +509,7 @@ public class AuthCmdHandler
      * @see org.apache.james.protocols.smtp.hook.MailParametersHook#getMailParamNames()
      */
     public String[] getMailParamNames() {
-        return new String[] { "AUTH" };
+        return MAIL_PARAMS;
     }
 
 }

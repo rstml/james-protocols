@@ -20,7 +20,9 @@
 package org.apache.james.protocols.smtp.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -40,6 +42,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
         CommandHandler<SMTPSession> {
 
     public static final String CURRENT_RECIPIENT = "CURRENT_RECIPIENT"; // Current recipient
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("RCPT"));
 
    
     
@@ -229,10 +232,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add("RCPT");
-
-        return implCommands;
+    	return COMMANDS;
     }
 
     /**

@@ -58,13 +58,14 @@ public class SpamTrapHandler implements RcptHook {
      * @see org.apache.james.protocols.smtp.hook.RcptHook#doRcpt(org.apache.james.protocols.smtp.SMTPSession, org.apache.mailet.MailAddress, org.apache.mailet.MailAddress)
      */
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
-        if (isBlocked(session.getRemoteIPAddress(), session)) {
+        String address = session.getRemoteAddress().getAddress().getHostAddress();
+        if (isBlocked(address, session)) {
             return new HookResult(HookReturnCode.DENY);
         } else {
          
             if (spamTrapRecips.contains(rcpt.toString().toLowerCase())){
         
-                addIp(session.getRemoteIPAddress(), session);
+                addIp(address, session);
             
                 return new HookResult(HookReturnCode.DENY);
             }

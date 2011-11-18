@@ -34,7 +34,7 @@ public class ReverseEqualsEhloHeloHandler extends ResolvableEhloHeloHandler {
         try {
             // get reverse entry
             String reverse = dnsService.getHostName(dnsService.getByName(
-                    session.getRemoteIPAddress()));
+                    session.getRemoteAddress().getAddress().getHostAddress()));
             if (!argument.equals(reverse)) {
                 return true;
             }

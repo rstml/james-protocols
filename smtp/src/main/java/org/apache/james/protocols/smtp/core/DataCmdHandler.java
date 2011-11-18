@@ -19,7 +19,9 @@
 package org.apache.james.protocols.smtp.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,6 +45,8 @@ import org.apache.mailet.MailAddress;
  */
 public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHandler {
 
+	private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("DATA"));
+	
     public static final class DataConsumerLineHandler implements LineHandler<SMTPSession> {
 
         /**
@@ -128,10 +132,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add("DATA");
-        
-        return implCommands;
+    	return COMMANDS;
     }
 
 

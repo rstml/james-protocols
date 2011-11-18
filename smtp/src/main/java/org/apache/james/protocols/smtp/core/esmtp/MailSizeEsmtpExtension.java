@@ -19,6 +19,8 @@
 
 package org.apache.james.protocols.smtp.core.esmtp;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,6 +43,8 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
 
     private final static String MESG_SIZE = "MESG_SIZE"; // The size of the
     private final static String MESG_FAILED = "MESG_FAILED";   // Message failed flag
+    private final static String[] MAIL_PARAMS = { "SIZE" };
+
 
 
     /**
@@ -57,20 +61,21 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
      * @see org.apache.james.protocols.smtp.hook.MailParametersHook#getMailParamNames()
      */
     public String[] getMailParamNames() {
-        return new String[] { "SIZE" };
+        return MAIL_PARAMS;
     }
 
     /**
      * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
      */
+    @SuppressWarnings("unchecked")
     public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
-        LinkedList<String> resp = new LinkedList<String>();
         // Extension defined in RFC 1870
         long maxMessageSize = session.getMaxMessageSize();
         if (maxMessageSize > 0) {
-            resp.add("SIZE " + maxMessageSize);
+            return Arrays.asList("SIZE " + maxMessageSize);
+        } else {
+            return Collections.EMPTY_LIST;
         }
-        return resp;
     }
 
 
@@ -113,8 +118,8 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
             StringBuilder errorBuffer = new StringBuilder(256).append(
                     "Rejected message from ").append(
                     tempSender != null ? tempSender : null).append(
-                    " from host ").append(session.getRemoteHost()).append(" (")
-                    .append(session.getRemoteIPAddress()).append(") of size ")
+                    " from ")
+                    .append(session.getRemoteAddress().getAddress().getHostAddress()).append(" of size ")
                     .append(size).append(
                             " exceeding system maximum message size of ")
                     .append(maxMessageSize).append("based on SIZE option.");
@@ -186,9 +191,8 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
             StringBuilder errorBuffer = new StringBuilder(256).append(
                     "Rejected message from ").append(
                     session.getState().get(SMTPSession.SENDER).toString())
-                    .append(" from host ").append(session.getRemoteHost())
-                    .append(" (").append(session.getRemoteIPAddress())
-                    .append(") exceeding system maximum message size of ")
+                    .append(" from ").append(session.getRemoteAddress().getAddress().getHostAddress())
+                    .append(" exceeding system maximum message size of ")
                     .append(
                             session.getMaxMessageSize());
             session.getLogger().error(errorBuffer.toString());

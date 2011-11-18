@@ -69,7 +69,7 @@ public abstract class AbstractGreylistHandler implements RcptHook {
         if (senderAddress != null) sender = senderAddress.toString();
     
         long time = System.currentTimeMillis();
-        String ipAddress = session.getRemoteIPAddress();
+        String ipAddress = session.getRemoteAddress().getAddress().getHostAddress();
         
         try {
             long createTimeStamp = 0;
@@ -208,7 +208,7 @@ public abstract class AbstractGreylistHandler implements RcptHook {
         if (!session.isRelayingAllowed()) {
             return doGreyListCheck(session, sender,rcpt);
         } else {
-            session.getLogger().info("IpAddress " + session.getRemoteIPAddress() + " is allowed to send. Skip greylisting.");
+            session.getLogger().info("IpAddress " + session.getRemoteAddress().getAddress().getHostAddress() + " is allowed to send. Skip greylisting.");
         }
         return new HookResult(HookReturnCode.DECLINED);
     }

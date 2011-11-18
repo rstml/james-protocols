@@ -21,8 +21,9 @@
 
 package org.apache.james.protocols.smtp.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
@@ -39,7 +40,7 @@ public class RsetCmdHandler implements CommandHandler<SMTPSession> {
     /**
      * The name of the command handled by the command handler
      */
-    private final static String COMMAND_NAME = "RSET";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("RSET"));
 
     /**
      * handles RSET command
@@ -71,10 +72,7 @@ public class RsetCmdHandler implements CommandHandler<SMTPSession> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add(COMMAND_NAME);
-        
-        return implCommands;
+    	return COMMANDS;
     }
     
 }

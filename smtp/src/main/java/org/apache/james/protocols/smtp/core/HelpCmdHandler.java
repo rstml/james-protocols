@@ -21,8 +21,9 @@
 
 package org.apache.james.protocols.smtp.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
@@ -36,11 +37,12 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
   * Handles HELP command
   */
 public class HelpCmdHandler implements CommandHandler<SMTPSession> {
-    /**
+    private static final String COMMAND_NAME = "HELP";
+
+	/**
      * The name of the command handled by the command handler
      */
-    private final static String COMMAND_NAME = "HELP";
-
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_NAME));
 
     /**
      * handles HELP command
@@ -54,9 +56,6 @@ public class HelpCmdHandler implements CommandHandler<SMTPSession> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        Collection<String> implCommands = new ArrayList<String>();
-        implCommands.add(COMMAND_NAME);
-        
-        return implCommands;
+    	return COMMANDS;
     }
 }

@@ -112,6 +112,9 @@ public class SMTPProtocolHandlerChain extends ProtocolHandlerChainImpl {
     
 
     private boolean checkForAuth(ProtocolHandler handler) {
+        if (isReadyOnly()) {
+            throw new UnsupportedOperationException("Read-Only");
+        }
         if (handler instanceof AuthHook && !authHandler) {
             if (!add(new AuthCmdHandler())) {
                 return false;

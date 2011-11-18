@@ -19,8 +19,9 @@
 
 package org.apache.james.protocols.pop3.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.api.Request;
@@ -35,7 +36,8 @@ import org.apache.james.protocols.pop3.StartTlsPop3Response;
  * with the STSL command
  */
 public class StlsCmdHandler implements CommandHandler<POP3Session>, CapaCapability {
-    public final static String COMMAND_NAME = "STLS";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("STLS"));
+    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("STLS"));
 
     /**
      * @see CommandHandler#onCommand(org.apache.james.protocols.api.ProtocolSession, Request)
@@ -57,21 +59,19 @@ public class StlsCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
     /**
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
-    public List<String> getImplementedCapabilities(POP3Session session) {
-        List<String> caps = new ArrayList<String>();
+    @SuppressWarnings("unchecked")
+	public List<String> getImplementedCapabilities(POP3Session session) {
         if (session.isStartTLSSupported() && session.getHandlerState() == POP3Session.AUTHENTICATION_READY) {
-            caps.add(COMMAND_NAME);
-            return caps;
+            return CAPS;
+        } else {
+        	return Collections.EMPTY_LIST;
         }
-        return caps;
     }
 
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+    	return COMMANDS;
     }
 }

@@ -19,8 +19,9 @@
 
 package org.apache.james.protocols.pop3.core;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.api.Request;
@@ -34,7 +35,7 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
  * Handles DELE command
  */
 public class DeleCmdHandler implements CommandHandler<POP3Session> {
-    private final static String COMMAND_NAME = "DELE";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("DELE"));
 
     /**
      * Handler method called upon receipt of a DELE command. This command
@@ -80,9 +81,7 @@ public class DeleCmdHandler implements CommandHandler<POP3Session> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+    	return COMMANDS;
     }
 
 }

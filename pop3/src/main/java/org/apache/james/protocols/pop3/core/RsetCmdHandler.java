@@ -21,7 +21,9 @@ package org.apache.james.protocols.pop3.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,7 +38,7 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
  * Handles RSET command
  */
 public class RsetCmdHandler implements CommandHandler<POP3Session> {
-    private final static String COMMAND_NAME = "RSET";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("RSET"));
 
     /**
      * Handler method called upon receipt of a RSET command. Calls stat() to
@@ -77,9 +79,7 @@ public class RsetCmdHandler implements CommandHandler<POP3Session> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+    	return COMMANDS;
     }
 
 }

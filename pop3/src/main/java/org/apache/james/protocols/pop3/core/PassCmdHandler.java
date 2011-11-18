@@ -21,7 +21,9 @@ package org.apache.james.protocols.pop3.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,8 +38,8 @@ import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
  * Handles PASS command
  */
 public class PassCmdHandler extends RsetCmdHandler {
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("PASS"));
 
-    private final static String COMMAND_NAME = "PASS";
     private MailboxFactory mailboxManager;
 
     public void setMailboxFactory(MailboxFactory manager) {
@@ -84,9 +86,7 @@ public class PassCmdHandler extends RsetCmdHandler {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+    	return COMMANDS;
     }
 
 }

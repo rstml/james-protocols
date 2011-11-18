@@ -20,8 +20,9 @@
 package org.apache.james.protocols.pop3.core;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,7 +37,8 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
  * Handles UIDL command
  */
 public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapability {
-    private final static String COMMAND_NAME = "UIDL";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("UIDL"));
+    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("UIDL"));
 
     /**
      * Handler method called upon receipt of a UIDL command. Returns a listing
@@ -99,21 +101,19 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
     /**
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
-    public List<String> getImplementedCapabilities(POP3Session session) {
-        List<String> caps = new ArrayList<String>();
+    @SuppressWarnings("unchecked")
+	public List<String> getImplementedCapabilities(POP3Session session) {
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
-            caps.add(COMMAND_NAME);
-            return caps;
+        	return CAPS;
+        } else {
+        	return Collections.EMPTY_LIST;
         }
-        return caps;
     }
 
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+    	return COMMANDS;
     }
 }

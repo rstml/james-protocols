@@ -21,8 +21,9 @@ package org.apache.james.protocols.pop3.core;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.api.Request;
@@ -38,7 +39,7 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
  */
 public class RetrCmdHandler implements CommandHandler<POP3Session> {
 
-    private final static String COMMAND_NAME = "RETR";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("RETR"));
 
     /**
      * Handler method called upon receipt of a RETR command. This command
@@ -96,9 +97,7 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+    	return COMMANDS;
     }
 
 }

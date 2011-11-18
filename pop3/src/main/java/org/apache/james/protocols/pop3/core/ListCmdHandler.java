@@ -20,7 +20,9 @@
 package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.api.Request;
@@ -34,6 +36,7 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
  * Handles LIST command
  */
 public class ListCmdHandler implements CommandHandler<POP3Session> {
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("LIST"));
 
     /**
      * Handler method called upon receipt of a LIST command. Returns the number
@@ -109,9 +112,7 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add("LIST");
-        return commands;
+    	return COMMANDS;
     }
 
 }

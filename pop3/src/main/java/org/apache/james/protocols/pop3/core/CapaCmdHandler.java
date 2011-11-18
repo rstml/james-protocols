@@ -20,7 +20,9 @@
 package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -35,9 +37,10 @@ import org.apache.james.protocols.pop3.POP3Session;
 /**
  * This handler is used to handle CAPA commands
  */
-public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHandler, CapaCapability {
-    public final static String COMMAND_NAME = "CAPA";
+public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHandler, CapaCapability {    
     private List<CapaCapability> caps;
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("CAPA"));
+    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("PIPELINING"));
 
     /**
      * @see
@@ -82,18 +85,14 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+        return COMMANDS;
     }
 
     /**
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
     public List<String> getImplementedCapabilities(POP3Session session) {
-        List<String> cList = new ArrayList<String>();
-        cList.add("PIPELINING");
-        return cList;
+    	return CAPS;
     }
 
 }

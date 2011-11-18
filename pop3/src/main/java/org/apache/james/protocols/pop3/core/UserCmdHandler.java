@@ -20,7 +20,9 @@
 package org.apache.james.protocols.pop3.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.api.Request;
@@ -30,11 +32,13 @@ import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
 
 /**
- * Handles NOOP command
+ * Handles USER command
  */
 public class UserCmdHandler implements CommandHandler<POP3Session>, CapaCapability {
 
-    private final static String COMMAND_NAME = "USER";
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("USER"));
+    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("USER"));
+
 
     /**
      * Handler method called upon receipt of a USER command. Reads in the user
@@ -57,17 +61,13 @@ public class UserCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
     public List<String> getImplementedCapabilities(POP3Session session) {
-        List<String> caps = new ArrayList<String>();
-        caps.add(COMMAND_NAME);
-        return caps;
+    	return CAPS;
     }
 
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-        List<String> commands = new ArrayList<String>();
-        commands.add(COMMAND_NAME);
-        return commands;
+    	return COMMANDS;
     }
 }

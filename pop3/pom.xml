@@ -30,7 +30,7 @@
     <groupId>org.apache.james.protocols</groupId>
     <artifactId>protocols-pop3</artifactId>
 
-    <name>Apache James Protocols SMTP</name>
+    <name>Apache James Protocols POP3</name>
 
     <dependencies>
         <dependency>
@@ -40,14 +40,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.javamail</groupId>
-            <artifactId>geronimo-javamail_1.4_mail</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

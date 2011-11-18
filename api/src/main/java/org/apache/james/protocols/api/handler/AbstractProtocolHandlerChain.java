@@ -31,11 +31,11 @@ import java.util.List;
 public abstract class AbstractProtocolHandlerChain implements ProtocolHandlerChain{
 
 	/**
-	 * Return a List of all Handlers
+	 * Return an immutable List of all Handlers
 	 * 
 	 * @return handlerList
 	 */
-	protected abstract List<Object> getHandlers();
+	protected abstract List<ProtocolHandler> getHandlers();
 	
     /**
 	 * @see org.apache.james.protocols.api.handler.ProtocolHandlerChain#getHandlers(java.lang.Class)
@@ -43,7 +43,7 @@ public abstract class AbstractProtocolHandlerChain implements ProtocolHandlerCha
     @SuppressWarnings("unchecked")
     public <T> LinkedList<T> getHandlers(Class<T> type) {
         LinkedList<T> result = new LinkedList<T>();
-        List<Object> handlers = getHandlers();
+        List<ProtocolHandler> handlers = getHandlers();
         for (Iterator<?> i = handlers.iterator(); i.hasNext(); ) {
             Object handler = i.next();
             if (type.isInstance(handler)) {
@@ -59,8 +59,8 @@ public abstract class AbstractProtocolHandlerChain implements ProtocolHandlerCha
      * 
      * @throws WiringException 
      */
-    public final void wireExtensibleHandlers() throws WiringException {
-        List<Object> handlers = getHandlers();
+    public void wireExtensibleHandlers() throws WiringException {
+        List<ProtocolHandler> handlers = getHandlers();
         for (Iterator<?> h = handlers.iterator(); h.hasNext(); ) {
             Object handler = h.next();
             if (handler instanceof ExtensibleHandler) {

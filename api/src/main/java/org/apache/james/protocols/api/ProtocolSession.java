@@ -79,9 +79,19 @@ public interface ProtocolSession {
     String getRemoteIPAddress();
     
     
-    InetSocketAddress getLocalAddress();
-    
+    /**
+     * Return the {@link InetSocketAddress} of the remote peer
+     * 
+     * @return address
+     */
     InetSocketAddress getRemoteAddress();
+
+    /**
+     * Return the {@link InetSocketAddress} of the local bound address
+     * 
+     * @return local
+     */
+    InetSocketAddress getLocalAddress();
     
     /**
      * Return the ID for the session

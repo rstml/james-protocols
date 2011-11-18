@@ -21,6 +21,7 @@ package org.apache.james.protocols.lmtp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.apache.james.protocols.smtp.core.DataCmdHandler;
@@ -44,8 +45,8 @@ public class LMTPProtocolHandlerChain extends SMTPProtocolHandlerChain{
     }
 
     @Override
-    protected List<Object> initDefaultHandlers() {
-        List<Object> defaultHandlers = new ArrayList<Object>();
+    protected List<ProtocolHandler> initDefaultHandlers() {
+        List<ProtocolHandler> defaultHandlers = new ArrayList<ProtocolHandler>();
         defaultHandlers.add(new SMTPCommandDispatcherLineHandler());
         defaultHandlers.add(new ExpnCmdHandler());
         defaultHandlers.add(new LhloCmdHandler());

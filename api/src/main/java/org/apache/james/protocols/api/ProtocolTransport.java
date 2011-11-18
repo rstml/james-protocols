@@ -36,6 +36,11 @@ public interface ProtocolTransport {
      */
     InetSocketAddress getRemoteAddress();
 
+    /**
+     * Return the {@link InetSocketAddress} of the local bound address
+     * 
+     * @return local
+     */
     InetSocketAddress getLocalAddress();
 
     

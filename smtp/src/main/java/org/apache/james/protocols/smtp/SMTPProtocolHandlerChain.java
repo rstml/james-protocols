@@ -19,11 +19,12 @@
 package org.apache.james.protocols.smtp;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
-import org.apache.james.protocols.api.handler.AbstractProtocolHandlerChain;
+import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
+import org.apache.james.protocols.api.handler.ProtocolHandlerChainImpl;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.smtp.core.DataCmdHandler;
 import org.apache.james.protocols.smtp.core.DataLineMessageHookHandler;
@@ -46,34 +47,48 @@ import org.apache.james.protocols.smtp.core.esmtp.MailSizeEsmtpExtension;
 import org.apache.james.protocols.smtp.core.esmtp.StartTlsCmdHandler;
 import org.apache.james.protocols.smtp.hook.AuthHook;
 import org.apache.james.protocols.smtp.hook.Hook;
-import org.apache.james.protocols.smtp.hook.MessageHook;
 
 /**
  * This {@link ProtocolHandlerChain} implementation add all needed handlers to
  * the chain to act as full blown SMTPServer. By default messages will just get
  * rejected after the DATA command.
  * 
- * If you want to accept the messagejust add a {@link MessageHook}
- * implementation to the chain and handle the queuing
+ * 
+ * 
  * 
  * 
  * 
  */
-public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
-    private final List<Object> defaultHandlers = new ArrayList<Object>();
-    private final List<Hook> hooks = new ArrayList<Hook>();
-    private final List<Object> handlers = new ArrayList<Object>();
-    private boolean authHandler = false;
+public class SMTPProtocolHandlerChain extends ProtocolHandlerChainImpl {
+    private volatile boolean authHandler = false;
     
-    public SMTPProtocolHandlerChain() throws WiringException {
-        defaultHandlers.addAll(initDefaultHandlers());
-        copy();
-        
-        wireExtensibleHandlers();
+    public SMTPProtocolHandlerChain() {
+        this(true);
     }
 
-    protected List<Object> initDefaultHandlers() {
-        List<Object> defaultHandlers = new ArrayList<Object>();
+        
+    public SMTPProtocolHandlerChain(boolean addDefault) {
+        if (addDefault) {
+            addAll(initDefaultHandlers());      
+        }
+    }
+
+    /**
+     * Add all default handlers to the chain and the given {@link Hook}'s. After that {@link #wireExtensibleHandlers()} is called
+     * 
+     * @param hooks
+     * @throws WiringException
+     */
+    public SMTPProtocolHandlerChain(Hook... hooks) throws WiringException {
+        this(true);    
+        for (int i = 0; i < hooks.length; i++) {
+            add(hooks[i]);
+        }
+        wireExtensibleHandlers();
+    }
+    
+    protected List<ProtocolHandler> initDefaultHandlers() {
+        List<ProtocolHandler> defaultHandlers = new ArrayList<ProtocolHandler>();
         defaultHandlers.add(new SMTPCommandDispatcherLineHandler());
         defaultHandlers.add(new ExpnCmdHandler());
         defaultHandlers.add(new EhloCmdHandler());
@@ -96,74 +111,44 @@ public class SMTPProtocolHandlerChain extends AbstractProtocolHandlerChain {
     }
     
 
-    /**
-     * Add the hook to the chain
-     * 
-     * @param hook
-     * @throws WiringException
-     */
-    public final synchronized void addHook(Hook hook) throws WiringException {
-        if (hook instanceof AuthHook && !authHandler) {
-            defaultHandlers.add(new AuthCmdHandler());
+    private boolean checkForAuth(ProtocolHandler handler) {
+        if (handler instanceof AuthHook && !authHandler) {
+            if (!add(new AuthCmdHandler())) {
+                return false;
+            }
             authHandler = true;
         }
-        addHook(hooks.size(), hook);
+        return true;
+    }
+    public boolean add(ProtocolHandler handler) {
+        checkForAuth(handler);
+        return super.add(handler);
     }
 
-    /**
-     * Add the hook to the chain on the given index
-     * 
-     * @param index
-     * @param hook
-     * @throws WiringException
-     */
-    public final synchronized void addHook(int index, Hook hook) throws WiringException {
-        hooks.add(index, hook);
-        copy();
-        wireExtensibleHandlers();
-
-    }
-
-    /**
-     * Remove the Hook found on the given index from the chain
-     * 
-     * @param index
-     * @return hook
-     * @throws WiringException
-     */
-    public final synchronized Hook removeHook(int index) throws WiringException {
-        Hook hook = hooks.remove(index);
-        handlers.remove(hook);
-        wireExtensibleHandlers();
-        return hook;
-
-    }
-
-    /**
-     * Return the index of the given hook
-     * 
-     * @param hook
-     * @return index
-     */
-    public synchronized int getIndexOfHook(Hook hook) {
-        return hooks.indexOf(hook);
-    }
-
-    /**
-     * @see
-     * org.apache.james.protocols.api.handler.AbstractProtocolHandlerChain#getHandlers()
-     */
     @Override
-    protected synchronized List<Object> getHandlers() {
-        return Collections.unmodifiableList(handlers);
+    public boolean addAll(Collection<? extends ProtocolHandler> c) {
+        for (ProtocolHandler handler: c) {
+            if (!checkForAuth(handler)) {
+                return false;
+            }
+        }
+        return super.addAll(c);
     }
 
-    /**
-     * Copy the lists
-     */
-    private void copy() {
-        handlers.clear();
-        handlers.addAll(defaultHandlers);
-        handlers.addAll(hooks);
+    @Override
+    public boolean addAll(int index, Collection<? extends ProtocolHandler> c) {
+        for (ProtocolHandler handler: c) {
+            if (!checkForAuth(handler)) {
+                return false;
+            }
+        }
+        return super.addAll(index, c);
     }
+
+    @Override
+    public void add(int index, ProtocolHandler element) {
+        checkForAuth(element);
+        super.add(index, element);
+    }
+  
 }

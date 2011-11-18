@@ -44,10 +44,6 @@ public class CoreCmdHandlerLoader implements HandlersPackage {
 
     private final static String COMMANDDISPATCHER = POP3CommandDispatcherLineHandler.class.getName();
 
-    // logging stuff
-    private final String COMMANDHANDLERRESULTLOGGER = POP3CommandHandlerResultLogger.class.getName();
-
-
     private final List<String> commands = new LinkedList<String>();
 
     public CoreCmdHandlerLoader() {
@@ -69,9 +65,6 @@ public class CoreCmdHandlerLoader implements HandlersPackage {
         commands.add(UNKOWNCMDHANDLER);
         // add STARTTLS support to the core. See JAMES-1224
         commands.add(STLSCMDHANDLER);
-
-        // Add logging stuff
-        commands.add(COMMANDHANDLERRESULTLOGGER);
     }
 
     /**

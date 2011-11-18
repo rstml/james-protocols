@@ -23,23 +23,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
 
-import org.apache.james.mailbox.Content;
-import org.apache.james.mailbox.MailboxException;
-import org.apache.james.mailbox.MailboxSession;
-import org.apache.james.mailbox.MessageRange;
-import org.apache.james.mailbox.MessageResult;
-import org.apache.james.mailbox.MessageResult.FetchGroup;
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
-import org.apache.james.pop3server.POP3StreamResponse;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.pop3.MessageMetaData;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
+import org.apache.james.protocols.pop3.POP3StreamResponse;
 
 /**
  * Handles RETR command
@@ -47,19 +39,7 @@ import org.apache.james.protocols.api.handler.CommandHandler;
 public class RetrCmdHandler implements CommandHandler<POP3Session> {
 
     private final static String COMMAND_NAME = "RETR";
-    private final static FetchGroup GROUP = new FetchGroup() {
 
-        @Override
-        public int content() {
-            return FULL_CONTENT;
-        }
-
-        @Override
-        public Set<PartContentDescriptor> getPartContentDescriptors() {
-            return null;
-        }
-        
-    };
     /**
      * Handler method called upon receipt of a RETR command. This command
      * retrieves a particular mail message from the mailbox.
@@ -80,16 +60,14 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
                 List<MessageMetaData> uidList = (List<MessageMetaData>) session.getState().get(POP3Session.UID_LIST);
                 List<Long> deletedUidList = (List<Long>) session.getState().get(POP3Session.DELETED_UID_LIST);
 
-                MailboxSession mailboxSession = (MailboxSession) session.getState().get(POP3Session.MAILBOX_SESSION);
                 Long uid = uidList.get(num - 1).getUid();
                 if (deletedUidList.contains(uid) == false) {
-                    Iterator<MessageResult> results = session.getUserMailbox().getMessages(MessageRange.one(uid), GROUP, mailboxSession);
+                	
+                    InputStream content = session.getUserMailbox().getMessageContent(uid);
 
-                    if (results.hasNext()) {
-                        MessageResult result = results.next();
+                    if (content != null) {
 
-                        Content content = result.getFullContent();                           
-                        InputStream in = new CRLFTerminatedInputStream(new ExtraDotInputStream(content.getInputStream()));
+                        InputStream in = new CRLFTerminatedInputStream(new ExtraDotInputStream(content));
                         response = new POP3StreamResponse(POP3Response.OK_RESPONSE, "Message follows", in);
                         return response;
 
@@ -106,14 +84,6 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
                 }
             } catch (IOException ioe) {
                 response = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.");
-            } catch (MailboxException me) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.");
-            } catch (IndexOutOfBoundsException iob) {
-                StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
-                response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
-            } catch (NoSuchElementException e) {
-                StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
-                response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
             }
         } else {
             response = new POP3Response(POP3Response.ERR_RESPONSE);

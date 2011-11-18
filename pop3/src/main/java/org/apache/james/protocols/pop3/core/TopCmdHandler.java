@@ -19,49 +19,26 @@
 
 package org.apache.james.protocols.pop3.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.SequenceInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
-import org.apache.james.mailbox.MailboxException;
-import org.apache.james.mailbox.MailboxSession;
-import org.apache.james.mailbox.MessageRange;
-import org.apache.james.mailbox.MessageResult;
-import org.apache.james.mailbox.MessageResult.FetchGroup;
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
-import org.apache.james.pop3server.POP3StreamResponse;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.pop3.MessageMetaData;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
+import org.apache.james.protocols.pop3.POP3StreamResponse;
 
 /**
  * Handles TOP command
  */
 public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
     private final static String COMMAND_NAME = "TOP";
-    private final static FetchGroup GROUP = new FetchGroup() {
 
-        @Override
-        public int content() {
-            return BODY_CONTENT | HEADERS;
-        }
-
-        @Override
-        public Set<PartContentDescriptor> getPartContentDescriptors() {
-            return null;
-        }
-        
-    };
     
     /**
      * Handler method called upon receipt of a TOP command. This command
@@ -102,20 +79,14 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
                 List<MessageMetaData> uidList = (List<MessageMetaData>) session.getState().get(POP3Session.UID_LIST);
                 List<Long> deletedUidList = (List<Long>) session.getState().get(POP3Session.DELETED_UID_LIST);
 
-                MailboxSession mailboxSession = (MailboxSession) session.getState().get(POP3Session.MAILBOX_SESSION);
                 Long uid = uidList.get(num - 1).getUid();
                 if (deletedUidList.contains(uid) == false) {
 
-                    Iterator<MessageResult> results = session.getUserMailbox().getMessages(MessageRange.one(uid), GROUP, mailboxSession);
+                    InputStream content = session.getUserMailbox().getMessageContent(uid);
 
-                    if (results.hasNext()) {
-                        MessageResult result = results.next();
+                    if (content != null) {
+                        InputStream in = new CountingBodyInputStream(new ExtraDotInputStream(new CRLFTerminatedInputStream(content)), lines);
 
-                        InputStream headersIn = result.getHeaders().getInputStream();
-                        InputStream bodyIn = new CountingBodyInputStream(new ExtraDotInputStream(new CRLFTerminatedInputStream(result.getBody().getInputStream())), lines);
-
-                        // write body
-                        InputStream in = new SequenceInputStream(Collections.enumeration(Arrays.asList(headersIn, new ByteArrayInputStream("\r\n".getBytes()), bodyIn)));
 
                         response = new POP3StreamResponse(POP3Response.OK_RESPONSE, "Message follows", in);
                         return response;
@@ -131,8 +102,7 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
                 }
             } catch (IOException ioe) {
                 response = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.");
-            } catch (MailboxException me) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.");
+            
             } catch (IndexOutOfBoundsException iob) {
                 StringBuilder exceptionBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
                 response = new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
@@ -172,11 +142,13 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
      * This {@link InputStream} implementation can be used to limit the body
      * lines which will be read from the wrapped {@link InputStream}
      */
-    private final class CountingBodyInputStream extends FilterInputStream {
+    // TODO: Fix me!
+    private final class CountingBodyInputStream extends InputStream {
 
         private int count = 0;
         private int limit = -1;
         private int lastChar;
+		private InputStream in;
 
         /**
          * 
@@ -186,7 +158,7 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
          *            the lines to read. -1 is used for no limits
          */
         public CountingBodyInputStream(InputStream in, int limit) {
-            super(in);
+            this.in = in;
             this.limit = limit;
         }
 
@@ -211,36 +183,36 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
 
         }
 
-        @Override
-        public int read(byte[] b, int off, int len) throws IOException {
-            if (limit == -1) {
-                return in.read(b, off, len);
-            } else {
-                int i;
-                for (i = 0; i < len; i++) {
-                    int a = read();
-                    if (i == 0 && a == -1) {
-                        return -1;
-                    } else {
-                        if (a == -1) {
-                            break;
-                        } else {
-                            b[off++] = (byte) a;
-                        }
-                    }
-                }
-                return i;
-            }
-        }
+		@Override
+		public long skip(long n) throws IOException {
+			return in.skip(n);
+		}
 
-        @Override
-        public int read(byte[] b) throws IOException {
-            if (limit == -1) {
-                return in.read(b);
-            } else {
-                return read(b, 0, b.length);
-            }
-        }
+		@Override
+		public int available() throws IOException {
+			return in.available();
+		}
 
+		@Override
+		public void close() throws IOException {
+			in.close();
+		}
+
+		@Override
+		public void mark(int readlimit) {
+			// not supported
+		}
+
+		@Override
+		public synchronized void reset() throws IOException {
+			// do nothing as mark is not supported
+		}
+
+		@Override
+		public boolean markSupported() {
+			return false;
+		}
+        
+        
     }
 }

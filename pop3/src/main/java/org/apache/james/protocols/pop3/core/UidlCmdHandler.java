@@ -19,19 +19,18 @@
 
 package org.apache.james.protocols.pop3.core;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.james.mailbox.MailboxException;
-import org.apache.james.mailbox.MailboxSession;
-import org.apache.james.mailbox.MessageManager.MetaData;
-import org.apache.james.mailbox.MessageManager.MetaData.FetchGroup;
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
+
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.pop3.MessageMetaData;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * Handles UIDL command
@@ -50,17 +49,15 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
             List<MessageMetaData> uidList = (List<MessageMetaData>) session.getState().get(POP3Session.UID_LIST);
             List<Long> deletedUidList = (List<Long>) session.getState().get(POP3Session.DELETED_UID_LIST);
-            MailboxSession mailboxSession = (MailboxSession) session.getState().get(POP3Session.MAILBOX_SESSION);
             try {
-                MetaData mData = session.getUserMailbox().getMetaData(false, mailboxSession, FetchGroup.NO_COUNT);
-                long validity = mData.getUidValidity();
+                String identifier = session.getUserMailbox().getIdentifier();
                 if (parameters == null) {
                     response = new POP3Response(POP3Response.OK_RESPONSE, "unique-id listing follows");
                     for (int i = 0; i < uidList.size(); i++) {
                         Long uid = uidList.get(i).getUid();
                         if (deletedUidList.contains(uid) == false) {
                             // construct unique UIDL. See JAMES-1264
-                            StringBuilder responseBuffer = new StringBuilder(64).append(i + 1).append(" ").append(validity).append("-").append(uid);
+                            StringBuilder responseBuffer = new StringBuilder(64).append(i + 1).append(" ").append(identifier).append("-").append(uid);
                             response.appendLine(responseBuffer.toString());
                         }
                     }
@@ -73,7 +70,7 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
                         Long uid = uidList.get(num - 1).getUid();
                         if (deletedUidList.contains(uid) == false) {
                             // construct unique UIDL. See JAMES-1264
-                            StringBuilder responseBuffer = new StringBuilder(64).append(num).append(" ").append(validity).append("-").append(uid);
+                            StringBuilder responseBuffer = new StringBuilder(64).append(num).append(" ").append(identifier).append("-").append(uid);
                             response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
 
                         } else {
@@ -88,7 +85,7 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
                         response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                     }
                 }
-            } catch (MailboxException e) {
+            } catch (IOException e) {
                 response = new POP3Response(POP3Response.ERR_RESPONSE);
                 return response;
             }

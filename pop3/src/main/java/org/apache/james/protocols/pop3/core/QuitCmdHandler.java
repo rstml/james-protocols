@@ -23,31 +23,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.mail.Flags;
-
-import org.apache.james.mailbox.MessageManager;
-import org.apache.james.mailbox.MailboxManager;
-import org.apache.james.mailbox.MailboxSession;
-import org.apache.james.mailbox.MessageRange;
-import org.apache.james.mailbox.MailboxException;
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.pop3.Mailbox;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * Handles QUIT command
  */
 public class QuitCmdHandler implements CommandHandler<POP3Session> {
     private final static String COMMAND_NAME = "QUIT";
-    protected MailboxManager mailboxManager;
-
-    @Resource(name = "mailboxmanager")
-    public void setMailboxManager(MailboxManager manager) {
-        this.mailboxManager = manager;
-    }
 
     /**
      * Handler method called upon receipt of a QUIT command. This method handles
@@ -61,29 +48,21 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
             response.setEndSession(true);
             return response;
         }
-        MailboxSession mailboxSession = (MailboxSession) session.getState().get(POP3Session.MAILBOX_SESSION);
-
         List<Long> toBeRemoved = (List<Long>) session.getState().get(POP3Session.DELETED_UID_LIST);
         try {
-            MessageManager mailbox = session.getUserMailbox();
-
-            for (int i = 0; i < toBeRemoved.size(); i++) {
-                MessageRange range = MessageRange.one(toBeRemoved.get(i));
-                mailbox.setFlags(new Flags(Flags.Flag.DELETED), true, false, range, mailboxSession);
-                mailbox.expunge(range, mailboxSession);
+            Mailbox mailbox = session.getUserMailbox();
+            long uids[] = new long[toBeRemoved.size()];
+            for (int i = 0;i < toBeRemoved.size(); i++) {
+            	uids[i] = toBeRemoved.get(i);
             }
+            mailbox.remove(uids);
             response = new POP3Response(POP3Response.OK_RESPONSE, "Apache James POP3 Server signing off.");
         } catch (Exception ex) {
             response = new POP3Response(POP3Response.ERR_RESPONSE, "Some deleted messages were not removed");
             session.getLogger().error("Some deleted messages were not removed", ex);
         }
         response.setEndSession(true);
-        try {
-            mailboxManager.logout(mailboxSession, false);
-        } catch (MailboxException e) {
-            // nothing todo on logout
-        }
-
+      
         return response;
     }
 

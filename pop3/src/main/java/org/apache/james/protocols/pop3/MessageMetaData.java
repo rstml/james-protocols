@@ -16,17 +16,36 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.pop3.core;
+package org.apache.james.protocols.pop3;
 
 /**
- * Log {@link POP3Response} with {@link POP3Response#ERR_RESPONSE} return code
- * to INFO. The rest to DEBUG
+ * Hold meta data for a message
  */
-public class POP3CommandHandlerResultLogger extends AbstractCommandHandlerResultLogger<POP3Response, POP3Session> {
+public final class MessageMetaData {
 
-    @Override
-    protected boolean logWithInfo(String code) {
-        return code.startsWith(POP3Response.ERR_RESPONSE);
+    private long uid;
+    private long size;
+
+    public MessageMetaData(long uid, long size) {
+        this.uid = uid;
+        this.size = size;
     }
 
+    /**
+     * Return the uid of the message
+     * 
+     * @return uid
+     */
+    public long getUid() {
+        return uid;
+    }
+
+    /**
+     * Return the size of a message
+     * 
+     * @return size
+     */
+    public long getSize() {
+        return size;
+    }
 }

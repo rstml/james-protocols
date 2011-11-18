@@ -19,22 +19,18 @@
 
 package org.apache.james.protocols.pop3.core;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.james.mailbox.MailboxException;
-import org.apache.james.mailbox.MailboxSession;
-import org.apache.james.mailbox.MessageRange;
-import org.apache.james.mailbox.MessageResult;
-import org.apache.james.mailbox.MessageResult.FetchGroup;
-import org.apache.james.pop3server.POP3Response;
-import org.apache.james.pop3server.POP3Session;
+
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.pop3.MessageMetaData;
+import org.apache.james.protocols.pop3.POP3Response;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * Handles RSET command
@@ -42,20 +38,6 @@ import org.apache.james.protocols.api.handler.CommandHandler;
 public class RsetCmdHandler implements CommandHandler<POP3Session> {
     private final static String COMMAND_NAME = "RSET";
 
-    private final static FetchGroup GROUP = new FetchGroup() {
-
-        @Override
-        public int content() {
-            return MINIMAL;
-        }
-
-        @Override
-        public Set<PartContentDescriptor> getPartContentDescriptors() {
-            return null;
-        }
-        
-    };
-    
     /**
      * Handler method called upon receipt of a RSET command. Calls stat() to
      * reset the mailbox.
@@ -79,18 +61,11 @@ public class RsetCmdHandler implements CommandHandler<POP3Session> {
      */
     protected void stat(POP3Session session) {
         try {
-            MailboxSession mailboxSession = (MailboxSession) session.getState().get(POP3Session.MAILBOX_SESSION);
+            List<MessageMetaData> messages = session.getUserMailbox().getMessages();
 
-            List<MessageMetaData> uids = new ArrayList<MessageMetaData>();
-            Iterator<MessageResult> it = session.getUserMailbox().getMessages(MessageRange.all(), GROUP, mailboxSession);
-            while (it.hasNext()) {
-                MessageResult result = it.next();
-                uids.add(new MessageMetaData(result.getUid(), result.getSize()));
-
-            }
-            session.getState().put(POP3Session.UID_LIST, uids);
+            session.getState().put(POP3Session.UID_LIST, messages);
             session.getState().put(POP3Session.DELETED_UID_LIST, new ArrayList<Long>());
-        } catch (MailboxException e) {
+        } catch (IOException e) {
             // In the event of an exception being thrown there may or may not be
             // anything in userMailbox
             session.getLogger().error("Unable to STAT mail box ", e);

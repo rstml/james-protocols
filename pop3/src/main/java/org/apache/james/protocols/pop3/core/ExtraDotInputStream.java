@@ -23,32 +23,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 
-import org.apache.james.protocols.pop3.ReadByteFilterInputStream;
-
 
 /**
  * Adds extra dot if dot occurs in message body at beginning of line (according
  * to RFC1939)
  */
-public class ExtraDotInputStream extends ReadByteFilterInputStream {
+public class ExtraDotInputStream extends InputStream {
 
     boolean startLine = true;
     private int last;
+	private final PushbackInputStream in;
 
     public ExtraDotInputStream(InputStream in) {
-        super(new PushbackInputStream(in, 2));
+        this.in = new PushbackInputStream(in, 2);
         startLine = true;
     }
 
     
     @Override
     public int read() throws IOException {
-       PushbackInputStream pin = (PushbackInputStream) in;
-       int i = pin.read();
+       int i = in.read();
        if (startLine) {
            startLine = false;
            if (i == '.') {
-               pin.unread(i);
+        	   in.unread(i);
                return '.';
            }
            
@@ -62,5 +60,41 @@ public class ExtraDotInputStream extends ReadByteFilterInputStream {
        
 
     }
+
+
+	@Override
+	public long skip(long n) throws IOException {
+		throw new IOException("Skip not supported");
+	}
+
+
+	@Override
+	public int available() throws IOException {
+		return in.available();
+	}
+
+
+	@Override
+	public void close() throws IOException {
+		in.close();
+	}
+
+
+	@Override
+	public void mark(int readlimit) {
+		// not supported
+	}
+
+
+	@Override
+	public void reset() throws IOException {
+		// not supported
+	}
+
+
+	@Override
+	public boolean markSupported() {
+		return false;
+	}
 
 }

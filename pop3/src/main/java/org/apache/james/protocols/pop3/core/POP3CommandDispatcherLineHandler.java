@@ -22,14 +22,9 @@ package org.apache.james.protocols.pop3.core;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apache.james.mailbox.MailboxManager;
-import org.apache.james.mailbox.MailboxSession;
-import org.apache.james.pop3server.POP3Session;
-import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.AbstractCommandDispatcher;
 import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * Dispatch POP3 {@link CommandHandler}
@@ -37,13 +32,7 @@ import org.apache.james.protocols.api.handler.CommandHandler;
 public class POP3CommandDispatcherLineHandler extends AbstractCommandDispatcher<POP3Session> {
     private final static String[] mandatoryCommands = { "USER", "PASS", "LIST" };
     private final CommandHandler<POP3Session> unknownHandler = new UnknownCmdHandler();
-    private MailboxManager manager;
-
-    @Resource(name = "mailboxmanager")
-    public void setMailboxManager(MailboxManager manager) {
-        this.manager = manager;
-    }
-
+  
     /**
      * @see org.apache.james.protocols.api.handler.AbstractCommandDispatcher#getMandatoryCommands()
      */
@@ -63,23 +52,6 @@ public class POP3CommandDispatcherLineHandler extends AbstractCommandDispatcher<
      */
     protected String getUnknownCommandHandlerIdentifier() {
         return UnknownCmdHandler.COMMAND_NAME;
-    }
-
-    
-    @Override
-    public Response onLine(POP3Session session, byte[] line) {
-        MailboxSession mSession = (MailboxSession) session.getState().get(POP3Session.MAILBOX_SESSION);
-
-        // notify the mailboxmanager about the start of the processing
-        manager.startProcessingRequest(mSession);
-
-        // do the processing
-        Response response = super.onLine(session, line);
-
-        // notify the mailboxmanager about the end of the processing
-        manager.endProcessingRequest(mSession);
-
-        return response;
     }
 
 }

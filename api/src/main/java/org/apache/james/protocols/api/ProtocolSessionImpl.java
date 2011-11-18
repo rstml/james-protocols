@@ -34,26 +34,15 @@ import org.slf4j.Logger;
  */
 public class ProtocolSessionImpl implements ProtocolSession {
 
-    private final InetSocketAddress remoteAddress;
-    private Logger logger;
-    private SessionLog pLog = null;
-    
-    protected String user;
-
-    private String id;
-    protected ProtocolTransport transport;
-
+    private final SessionLog pLog;
+    private final ProtocolTransport transport;
     private final Map<String, Object> connectionState;
     private final Map<String, Object> sessionState;
-	private final InetSocketAddress localAddress;
+    private String user;
 
-    
     public ProtocolSessionImpl(Logger logger, ProtocolTransport transport) {
         this.transport = transport;
-        this.remoteAddress = transport.getRemoteAddress();
-        this.localAddress = transport.getRemoteAddress();
-        this.logger = logger;
-        this.id = transport.getId();
+        this.pLog = new SessionLog(getSessionID(), logger);;
         this.connectionState = new HashMap<String, Object>();
         this.sessionState = new HashMap<String, Object>();
 
@@ -61,26 +50,26 @@ public class ProtocolSessionImpl implements ProtocolSession {
 
     @Override
 	public InetSocketAddress getLocalAddress() {
-		return localAddress;
+		return transport.getLocalAddress();
 	}
 
 	@Override
 	public InetSocketAddress getRemoteAddress() {
-		return remoteAddress;
+		return transport.getRemoteAddress();
 	}
 
 	/**
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteHost()
      */
     public String getRemoteHost() {
-        return remoteAddress.getHostName();
+        return getRemoteAddress().getHostName();
     }
 
     /**
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteIPAddress()
      */
     public String getRemoteIPAddress() {
-        return remoteAddress.getAddress().getHostAddress();
+        return getRemoteAddress().getAddress().getHostAddress();
     }
 
     /**
@@ -123,9 +112,6 @@ public class ProtocolSessionImpl implements ProtocolSession {
      * @see org.apache.james.protocols.api.ProtocolSession#getLogger()
      */
     public Logger getLogger() {
-        if (pLog == null) {
-            pLog = new SessionLog(getSessionID(), logger);
-        }
         return pLog;
     }
     
@@ -134,7 +120,7 @@ public class ProtocolSessionImpl implements ProtocolSession {
      * @see org.apache.james.protocols.api.ProtocolSession#getSessionID()
      */
     public String getSessionID() {
-        return id;
+        return transport.getId();
     }
     
     

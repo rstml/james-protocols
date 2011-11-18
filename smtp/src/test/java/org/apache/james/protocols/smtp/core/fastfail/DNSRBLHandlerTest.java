@@ -20,7 +20,9 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -119,6 +121,11 @@ public class DNSRBLHandlerTest extends TestCase {
             HashMap<String,Object> state = new HashMap<String,Object>();
             HashMap<String,Object> connectionState = new HashMap<String,Object>();
             
+            @Override
+            public InetSocketAddress getRemoteAddress() {
+                return new InetSocketAddress(getRemoteIPAddress(), 10000);
+            }
+
             public String getRemoteIPAddress() {
                 return remoteIp;
             }

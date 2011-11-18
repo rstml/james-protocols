@@ -20,6 +20,7 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
 import javax.mail.internet.ParseException;
@@ -38,6 +39,11 @@ public class SpamTrapHandlerTest extends TestCase {
     
     private SMTPSession setUpSMTPSession(final String ip) {
         return new BaseFakeSMTPSession() {
+            @Override
+            public InetSocketAddress getRemoteAddress() {
+                return new InetSocketAddress(getRemoteIPAddress(), 10000);
+            }
+            
             public String getRemoteIPAddress() {
                 return ip;
             }

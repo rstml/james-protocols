@@ -22,6 +22,7 @@ package org.apache.james.protocols.smtp;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
 import java.util.Map;
 
 import org.apache.james.protocols.api.Response;
@@ -212,6 +213,18 @@ public class BaseFakeSMTPSession implements SMTPSession {
 
     public Response newFatalErrorResponse() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+
+    }
+
+    @Override
+    public InetSocketAddress getLocalAddress() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+
     }
 
 }

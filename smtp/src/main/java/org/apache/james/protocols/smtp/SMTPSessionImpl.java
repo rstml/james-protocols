@@ -20,8 +20,8 @@ package org.apache.james.protocols.smtp;
 
 import java.util.Collection;
 
+import org.apache.james.protocols.api.ProtocolSessionImpl;
 import org.apache.james.protocols.api.ProtocolTransport;
-import org.apache.james.protocols.api.AbstractSession;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 /**
  * {@link SMTPSession} implementation
  */
-public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
+public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession {
     public final static String SMTP_SESSION = "SMTP_SESSION";
 
     private boolean relayingAllowed;
@@ -72,14 +72,14 @@ public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
      * @see org.apache.james.protocols.smtp.SMTPSession#popLineHandler()
      */
     public void popLineHandler() {
-        transport.popLineHandler();
+        getProtocolTransport().popLineHandler();
     }
 
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#pushLineHandler(LineHandler)
      */
     public void pushLineHandler(LineHandler<SMTPSession> overrideCommandHandler) {
-        transport.pushLineHandler(overrideCommandHandler, this);
+        getProtocolTransport().pushLineHandler(overrideCommandHandler, this);
     }
 
     /**
@@ -122,7 +122,7 @@ public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
      * @see org.apache.james.protocols.smtp.SMTPSession#isAuthSupported()
      */
     public boolean isAuthSupported() {
-        return theConfigData.isAuthRequired(socketAddress.getAddress().getHostAddress());
+        return theConfigData.isAuthRequired(getRemoteAddress().getAddress().getHostAddress());
     }
 
     /**
@@ -151,7 +151,7 @@ public class SMTPSessionImpl extends AbstractSession implements SMTPSession {
      * org.apache.james.protocols.smtp.SMTPSession#getPushedLineHandlerCount()
      */
     public int getPushedLineHandlerCount() {
-        return transport.getPushedLineHandlerCount();
+        return getProtocolTransport().getPushedLineHandlerCount();
     }
 
     public Response newLineTooLongResponse() {

@@ -31,13 +31,31 @@ import java.util.List;
 public interface Mailbox {
 	
 	/**
-	 * Returns the message content as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
+	 * Returns the message body as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
 	 * 
 	 * @param uid
-	 * @return content
+	 * @return body
 	 * @throws IOException
 	 */
-	InputStream getMessageContent(long uid) throws IOException;
+	InputStream getMessageBody(long uid) throws IOException;
+	
+	/**
+	 * Returns the message headers as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
+	 * 
+	 * @param uid
+	 * @return headers
+	 * @throws IOException
+	 */
+	InputStream getMessageHeaders(long uid) throws IOException;
+	
+	/**
+	 * Return the full message (headers + body) as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
+	 * @param uid
+	 * @return message
+	 * @throws IOException
+	 */
+	InputStream getMessage(long uid) throws IOException;
+
 	
 	/**
 	 * Return a immutable {@link List} which holds the {@link MessageMetaData} for all messages in the {@link Mailbox}

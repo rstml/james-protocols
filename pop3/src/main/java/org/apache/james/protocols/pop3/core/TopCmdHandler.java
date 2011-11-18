@@ -21,6 +21,7 @@ package org.apache.james.protocols.pop3.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -82,13 +83,10 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
                 Long uid = uidList.get(num - 1).getUid();
                 if (deletedUidList.contains(uid) == false) {
 
-                    InputStream content = session.getUserMailbox().getMessageContent(uid);
-
-                    if (content != null) {
-                        InputStream in = new CountingBodyInputStream(new ExtraDotInputStream(new CRLFTerminatedInputStream(content)), lines);
-
-
-                        response = new POP3StreamResponse(POP3Response.OK_RESPONSE, "Message follows", in);
+                    InputStream body = new CountingBodyInputStream(new ExtraDotInputStream(new CRLFTerminatedInputStream(session.getUserMailbox().getMessageBody(uid))), lines);
+                    InputStream headers = session.getUserMailbox().getMessageHeaders(uid);
+                    if (body != null && headers != null) {
+                        response = new POP3StreamResponse(POP3Response.OK_RESPONSE, "Message follows", new SequenceInputStream(headers, body));
                         return response;
 
                     } else {

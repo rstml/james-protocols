@@ -24,7 +24,7 @@ import java.util.List;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
-import org.apache.james.protocols.api.AbstractSession;
+import org.apache.james.protocols.api.ProtocolSessionImpl;
 import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
@@ -108,7 +108,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
                 }
                 if (response != null) {
                     // TODO: This kind of sucks but I was able to come up with something more elegant here
-                    ((AbstractSession)session).getProtocolTransport().writeResponse(response, session);
+                    ((ProtocolSessionImpl)session).getProtocolTransport().writeResponse(response, session);
                 }
                
             }
@@ -170,7 +170,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             }
             if (response != null) {
                 // TODO: This kind of sucks but I was able to come up with something more elegant here
-                ((AbstractSession)pSession).getProtocolTransport().writeResponse(response, pSession);
+                ((ProtocolSessionImpl)pSession).getProtocolTransport().writeResponse(response, pSession);
             }
 
         }
@@ -223,13 +223,13 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (e.getCause() instanceof TooLongFrameException) {
             Response r = session.newLineTooLongResponse();
-            ProtocolTransport transport = ((AbstractSession)session).getProtocolTransport();
+            ProtocolTransport transport = ((ProtocolSessionImpl)session).getProtocolTransport();
             if (r != null)  {
                 transport.writeResponse(r, session);
             }
         } else {
             if (channel.isConnected()) {
-                ProtocolTransport transport = ((AbstractSession)session).getProtocolTransport();
+                ProtocolTransport transport = ((ProtocolSessionImpl)session).getProtocolTransport();
 
                 Response r = session.newFatalErrorResponse();
                 if (r != null) {

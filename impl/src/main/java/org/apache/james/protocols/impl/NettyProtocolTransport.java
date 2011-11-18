@@ -145,6 +145,11 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
 	public boolean isReadable() {
 		return channel.isReadable();
 	}
+
+	@Override
+	public InetSocketAddress getLocalAddress() {
+		return (InetSocketAddress) channel.getLocalAddress();
+	}
     
     
     

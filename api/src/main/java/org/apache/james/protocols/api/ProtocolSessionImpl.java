@@ -28,11 +28,11 @@ import org.apache.james.protocols.api.ProtocolTransport;
 import org.slf4j.Logger;
 
 /**
- * Abstract implementation of {@link ProtocolSession}
+ * Basic implementation of {@link ProtocolSession}
  * 
  * 
  */
-public abstract class AbstractSession implements ProtocolSession {
+public class ProtocolSessionImpl implements ProtocolSession {
 
     private final InetSocketAddress remoteAddress;
     private Logger logger;
@@ -48,7 +48,7 @@ public abstract class AbstractSession implements ProtocolSession {
 	private final InetSocketAddress localAddress;
 
     
-    public AbstractSession(Logger logger, ProtocolTransport transport) {
+    public ProtocolSessionImpl(Logger logger, ProtocolTransport transport) {
         this.transport = transport;
         this.remoteAddress = transport.getRemoteAddress();
         this.localAddress = transport.getRemoteAddress();
@@ -151,5 +151,29 @@ public abstract class AbstractSession implements ProtocolSession {
     public Map<String, Object> getState() {
         return sessionState;
     }
+
+    /**
+     * This implementation just returns <code>null</code>. Sub-classes should overwrite this if needed
+     */
+	@Override
+	public Response newLineTooLongResponse() {
+		return null;
+	}
+
+    /**
+     * This implementation just returns <code>null</code>. Sub-classes should overwrite this if needed
+     */
+	@Override
+	public Response newFatalErrorResponse() {
+		return null;
+	}
+
+	/**
+	 * This implementation just clears the sessions state. Sub-classes should overwrite this if needed
+	 */
+	@Override
+	public void resetState() {
+		sessionState.clear();
+	}
 
 }

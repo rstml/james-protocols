@@ -16,51 +16,27 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.pop3;
+
+package org.apache.james.protocols.pop3.mailbox;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
+import org.apache.james.protocols.pop3.POP3Session;
 
 /**
- * A Mailbox which is used in POP3 to retrieve messages
  * 
  *
  */
-public interface Mailbox {
-	
-	/**
-	 * Returns the message content as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
-	 * 
-	 * @param uid
-	 * @return content
-	 * @throws IOException
-	 */
-	InputStream getMessageContent(long uid) throws IOException;
-	
-	/**
-	 * Return a immutable {@link List} which holds the {@link MessageMetaData} for all messages in the {@link Mailbox}
-	 * 
-	 * @return messages
-	 * @throws IOException
-	 */
-	List<MessageMetaData> getMessages() throws IOException;;
-	
-	/**
-	 * Remove the messages with the given uids
-	 * 
-	 * @param uids
-	 */
-	void remove(long... uids) throws IOException;
-	
-	
-	/**
-	 * Return the identifier for the mailbox. This MUST not change 
-	 * 
-	 * @return identifer
-	 * @throws IOException
-	 */
-	String getIdentifier() throws IOException;
+public interface MailboxFactory {
 
+	/**
+	 * Returns the {@link Mailbox} for the {@link POP3Session}. If the user does not exist or the password is not valid it will return <code>null</code>
+	 * 
+	 * @param user
+	 * @param password
+	 * @return mailbox or null if not valid user or password was given
+	 * @throws IOException
+	 */
+	public Mailbox getMailbox(POP3Session session, String password) throws IOException;
+	
 }

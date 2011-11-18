@@ -26,9 +26,9 @@ import java.util.List;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
-import org.apache.james.protocols.pop3.MessageMetaData;
 import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
+import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 
 /**
  * Handles DELE command

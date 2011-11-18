@@ -21,6 +21,7 @@ package org.apache.james.protocols.pop3;
 import org.apache.james.protocols.api.AbstractSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.pop3.mailbox.Mailbox;
 import org.slf4j.Logger;
 
 /**

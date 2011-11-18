@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.pop3;
+package org.apache.james.protocols.pop3.mailbox;
 
 /**
  * Hold meta data for a message

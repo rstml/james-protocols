@@ -20,6 +20,7 @@
 package org.apache.james.protocols.pop3;
 
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.pop3.mailbox.Mailbox;
 
 /**
  * All the handlers access this interface to communicate with POP3Handler object
@@ -29,7 +30,6 @@ public interface POP3Session extends ProtocolSession {
 
     final static String UID_LIST = "UID_LIST";
     final static String DELETED_UID_LIST = "DELETED_UID_LIST";
-    final static String MAILBOX_SESSION = "MAILBOX_SESSION";
 
     // Authentication states for the POP3 interaction
     /** Waiting for user id */

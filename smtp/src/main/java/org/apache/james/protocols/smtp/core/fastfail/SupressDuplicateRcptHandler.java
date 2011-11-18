@@ -43,7 +43,7 @@ public class SupressDuplicateRcptHandler implements RcptHook {
      */
     @SuppressWarnings("unchecked")
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
-        Collection rcptList = (Collection) session.getState().get(SMTPSession.RCPT_LIST);
+        Collection<MailAddress> rcptList = (Collection<MailAddress>) session.getState().get(SMTPSession.RCPT_LIST);
     
         // Check if the recipient is already in the rcpt list
         if(rcptList != null && rcptList.contains(rcpt)) {

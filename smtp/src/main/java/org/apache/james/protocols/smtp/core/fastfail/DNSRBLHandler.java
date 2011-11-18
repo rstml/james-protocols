@@ -24,7 +24,6 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.util.Collection;
 import java.util.StringTokenizer;
 
-import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
@@ -123,7 +122,7 @@ public class DNSRBLHandler implements  RcptHook{
          * This whould make no sense.
          */
         if (session.isRelayingAllowed()) {
-            session.getLogger().info("Ipaddress " + session.getRemoteIPAddress() + " is allowed to relay. Don't check it");
+            session.getLogger().info("Ipaddress " + session.getRemoteAddress().getAddress() + " is allowed to relay. Don't check it");
             return;
         }
         
@@ -146,7 +145,7 @@ public class DNSRBLHandler implements  RcptHook{
                     return;
                 } catch (java.net.UnknownHostException uhe) {
                     if (session.getLogger().isDebugEnabled()) {
-                        session.getLogger().debug("IpAddress " + session.getRemoteIPAddress() + " not listed on " + rblList[i]);
+                        session.getLogger().debug("IpAddress " + session.getRemoteAddress().getAddress()  + " not listed on " + rblList[i]);
                     }
                 }
             }
@@ -188,7 +187,7 @@ public class DNSRBLHandler implements  RcptHook{
      * @see org.apache.james.protocols.smtp.hook.RcptHook#doRcpt(org.apache.james.protocols.smtp.SMTPSession, org.apache.mailet.MailAddress, org.apache.mailet.MailAddress)
      */
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
-        checkDNSRBL(session, session.getRemoteIPAddress());
+        checkDNSRBL(session, session.getRemoteAddress().getAddress().getHostAddress());
 
         if (!session.isRelayingAllowed()) {
             String blocklisted = (String) session.getConnectionState().get(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME);
@@ -196,7 +195,7 @@ public class DNSRBLHandler implements  RcptHook{
             if (blocklisted != null) { // was found in the RBL
                 if (blocklistedDetail == null) {
                     return new HookResult(HookReturnCode.DENY,DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.SECURITY_AUTH)  + " Rejected: unauthenticated e-mail from " + session.getRemoteIPAddress() 
+                            DSNStatus.SECURITY_AUTH)  + " Rejected: unauthenticated e-mail from " + session.getRemoteAddress().getAddress() 
                             + " is restricted.  Contact the postmaster for details.");
                 } else {
                     return new HookResult(HookReturnCode.DENY,DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.SECURITY_AUTH) + " " + blocklistedDetail);

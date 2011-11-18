@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -56,7 +55,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
      */
     private SMTPResponse doEHLO(SMTPSession session, String argument) {
         SMTPResponse resp = new SMTPResponse(SMTPRetCode.MAIL_OK, new StringBuilder(session.getHelloName()).append(" Hello ").append(argument)
-                .append(" (").append(session.getRemoteHost()).append(" [")
+                .append(" [")
                 .append(session.getRemoteIPAddress()).append("])"));
         
         session.getConnectionState().put(SMTPSession.CURRENT_HELO_MODE,

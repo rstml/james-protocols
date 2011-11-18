@@ -351,7 +351,7 @@ public class AuthCmdHandler
         }
 
         res = new SMTPResponse(SMTPRetCode.AUTH_FAILED, "Authentication Failed");
-        session.getLogger().error("AUTH method "+authType+" failed from " + user + "@" + session.getRemoteIPAddress()); 
+        session.getLogger().error("AUTH method "+authType+" failed from " + user + "@" + session.getRemoteAddress().getAddress().getHostAddress()); 
         return res;
     }
 

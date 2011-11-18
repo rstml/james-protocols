@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPSession;
+import org.apache.mailet.MailAddress;
 import org.apache.mailet.base.RFC2822Headers;
 import org.apache.mailet.base.RFC822DateFormat;
 
@@ -62,7 +63,8 @@ public class ReceivedDataLineFilter implements DataLineFilter {
         return resp;
     }
 
-    private Response addNewReceivedMailHeaders(SMTPSession session, LineHandler<SMTPSession> next) {
+    @SuppressWarnings("unchecked")
+	private Response addNewReceivedMailHeaders(SMTPSession session, LineHandler<SMTPSession> next) {
         StringBuilder headerLineBuffer = new StringBuilder();
 
         String heloMode = (String) session.getConnectionState().get(
@@ -72,14 +74,14 @@ public class ReceivedDataLineFilter implements DataLineFilter {
 
         // Put our Received header first
         headerLineBuffer.append(RFC2822Headers.RECEIVED + ": from ").append(
-                session.getRemoteHost());
+                session.getRemoteAddress().getHostName());
 
         if (heloName != null) {
             headerLineBuffer.append(" (").append(heloMode).append(" ").append(
                     heloName).append(") ");
         }
 
-        headerLineBuffer.append(" ([").append(session.getRemoteIPAddress())
+        headerLineBuffer.append(" ([").append(session.getRemoteAddress().getAddress().getHostAddress())
                 .append("])").append("\r\n");
             
         Response response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
@@ -111,7 +113,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
 
         headerLineBuffer.append(" ID ").append(session.getSessionID());
 
-        if (((Collection) session.getState().get(SMTPSession.RCPT_LIST)).size() == 1) {
+        if (((Collection<?>) session.getState().get(SMTPSession.RCPT_LIST)).size() == 1) {
             // Only indicate a recipient if they're the only recipient
             // (prevents email address harvesting and large headers in
             // bulk email)
@@ -120,7 +122,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
             headerLineBuffer.delete(0, headerLineBuffer.length());
 
             headerLineBuffer.delete(0, headerLineBuffer.length());
-            headerLineBuffer.append("          for <").append(((List) session.getState().get(SMTPSession.RCPT_LIST)).get(0).toString()).append(">;").append("\r\n");
+            headerLineBuffer.append("          for <").append(((List<MailAddress>) session.getState().get(SMTPSession.RCPT_LIST)).get(0).toString()).append(">;").append("\r\n");
             response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
            
             if (response != null) {

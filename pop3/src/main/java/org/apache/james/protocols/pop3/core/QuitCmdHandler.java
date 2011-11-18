@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.pop3.core;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,8 +50,9 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
             return response;
         }
         List<Long> toBeRemoved = (List<Long>) session.getState().get(POP3Session.DELETED_UID_LIST);
+        Mailbox mailbox = session.getUserMailbox();
         try {
-            Mailbox mailbox = session.getUserMailbox();
+            ;
             long uids[] = new long[toBeRemoved.size()];
             for (int i = 0;i < toBeRemoved.size(); i++) {
             	uids[i] = toBeRemoved.get(i);
@@ -60,9 +62,13 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
         } catch (Exception ex) {
             response = new POP3Response(POP3Response.ERR_RESPONSE, "Some deleted messages were not removed");
             session.getLogger().error("Some deleted messages were not removed", ex);
-        }
+        }     
         response.setEndSession(true);
-      
+        try {
+			mailbox.close();
+		} catch (IOException e) {
+			// ignore on close
+		}
         return response;
     }
 

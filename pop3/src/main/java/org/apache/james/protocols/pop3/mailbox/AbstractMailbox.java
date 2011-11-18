@@ -30,4 +30,9 @@ public abstract class AbstractMailbox implements Mailbox{
 		return new SequenceInputStream(getMessageHeaders(uid), getMessageBody(uid));
 	}
 
+	@Override
+	public void close() throws IOException {
+		// do nothing
+	}
+
 }

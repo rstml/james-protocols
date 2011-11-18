@@ -26,9 +26,6 @@ import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
 
 public class WelcomeMessageHandler implements ConnectHandler<POP3Session> {
-    /** POP3 Server identification string used in POP3 headers */
-    private static final String softwaretype = "JAMES POP3 Server ";// +
-                                                                    // Constants.SOFTWARE_VERSION;
 
     /**
      * @see org.apache.james.protocols.api.handler.ConnectHandler
@@ -38,9 +35,13 @@ public class WelcomeMessageHandler implements ConnectHandler<POP3Session> {
         StringBuilder responseBuffer = new StringBuilder();
         // Initially greet the connector
         // Format is: Sat, 24 Jan 1998 13:16:09 -0500
-        responseBuffer.append(session.getConfigurationData().getHelloName()).append(" POP3 server (").append(softwaretype).append(") ready ");
+        responseBuffer.append(session.getConfigurationData().getHelloName()).append(" POP3 server (").append(getProductName()).append(") ready ");
         POP3Response response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
         return response;
     }
 
+    protected String getProductName() {
+        return "JAMES Protocols POP3 Server";
+    }
+    
 }

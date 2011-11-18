@@ -80,5 +80,13 @@ public interface Mailbox {
 	 * @throws IOException
 	 */
 	String getIdentifier() throws IOException;
+	
+	
+	/**
+	 * Close the mailbox, Any futher attempt to access or change the {@link Mailbox}'s content will fail
+	 * 
+	 * @throws IOException
+	 */
+	void close() throws IOException;
 
 }

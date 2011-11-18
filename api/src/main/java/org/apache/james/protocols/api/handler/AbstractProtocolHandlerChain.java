@@ -30,13 +30,13 @@ import java.util.List;
  */
 public abstract class AbstractProtocolHandlerChain implements ProtocolHandlerChain{
 
-	/**
-	 * Return an immutable List of all Handlers
-	 * 
-	 * @return handlerList
-	 */
-	protected abstract List<ProtocolHandler> getHandlers();
-	
+    /**
+     * Return an immutable List of all Handlers
+     * 
+     * @return handlerList
+     */
+    protected abstract List<ProtocolHandler> getHandlers();
+
     /**
 	 * @see org.apache.james.protocols.api.handler.ProtocolHandlerChain#getHandlers(java.lang.Class)
 	 */

@@ -36,6 +36,6 @@ public interface ProtocolHandlerChain {
      * @param type the type of handler we're interested in
      * @return a List of handlers
      */
-    abstract <T> LinkedList<T> getHandlers(Class<T> type);
+    <T> LinkedList<T> getHandlers(Class<T> type);
 
 }

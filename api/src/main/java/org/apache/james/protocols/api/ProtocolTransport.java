@@ -36,6 +36,9 @@ public interface ProtocolTransport {
      */
     InetSocketAddress getRemoteAddress();
 
+    InetSocketAddress getLocalAddress();
+
+    
     /**
      * Return the unique id. The id MUST NOT be 100 % unique for ever. It just should just not have the same
      * id when having concurrent connections

@@ -34,7 +34,7 @@ import org.slf4j.Logger;
  */
 public abstract class AbstractSession implements ProtocolSession {
 
-    protected InetSocketAddress socketAddress;
+    private final InetSocketAddress remoteAddress;
     private Logger logger;
     private SessionLog pLog = null;
     
@@ -43,13 +43,15 @@ public abstract class AbstractSession implements ProtocolSession {
     private String id;
     protected ProtocolTransport transport;
 
-    private Map<String, Object> connectionState;
-    private Map<String, Object> sessionState;
+    private final Map<String, Object> connectionState;
+    private final Map<String, Object> sessionState;
+	private final InetSocketAddress localAddress;
 
     
     public AbstractSession(Logger logger, ProtocolTransport transport) {
         this.transport = transport;
-        this.socketAddress = transport.getRemoteAddress();
+        this.remoteAddress = transport.getRemoteAddress();
+        this.localAddress = transport.getRemoteAddress();
         this.logger = logger;
         this.id = transport.getId();
         this.connectionState = new HashMap<String, Object>();
@@ -57,18 +59,28 @@ public abstract class AbstractSession implements ProtocolSession {
 
     }
 
-    /**
+    @Override
+	public InetSocketAddress getLocalAddress() {
+		return localAddress;
+	}
+
+	@Override
+	public InetSocketAddress getRemoteAddress() {
+		return remoteAddress;
+	}
+
+	/**
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteHost()
      */
     public String getRemoteHost() {
-        return socketAddress.getHostName();
+        return remoteAddress.getHostName();
     }
 
     /**
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteIPAddress()
      */
     public String getRemoteIPAddress() {
-        return socketAddress.getAddress().getHostAddress();
+        return remoteAddress.getAddress().getHostAddress();
     }
 
     /**

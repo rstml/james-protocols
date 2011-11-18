@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.api;
 
+import java.net.InetSocketAddress;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -63,15 +64,24 @@ public interface ProtocolSession {
      * Returns host name of the client
      *
      * @return hostname of the client
+     * @deprecated use {@link #getRemoteAddress()}
      */
+    @Deprecated
     String getRemoteHost();
 
     /**
      * Returns host ip address of the client
      *
      * @return host ip address of the client
+     * @deprecated use {@link #getRemoteAddress()}
      */
+    @Deprecated
     String getRemoteIPAddress();
+    
+    
+    InetSocketAddress getLocalAddress();
+    
+    InetSocketAddress getRemoteAddress();
     
     /**
      * Return the ID for the session

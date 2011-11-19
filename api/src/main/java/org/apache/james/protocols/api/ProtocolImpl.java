@@ -23,9 +23,13 @@ import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Basic {@link Protocol} implementation 
+ *
+ */
 public class ProtocolImpl implements Protocol{
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    private ProtocolHandlerChain chain;
+    private final ProtocolHandlerChain chain;
 
     public ProtocolImpl(ProtocolHandlerChain chain) {
         this.chain = chain;

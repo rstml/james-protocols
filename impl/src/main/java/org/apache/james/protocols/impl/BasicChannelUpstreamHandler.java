@@ -21,7 +21,6 @@ package org.apache.james.protocols.impl;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.ProtocolSessionImpl;
@@ -30,6 +29,7 @@ import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.Secure;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
@@ -54,21 +54,19 @@ import org.slf4j.Logger;
 @Sharable
 public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     protected final Logger logger;
-    protected final SSLContext context;
-    protected String[] enabledCipherSuites;
-    protected Protocol protocol;
-    protected ProtocolHandlerChain chain;
+    protected final Protocol protocol;
+    protected final ProtocolHandlerChain chain;
+    protected final Secure secure;
 
     public BasicChannelUpstreamHandler(Protocol protocol, Logger logger) {
-        this(protocol, logger, null, null);
+        this(protocol, logger, null);
     }
 
-    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger, SSLContext context, String[] enabledCipherSuites) {
+    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger, Secure secure) {
         this.protocol = protocol;
         this.chain = protocol.getProtocolChain();
         this.logger = logger;
-        this.context = context;
-        this.enabledCipherSuites = enabledCipherSuites;
+        this.secure = secure;
     }
 
 
@@ -207,8 +205,9 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     
     protected ProtocolSession createSession(ChannelHandlerContext ctx) throws Exception {
         SSLEngine engine = null;
-        if (context != null) {
-            engine = context.createSSLEngine();
+        if (secure != null) {
+            engine = secure.getContext().createSSLEngine();
+            String[] enabledCipherSuites = secure.getEnabledCipherSuites();
             if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
                 engine.setEnabledCipherSuites(enabledCipherSuites);
             }

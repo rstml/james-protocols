@@ -25,19 +25,31 @@ public final class Secure {
 
     private final SSLContext context;
     private final boolean starttls;
-
-    private Secure(SSLContext context, boolean starttls) {
+    private final String[] enabledCipherSuites;
+    
+    private Secure(SSLContext context, boolean starttls, String[] enabledCipherSuites) {
         this.context = context;
         this.starttls = starttls;
+        this.enabledCipherSuites = enabledCipherSuites;
     }
     
     public static Secure createTls(SSLContext context) {
-        return new Secure(context, false);
+        return createTls(context, null);
+    }
+    
+    public static Secure createTls(SSLContext context, String[] enabledCipherSuites) {
+        return new Secure(context, false, enabledCipherSuites);
     }
     
     public static Secure createStartTls(SSLContext context) {
-        return new Secure(context, true);
+        return createStartTls(context, null);
     }
+    
+    public static Secure createStartTls(SSLContext context, String[] enabledCipherSuites) {
+        return new Secure(context, true, null);
+    }
+    
+    
     
     public SSLContext getContext() {
         return context;
@@ -45,5 +57,9 @@ public final class Secure {
     
     public boolean isStartTLS() {
         return starttls;
+    }
+    
+    public String[] getEnabledCipherSuites() {
+        return enabledCipherSuites;
     }
 }

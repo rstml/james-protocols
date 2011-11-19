@@ -76,11 +76,7 @@ public class NettyServer extends AbstractAsyncServer {
     
   
     protected ChannelUpstreamHandler createCoreHandler() {
-        SSLContext sslContext = null;
-        if (secure != null) {
-            sslContext = secure.getContext();
-        } 
-        return new BasicChannelUpstreamHandler(protocol, logger, sslContext, null);
+        return new BasicChannelUpstreamHandler(protocol, logger, secure);
     }
     
     @Override

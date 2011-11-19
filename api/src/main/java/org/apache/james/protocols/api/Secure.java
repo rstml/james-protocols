@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.impl;
+package org.apache.james.protocols.api;
 
 import javax.net.ssl.SSLContext;
 

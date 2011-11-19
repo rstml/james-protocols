@@ -220,14 +220,14 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         Channel channel = ctx.getChannel();
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
-        if (e.getCause() instanceof TooLongFrameException) {
+        if (e.getCause() instanceof TooLongFrameException && session != null) {
             Response r = session.newLineTooLongResponse();
             ProtocolTransport transport = ((ProtocolSessionImpl)session).getProtocolTransport();
             if (r != null)  {
                 transport.writeResponse(r, session);
             }
         } else {
-            if (channel.isConnected()) {
+            if (channel.isConnected() && session != null) {
                 ProtocolTransport transport = ((ProtocolSessionImpl)session).getProtocolTransport();
 
                 Response r = session.newFatalErrorResponse();

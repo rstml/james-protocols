@@ -44,7 +44,7 @@ public class NettyServer extends AbstractAsyncServer {
     
     private ChannelUpstreamHandler coreHandler;
 
-    protected final  Secure secure;
+    protected final Secure secure;
 
     public NettyServer(Protocol protocol) {
         this(protocol, null);

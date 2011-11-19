@@ -58,17 +58,14 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
      * @see org.apache.james.protocols.api.ProtocolTransport#getId()
      */
     public String getId() {
-        return channel.getId() + "";
+        return Integer.toString(channel.getId());
     }
 
     /**
      * @see org.apache.james.protocols.api.ProtocolTransport#isTLSStarted()
      */
     public boolean isTLSStarted() {
-        if (isStartTLSSupported()) {
-            return channel.getPipeline().get("sslHandler") != null;
-        } 
-        return false;
+        return channel.getPipeline().get("sslHandler") != null;
     }
 
     /**
@@ -150,7 +147,5 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
     public InetSocketAddress getLocalAddress() {
         return (InetSocketAddress) channel.getLocalAddress();
     }
-    
-    
-    
+
 }

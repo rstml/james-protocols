@@ -16,40 +16,34 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.lmtp;
 
-public class LMTPConfigurationImpl extends LMTPConfiguration{
+package org.apache.james.protocols.impl;
 
-    private String helloName = "localhost";
-    private long maxMessageSize = 0;
-    private String greeting = "JAMES Protocols LMTP Server";
+import javax.net.ssl.SSLContext;
 
-    @Override
-    public String getHelloName() {
-        return helloName;
+public final class Secure {
+
+    private final SSLContext context;
+    private final boolean starttls;
+
+    private Secure(SSLContext context, boolean starttls) {
+        this.context = context;
+        this.starttls = starttls;
     }
     
-    public void setHelloName(String helloName) {
-        this.helloName = helloName;
+    public static Secure createTls(SSLContext context) {
+        return new Secure(context, false);
     }
     
-
-    @Override
-    public long getMaxMessageSize() {
-        return maxMessageSize;
+    public static Secure createStartTls(SSLContext context) {
+        return new Secure(context, true);
     }
     
-    public void setMaxMessageSize(long maxMessageSize) {
-        this.maxMessageSize = maxMessageSize;
+    public SSLContext getContext() {
+        return context;
     }
     
-
-    @Override
-    public String getSMTPGreeting() {
-        return greeting;
-    }
-    
-    public void setGreeting(String greeting) {
-        this.greeting = greeting;
+    public boolean isStartTLS() {
+        return starttls;
     }
 }

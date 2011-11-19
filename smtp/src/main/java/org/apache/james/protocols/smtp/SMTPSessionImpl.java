@@ -161,11 +161,4 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
     public Response newFatalErrorResponse() {
         return new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "Unable to process request");
     }
-
-    @Override
-    public boolean isStartTLSSupported() {
-        return super.isStartTLSSupported() && theConfigData.isStartTLSSupported();
-    }
-    
-    
 }

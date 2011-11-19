@@ -19,34 +19,19 @@
 
 package org.apache.james.protocols.smtp;
 
-import org.apache.james.protocols.api.Protocol;
+import org.apache.james.protocols.api.ProtocolImpl;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSessionImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class SMTPProtocol extends ProtocolImpl {
 
-public class SMTPProtocol implements Protocol {
-
-    private ProtocolHandlerChain chain;
     private SMTPConfiguration config;
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
 
     public SMTPProtocol(ProtocolHandlerChain chain, SMTPConfiguration config) {
-        this.chain = chain;
+        super(chain);
         this.config = config;
-    }
-    
-    public ProtocolHandlerChain getProtocolChain() {
-        return chain;
-    }
-
-
-    public boolean isStartTLSSupported() {
-        return config.isStartTLSSupported();
     }
 
     public ProtocolSession newSession(ProtocolTransport transport) {

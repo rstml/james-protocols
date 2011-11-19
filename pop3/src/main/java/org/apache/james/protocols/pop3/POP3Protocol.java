@@ -19,37 +19,24 @@
 
 package org.apache.james.protocols.pop3;
 
-import org.apache.james.protocols.api.Protocol;
+import org.apache.james.protocols.api.ProtocolImpl;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
-import org.slf4j.Logger;
 
-public class POP3Protocol implements Protocol{
+public class POP3Protocol extends ProtocolImpl{
 
-    private ProtocolHandlerChain chain;
-    private POP3HandlerConfiguration config;
-    private Logger logger;
+    private final POP3HandlerConfiguration config;
     
-    public POP3Protocol(ProtocolHandlerChain chain, POP3HandlerConfiguration config, Logger logger) {
-        this.chain = chain;
+    public POP3Protocol(ProtocolHandlerChain chain, POP3HandlerConfiguration config) {
+        super(chain);
         this.config = config;
-        this.logger = logger;
-    }
-    @Override
-    public ProtocolHandlerChain getProtocolChain() {
-        return chain;
     }
 
     
     @Override
     public ProtocolSession newSession(ProtocolTransport transport) {
         return new POP3SessionImpl(logger, transport, config);
-    }
-
-    @Override
-    public boolean isStartTLSSupported() {
-        return config.isStartTLSSupported();
     }
 
 }

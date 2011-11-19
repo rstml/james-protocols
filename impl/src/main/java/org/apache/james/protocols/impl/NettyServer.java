@@ -35,25 +35,25 @@ import org.slf4j.LoggerFactory;
  */
 public class NettyServer extends AbstractAsyncServer {
 
-    protected Protocol protocol;
+    protected final Protocol protocol;
     
-    protected Logger logger = LoggerFactory.getLogger(NettyServer.class);
-
-    protected SSLContext context;
+    protected final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
     private ExecutionHandler eHandler;
     
     private ChannelUpstreamHandler coreHandler;
+
+    protected final  Secure secure;
 
     public NettyServer(Protocol protocol) {
         this(protocol, null);
     }
     
     
-    public NettyServer(Protocol protocol, SSLContext context) {
+    public NettyServer(Protocol protocol, Secure secure) {
         super();
         this.protocol = protocol;
-        this.context = context;
+        this.secure = secure;
     }
     
     protected ExecutionHandler createExecutionHandler(int size) {
@@ -75,7 +75,11 @@ public class NettyServer extends AbstractAsyncServer {
     
   
     protected ChannelUpstreamHandler createCoreHandler() {
-        return new BasicChannelUpstreamHandler(protocol, logger, context, null);
+        SSLContext sslContext = null;
+        if (secure != null) {
+            sslContext = secure.getContext();
+        } 
+        return new BasicChannelUpstreamHandler(protocol, logger, sslContext, null);
     }
     
     @Override
@@ -96,12 +100,16 @@ public class NettyServer extends AbstractAsyncServer {
 
             @Override
             protected boolean isSSLSocket() {
-                return context != null && !protocol.isStartTLSSupported();
+                return getSSLContext() != null && secure != null && !secure.isStartTLS();
             }
 
             @Override
             protected SSLContext getSSLContext() {
-                return context;
+                if (secure != null) {
+                    return secure.getContext();
+                } else  {
+                    return null;
+                }
             }
         };
 

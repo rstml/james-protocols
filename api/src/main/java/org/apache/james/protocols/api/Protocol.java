@@ -40,12 +40,5 @@ public interface Protocol {
      * @return session
      */
     ProtocolSession newSession(ProtocolTransport transport);
-    
-    /**
-     * Returns <code>true</code> if STARTTLS is supported
-     * 
-     * @return starttlsSupported
-     */
-    boolean isStartTLSSupported();
 
 }

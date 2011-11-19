@@ -82,12 +82,5 @@ public interface SMTPConfiguration {
      * @return true or false
      */
     boolean useAddressBracketsEnforcement();
-    
-    /**
-     * Return <code>true</code> if STARTTLS is supported.
-     * 
-     * @return starttls
-     */
-    boolean isStartTLSSupported();
 
 }

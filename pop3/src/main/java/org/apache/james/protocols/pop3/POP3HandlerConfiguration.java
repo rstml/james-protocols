@@ -31,11 +31,4 @@ public interface POP3HandlerConfiguration {
      */
     String getHelloName();
 
-    /**
-     * Return if starttls is supported by the POP3Server
-     * 
-     * @return startTLSSupported
-     */
-    boolean isStartTLSSupported();
-
 }

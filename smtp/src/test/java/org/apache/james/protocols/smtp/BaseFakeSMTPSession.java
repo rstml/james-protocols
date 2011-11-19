@@ -187,7 +187,7 @@ public class BaseFakeSMTPSession implements SMTPSession {
     }
 
     public boolean isStartTLSSupported() {
-        return getConfigurationData().isStartTLSSupported();
+        return false;
     }
 
     public boolean isTLSStarted() {

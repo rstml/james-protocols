@@ -28,7 +28,6 @@ public class SMTPConfigurationImpl implements SMTPConfiguration{
     private boolean bracketsEnforcement = true;
     private String greeting = "JAMES SMTP Protocols";
     private boolean enforceHeloEhlo = true;
-	private boolean startTLSsupported = false;
     
     public String getHelloName() {
         return helloName;
@@ -71,14 +70,5 @@ public class SMTPConfigurationImpl implements SMTPConfiguration{
     public void setUseAddressBracketsEnforcement(boolean bracketsEnforcement) {
         this.bracketsEnforcement = bracketsEnforcement;
     }
-    
-    
-    @Override
-    public boolean isStartTLSSupported() {
-        return startTLSsupported;
-    }
 
-    public void setStartTLSSupported(boolean startTLSsupported) {
-        this.startTLSsupported = startTLSsupported;
-    }
 }

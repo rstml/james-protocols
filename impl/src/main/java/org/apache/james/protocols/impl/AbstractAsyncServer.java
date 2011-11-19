@@ -20,6 +20,7 @@ package org.apache.james.protocols.impl;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -54,8 +55,8 @@ public abstract class AbstractAsyncServer {
     
     private List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
     
-    public synchronized void setListenAddresses(List<InetSocketAddress> addresses) {
-        this.addresses = Collections.unmodifiableList(addresses);
+    public synchronized void setListenAddresses(InetSocketAddress... addresses) {
+        this.addresses = Collections.unmodifiableList(Arrays.asList(addresses));
     }
     
     /**

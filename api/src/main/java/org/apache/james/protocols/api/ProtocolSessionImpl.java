@@ -49,16 +49,16 @@ public class ProtocolSessionImpl implements ProtocolSession {
     }
 
     @Override
-	public InetSocketAddress getLocalAddress() {
-		return transport.getLocalAddress();
-	}
+    public InetSocketAddress getLocalAddress() {
+        return transport.getLocalAddress();
+    }
 
-	@Override
-	public InetSocketAddress getRemoteAddress() {
-		return transport.getRemoteAddress();
-	}
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        return transport.getRemoteAddress();
+    }
 
-	/**
+    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteHost()
      */
     public String getRemoteHost() {
@@ -139,27 +139,30 @@ public class ProtocolSessionImpl implements ProtocolSession {
     }
 
     /**
-     * This implementation just returns <code>null</code>. Sub-classes should overwrite this if needed
+     * This implementation just returns <code>null</code>. Sub-classes should
+     * overwrite this if needed
      */
-	@Override
-	public Response newLineTooLongResponse() {
-		return null;
-	}
+    @Override
+    public Response newLineTooLongResponse() {
+        return null;
+    }
 
     /**
-     * This implementation just returns <code>null</code>. Sub-classes should overwrite this if needed
+     * This implementation just returns <code>null</code>. Sub-classes should
+     * overwrite this if needed
      */
-	@Override
-	public Response newFatalErrorResponse() {
-		return null;
-	}
+    @Override
+    public Response newFatalErrorResponse() {
+        return null;
+    }
 
-	/**
-	 * This implementation just clears the sessions state. Sub-classes should overwrite this if needed
-	 */
-	@Override
-	public void resetState() {
-		sessionState.clear();
-	}
+    /**
+     * This implementation just clears the sessions state. Sub-classes should
+     * overwrite this if needed
+     */
+    @Override
+    public void resetState() {
+        sessionState.clear();
+    }
 
 }

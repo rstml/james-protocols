@@ -21,6 +21,10 @@ package org.apache.james.protocols.api;
 
 import javax.net.ssl.SSLContext;
 
+/**
+ * This class should be used to setup encrypted protocol handling
+ *
+ */
 public final class Secure {
 
     private final SSLContext context;

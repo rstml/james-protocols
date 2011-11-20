@@ -98,7 +98,7 @@ public class FutureResponseImpl extends AbstractResponse implements FutureRespon
     @Override
     public synchronized void appendLine(CharSequence line) {
         if (ready) {
-            throw new IllegalStateException("FutureSMTPResponse MUST NOT get modified after its ready");
+            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
         }
         response.appendLine(line);
     }
@@ -112,7 +112,7 @@ public class FutureResponseImpl extends AbstractResponse implements FutureRespon
     @Override
     public synchronized void setRetCode(String retCode) {
         if (ready) {
-            throw new IllegalStateException("FutureSMTPResponse MUST NOT get modified after its ready");
+            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
         }
         response.setRetCode(retCode);
     }
@@ -126,7 +126,7 @@ public class FutureResponseImpl extends AbstractResponse implements FutureRespon
     @Override
     public synchronized void setEndSession(boolean endSession) {
         if (ready) {
-            throw new IllegalStateException("FutureSMTPResponse MUST NOT get modified after its ready");
+            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
         }
         response.setEndSession(endSession);
     }

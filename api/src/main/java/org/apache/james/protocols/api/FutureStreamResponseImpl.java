@@ -19,10 +19,13 @@
 
 package org.apache.james.protocols.api;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public class FutureStreamResponseImpl extends FutureResponseImpl implements StreamResponse{
 
+    private static final  EmptyInputStream EMPTY = new EmptyInputStream();
+    
     private InputStream in;
     public FutureStreamResponseImpl(AbstractResponse response) {
         super(response);
@@ -31,13 +34,28 @@ public class FutureStreamResponseImpl extends FutureResponseImpl implements Stre
         }
     }
 
-    public synchronized void setInputStream(InputStream in) {
+    public synchronized void setStream(InputStream in) {
+        if (isReady()) {
+            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
+        }
         this.in = in;
     }
     @Override
     public InputStream getStream() {
         checkReady();
-        return in;
+        if (in == null) {
+            return EMPTY;
+        } else {
+            return in;
+        }
     }
 
+    private final static class EmptyInputStream extends InputStream {
+
+        @Override
+        public int read() throws IOException {
+            return -1;
+        }
+        
+    }
 }

@@ -22,7 +22,7 @@ package org.apache.james.protocols.impl;
 import javax.net.ssl.SSLContext;
 
 import org.apache.james.protocols.api.Protocol;
-import org.apache.james.protocols.api.Secure;
+import org.apache.james.protocols.api.Encryption;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -44,14 +44,14 @@ public class NettyServer extends AbstractAsyncServer {
     
     private ChannelUpstreamHandler coreHandler;
 
-    protected final Secure secure;
+    protected final Encryption secure;
 
     public NettyServer(Protocol protocol) {
         this(protocol, null);
     }
     
     
-    public NettyServer(Protocol protocol, Secure secure) {
+    public NettyServer(Protocol protocol, Encryption secure) {
         super();
         this.protocol = protocol;
         this.secure = secure;

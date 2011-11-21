@@ -29,7 +29,7 @@ import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.Secure;
+import org.apache.james.protocols.api.Encryption;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
@@ -56,13 +56,13 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     protected final Logger logger;
     protected final Protocol protocol;
     protected final ProtocolHandlerChain chain;
-    protected final Secure secure;
+    protected final Encryption secure;
 
     public BasicChannelUpstreamHandler(Protocol protocol, Logger logger) {
         this(protocol, logger, null);
     }
 
-    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger, Secure secure) {
+    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger, Encryption secure) {
         this.protocol = protocol;
         this.chain = protocol.getProtocolChain();
         this.logger = logger;

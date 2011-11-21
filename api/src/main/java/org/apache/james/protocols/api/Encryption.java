@@ -25,44 +25,80 @@ import javax.net.ssl.SSLContext;
  * This class should be used to setup encrypted protocol handling
  *
  */
-public final class Secure {
+public final class Encryption {
 
     private final SSLContext context;
     private final boolean starttls;
     private final String[] enabledCipherSuites;
     
-    private Secure(SSLContext context, boolean starttls, String[] enabledCipherSuites) {
+    private Encryption(SSLContext context, boolean starttls, String[] enabledCipherSuites) {
         this.context = context;
         this.starttls = starttls;
         this.enabledCipherSuites = enabledCipherSuites;
     }
+
     
-    public static Secure createTls(SSLContext context) {
+    /**
+     * 
+     * @see #createStartTls(SSLContext, String[])
+     */
+    public static Encryption createTls(SSLContext context) {
         return createTls(context, null);
     }
     
-    public static Secure createTls(SSLContext context, String[] enabledCipherSuites) {
-        return new Secure(context, false, enabledCipherSuites);
+    /**
+     * Create a new {@link Encryption} which is TLS based and only allows the given Ciphersuites
+     * 
+     * @param context
+     * @param enabledCipherSuites or <code>null</code> if all Ciphersuites should be allowed
+     * @return enc
+     */
+    public static Encryption createTls(SSLContext context, String[] enabledCipherSuites) {
+        return new Encryption(context, false, enabledCipherSuites);
     }
-    
-    public static Secure createStartTls(SSLContext context) {
+
+    /**
+     * 
+     * @see #createStartTls(SSLContext, String[])
+     */
+    public static Encryption createStartTls(SSLContext context) {
         return createStartTls(context, null);
     }
     
-    public static Secure createStartTls(SSLContext context, String[] enabledCipherSuites) {
-        return new Secure(context, true, null);
+    /**
+     * Create a new {@link Encryption} which uses STARTTLS and only allows the given Ciphersuites
+     * 
+     * @param context
+     * @param enabledCipherSuites or <code>null</code> if all Ciphersuites should be allowed
+     * @return enc
+     */
+    public static Encryption createStartTls(SSLContext context, String[] enabledCipherSuites) {
+        return new Encryption(context, true, null);
     }
     
-    
-    
+    /**
+     * Return the {@link SSLContext} to use
+     * 
+     * @return context
+     */
     public SSLContext getContext() {
         return context;
     }
     
+    /**
+     * Return <code>true</code> if this {@link Encryption} should be used for STARTTLS
+     * 
+     * @return starttls
+     */
     public boolean isStartTLS() {
         return starttls;
     }
     
+    /**
+     * Return the Ciphersuites that are allowed for the {@link Encryption} or <code>null</code> if all should be allowed
+     * 
+     * @return ciphersuites
+     */
     public String[] getEnabledCipherSuites() {
         return enabledCipherSuites;
     }

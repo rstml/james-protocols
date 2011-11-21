@@ -56,6 +56,7 @@ public abstract class AbstractAsyncServer {
     private List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
     
     public synchronized void setListenAddresses(InetSocketAddress... addresses) {
+        if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.addresses = Collections.unmodifiableList(Arrays.asList(addresses));
     }
     

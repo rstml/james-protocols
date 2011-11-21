@@ -23,11 +23,11 @@ public class StartTlsFutureResponse extends FutureResponseImpl implements StartT
 
 
     @Override
-    public synchronized void setResponse(Response response) {
+    public void setResponse(Response response) {
         if (response instanceof StartTlsResponse) {
             super.setResponse(response);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Response MUST be of type " + StartTlsResponse.class.getName());
         }
     }
 

@@ -47,7 +47,7 @@ public interface POP3Session extends ProtocolSession {
      * 
      * @return POP3HandlerConfigurationData
      */
-    POP3HandlerConfiguration getConfigurationData();
+    POP3Configuration getConfigurationData();
 
     /**
      * Returns the current handler state

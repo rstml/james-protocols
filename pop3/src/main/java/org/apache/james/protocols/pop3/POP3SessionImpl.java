@@ -28,14 +28,14 @@ import org.slf4j.Logger;
  * {@link POP3Session} implementation which use Netty
  */
 public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session {
-    private POP3HandlerConfiguration configData;
+    private POP3Configuration configData;
 
     private int handlerState;
 
     private Mailbox mailbox;
 
     
-    public POP3SessionImpl(Logger logger, ProtocolTransport transport, POP3HandlerConfiguration configData) {
+    public POP3SessionImpl(Logger logger, ProtocolTransport transport, POP3Configuration configData) {
         super(logger, transport);
         this.configData = configData;
     }
@@ -43,7 +43,7 @@ public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session 
     /**
      * @see org.apache.james.pop3server.POP3Session#getConfigurationData()
      */
-    public POP3HandlerConfiguration getConfigurationData() {
+    public POP3Configuration getConfigurationData() {
         return configData;
     }
 

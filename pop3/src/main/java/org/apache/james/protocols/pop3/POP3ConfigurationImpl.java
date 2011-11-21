@@ -19,16 +19,17 @@
 
 package org.apache.james.protocols.pop3;
 
-/**
- * Provides a number of server-wide constant values to the POP3Handlers
- */
-public interface POP3HandlerConfiguration {
+public class POP3ConfigurationImpl implements POP3Configuration {
 
-    /**
-     * Returns the service wide hello name
-     * 
-     * @return the hello name
-     */
-    String getHelloName();
+	private final String helloName;
+
+	public POP3ConfigurationImpl(String helloName) {
+		this.helloName = helloName;
+	}
+	
+	@Override
+	public String getHelloName() {
+		return helloName;
+	}
 
 }

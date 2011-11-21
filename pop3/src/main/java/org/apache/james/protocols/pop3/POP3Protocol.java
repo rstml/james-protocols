@@ -26,9 +26,9 @@ import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 
 public class POP3Protocol extends ProtocolImpl{
 
-    private final POP3HandlerConfiguration config;
+    private final POP3Configuration config;
     
-    public POP3Protocol(ProtocolHandlerChain chain, POP3HandlerConfiguration config) {
+    public POP3Protocol(ProtocolHandlerChain chain, POP3Configuration config) {
         super(chain);
         this.config = config;
     }

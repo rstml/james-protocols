@@ -65,7 +65,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
      * @see org.apache.james.protocols.api.ProtocolTransport#isTLSStarted()
      */
     public boolean isTLSStarted() {
-        return channel.getPipeline().get("sslHandler") != null;
+        return channel.getPipeline().get(SslHandler.class) != null;
     }
 
     /**
@@ -113,7 +113,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         channel.setReadable(false);
         SslHandler filter = new SslHandler(engine);
         filter.getEngine().setUseClientMode(false);
-        channel.getPipeline().addFirst("sslHandler", filter);
+        channel.getPipeline().addFirst(HandlerConstants.SSL_HANDLER, filter);
         channel.setReadable(true);        
     }
 

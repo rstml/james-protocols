@@ -68,7 +68,7 @@ public abstract class AbstractSSLAwareChannelPipelineFactory extends AbstractCha
             if (enabledCipherSuites != null && enabledCipherSuites.length > 0) {
                 engine.setEnabledCipherSuites(enabledCipherSuites);
             }
-            pipeline.addFirst("sslHandler", new SslHandler(engine));
+            pipeline.addFirst(HandlerConstants.SSL_HANDLER, new SslHandler(engine));
         }
         return pipeline;
     }

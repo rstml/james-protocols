@@ -42,17 +42,17 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     private final ConnectionLimitUpstreamHandler connectionLimitHandler;
     private final ConnectionPerIpLimitUpstreamHandler connectionPerIpLimitHandler;
     private final HashedWheelTimer timer = new HashedWheelTimer();
-    private ChannelGroupHandler groupHandler;
-	private int timeout;
-    private ExecutionHandler eHandler;
+    private final ChannelGroupHandler groupHandler;
+	private final int timeout;
+    private final ExecutionHandler eHandler;
     public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp, ChannelGroup channels) {
         this(timeout, maxConnections, maxConnectsPerIp, channels, null);
     }
     
     public AbstractChannelPipelineFactory(int timeout, int maxConnections, int maxConnectsPerIp, ChannelGroup channels, ExecutionHandler eHandler) {
-        connectionLimitHandler = new ConnectionLimitUpstreamHandler(maxConnections);
-        connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(maxConnectsPerIp);
-        groupHandler = new ChannelGroupHandler(channels);
+        this.connectionLimitHandler = new ConnectionLimitUpstreamHandler(maxConnections);
+        this.connectionPerIpLimitHandler = new ConnectionPerIpLimitUpstreamHandler(maxConnectsPerIp);
+        this.groupHandler = new ChannelGroupHandler(channels);
         this.timeout = timeout;
         this.eHandler = eHandler;
     }
@@ -66,25 +66,25 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     public ChannelPipeline getPipeline() throws Exception {
         // Create a default pipeline implementation.
         ChannelPipeline pipeline = pipeline();
-        pipeline.addLast("groupHandler", groupHandler);
+        pipeline.addLast(HandlerConstants.GROUP_HANDLER, groupHandler);
 
-        pipeline.addLast("connectionLimit", connectionLimitHandler);
+        pipeline.addLast(HandlerConstants.CONNECTION_LIMIT_HANDLER, connectionLimitHandler);
 
-        pipeline.addLast("connectionPerIpLimit", connectionPerIpLimitHandler);
+        pipeline.addLast(HandlerConstants.CONNECTION_PER_IP_LIMIT_HANDLER, connectionPerIpLimitHandler);
 
         
         // Add the text line decoder which limit the max line length, don't strip the delimiter and use CRLF as delimiter
-        pipeline.addLast("framer", new DelimiterBasedFrameDecoder(MAX_LINE_LENGTH, false, Delimiters.lineDelimiter()));
+        pipeline.addLast(HandlerConstants.FRAMER, new DelimiterBasedFrameDecoder(MAX_LINE_LENGTH, false, Delimiters.lineDelimiter()));
        
         // Add the ChunkedWriteHandler to be able to write ChunkInput
-        pipeline.addLast("streamer", new ChunkedWriteHandler());
-        pipeline.addLast("timeoutHandler", new TimeoutHandler(timer, timeout));
+        pipeline.addLast(HandlerConstants.CHUNK_HANDLER, new ChunkedWriteHandler());
+        pipeline.addLast(HandlerConstants.TIMEOUT_HANDLER, new TimeoutHandler(timer, timeout));
 
         if (eHandler != null) {
-            pipeline.addLast("executionHandler", eHandler);
+            pipeline.addLast(HandlerConstants.EXECUTION_HANDLER, eHandler);
         }
         
-        pipeline.addLast("coreHandler", createHandler());
+        pipeline.addLast(HandlerConstants.CORE_HANDLER, createHandler());
 
 
         return pipeline;
@@ -100,11 +100,9 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
      */
     protected abstract ChannelUpstreamHandler createHandler();
 
+    
     @Override
     public void releaseExternalResources() {
         timer.stop();
     }
-    
-
-
 }

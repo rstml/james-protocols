@@ -24,9 +24,10 @@ import java.io.InputStream;
 
 public class FutureStreamResponseImpl extends FutureResponseImpl implements StreamResponse{
 
-    private static final  EmptyInputStream EMPTY = new EmptyInputStream();
+    private static final EmptyInputStream EMPTY = new EmptyInputStream();
     
     private InputStream in = EMPTY;
+    
     public FutureStreamResponseImpl(AbstractResponse response) {
         super(response);
         if ((response instanceof StreamResponse) == false) {
@@ -48,11 +49,10 @@ public class FutureStreamResponseImpl extends FutureResponseImpl implements Stre
     }
 
     private final static class EmptyInputStream extends InputStream {
-
+    	
         @Override
         public int read() throws IOException {
             return -1;
         }
-        
     }
 }

@@ -26,6 +26,11 @@ import java.io.IOException;
 
 public class TemporaryResolutionException extends IOException {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2263319116521465409L;
+
     public TemporaryResolutionException() {
         super();
     }

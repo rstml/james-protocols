@@ -29,7 +29,6 @@ import org.apache.james.protocols.api.AbstractResponse;
  */
 public class POP3Response extends AbstractResponse {
 
-    // POP3 response prefixes
     /** OK response. Requested content will follow */
     public final static String OK_RESPONSE = "+OK";
 
@@ -41,19 +40,35 @@ public class POP3Response extends AbstractResponse {
 
     public final static String WS = " ";
     
+    
     /**
-     * Construct a new POP3Response. The given code and description can not be
-     * null, if null an IllegalArgumentException get thrown
+     * {@link #OK_RESPONSE} with no description
+     */
+    public static final POP3Response OK = new POP3Response(OK_RESPONSE);
+    
+    /**
+     * {@link #ERR_RESPONSE} with no description
+     */
+    public static final POP3Response ERR = new POP3Response(ERR_RESPONSE);
+
+    
+    /**
+     * Construct a new POP3Response. The given code can not be
+     * </code>null</code>, if <code>null</code> an {@link IllegalArgumentException} get thrown
      * 
      * @param code
      *            the returnCode
      * @param description
-     *            the description
+     *            the description or <code>null</code> if no description should be used
      */
     public POP3Response(String code, CharSequence description) {
         super(code, description);
     }
 
+    /**
+     * {@link #POP3Response(String, CharSequence)}
+     * 
+     */
     public POP3Response(String code) {
         this(code, null);
     }

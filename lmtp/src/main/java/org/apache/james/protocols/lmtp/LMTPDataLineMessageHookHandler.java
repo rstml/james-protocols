@@ -75,7 +75,7 @@ public class LMTPDataLineMessageHookHandler extends DataLineMessageHookHandler{
         return markers;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
         if (interfaceName.equals(DeliverToRecipientHook.class)) {

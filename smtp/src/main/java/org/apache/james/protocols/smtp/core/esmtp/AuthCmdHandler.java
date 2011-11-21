@@ -104,7 +104,7 @@ public class AuthCmdHandler
      */
     private List<AuthHook> hooks;
     
-    private List rHooks;
+    private List<HookResultHook> rHooks;
     
     /**
      * handles AUTH command
@@ -453,6 +453,7 @@ public class AuthCmdHandler
     /**
      * @see org.apache.james.protocols.smtp.core.esmtp.EhloExtension#getImplementedEsmtpFeatures(org.apache.james.protocols.smtp.SMTPSession)
      */
+    @SuppressWarnings("unchecked")
     public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
         if (session.isAuthSupported()) {
             return ESMTP_FEATURES;
@@ -474,6 +475,7 @@ public class AuthCmdHandler
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
         if (AuthHook.class.equals(interfaceName)) {
             this.hooks = extension;

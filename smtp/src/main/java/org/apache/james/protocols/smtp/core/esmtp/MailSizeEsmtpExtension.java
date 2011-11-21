@@ -21,7 +21,6 @@ package org.apache.james.protocols.smtp.core.esmtp;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.james.protocols.api.Response;

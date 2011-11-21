@@ -276,7 +276,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
     /**
      * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#wireExtensions(java.lang.Class, java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void wireExtensions(Class interfaceName, List extension) {
         if (MailParametersHook.class.equals(interfaceName)) {
             this.paramHooks = new HashMap<String, MailParametersHook>();

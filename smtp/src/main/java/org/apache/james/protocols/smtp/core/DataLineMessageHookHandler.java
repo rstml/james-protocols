@@ -48,9 +48,9 @@ import org.apache.james.protocols.smtp.hook.MessageHook;
 public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHandler {
 
     
-    private List messageHandlers;
+    private List<?> messageHandlers;
     
-    private List rHooks;
+    private List<?> rHooks;
     
 
     /**
@@ -143,7 +143,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
         if (MessageHook.class.equals(interfaceName)) {
             this.messageHandlers = extension;
@@ -153,7 +153,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
         }
     }
 
-    protected void checkMessageHookCount(List messageHandlers) throws WiringException {
+    protected void checkMessageHookCount(List<?> messageHandlers) throws WiringException {
         if (messageHandlers.size() == 0) {
             throw new WiringException("No messageHandler configured");
         }

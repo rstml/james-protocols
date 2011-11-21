@@ -139,7 +139,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List getMarkerInterfaces() {
         List classes = new LinkedList();
         classes.add(DataLineFilter.class);
@@ -150,7 +150,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
         if (DataLineFilter.class.equals(interfaceName)) {
 

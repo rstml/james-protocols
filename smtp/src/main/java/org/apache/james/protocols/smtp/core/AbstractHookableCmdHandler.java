@@ -231,7 +231,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class,
      *      java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void wireExtensions(Class interfaceName, List extension) {
         if (getHookInterface().equals(interfaceName)) {
             this.hooks = extension;

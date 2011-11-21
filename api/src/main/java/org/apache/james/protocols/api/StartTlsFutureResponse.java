@@ -21,8 +21,14 @@ package org.apache.james.protocols.api;
 
 public class StartTlsFutureResponse extends FutureResponseImpl implements StartTlsResponse{
 
-    public StartTlsFutureResponse(AbstractResponse response) {
-        super(response);
+
+    @Override
+    public synchronized void setResponse(Response response) {
+        if (response instanceof StartTlsResponse) {
+            super.setResponse(response);
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
 }

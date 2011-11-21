@@ -19,40 +19,23 @@
 
 package org.apache.james.protocols.api;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 public class FutureStreamResponseImpl extends FutureResponseImpl implements StreamResponse{
 
-    private static final EmptyInputStream EMPTY = new EmptyInputStream();
-    
-    private InputStream in = EMPTY;
-    
-    public FutureStreamResponseImpl(AbstractResponse response) {
-        super(response);
-        if ((response instanceof StreamResponse) == false) {
-            throw new IllegalArgumentException("Given Response must be a StreamResponse");
+    @Override
+    public synchronized void setResponse(Response response) {
+        if (response instanceof StreamResponse) {
+            super.setResponse(response);
+        } else {
+            throw new IllegalArgumentException();
         }
     }
 
-    public synchronized void setStream(InputStream in) {
-        if (isReady()) {
-            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
-        }
-        this.in = in;
-    }
     @Override
     public InputStream getStream() {
         checkReady();
-        return in;
+        return ((StreamResponse) response).getStream();
         
-    }
-
-    private final static class EmptyInputStream extends InputStream {
-    	
-        @Override
-        public int read() throws IOException {
-            return -1;
-        }
     }
 }

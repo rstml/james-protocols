@@ -27,16 +27,12 @@ import java.util.List;
  * 
  *
  */
-public class FutureResponseImpl extends AbstractResponse implements FutureResponse{
+public class FutureResponseImpl implements FutureResponse{
 
-    private final AbstractResponse response;
+    protected Response response;
     private boolean ready = false;
     private List<ResponseListener> listeners;
     private int waiters;
-    
-    public FutureResponseImpl(AbstractResponse response) {
-        this.response = response;
-    }
 
     protected final synchronized void checkReady() {
         while (!ready) {
@@ -74,7 +70,33 @@ public class FutureResponseImpl extends AbstractResponse implements FutureRespon
         return ready;
     }
     
-    public synchronized void markReady() {
+    @Override
+    public List<CharSequence> getLines() {
+        checkReady();
+        return response.getLines();
+    }
+
+
+    @Override
+    public String getRetCode() {
+        checkReady();
+        return response.getRetCode();
+    }
+
+
+    @Override
+    public boolean isEndSession() {
+        checkReady();
+        return response.isEndSession();
+    }
+
+    @Override
+    public synchronized String toString() {
+        checkReady();
+        return response.toString();
+    }
+    
+    public synchronized void setResponse(Response response) {
         if (!ready) {
             ready = true;
             
@@ -87,53 +109,6 @@ public class FutureResponseImpl extends AbstractResponse implements FutureRespon
             }
             listeners = null;
         }
-    }
-
-    @Override
-    public List<CharSequence> getLines() {
-        checkReady();
-        return response.getLines();
-    }
-
-    @Override
-    public synchronized void appendLine(CharSequence line) {
-        if (ready) {
-            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
-        }
-        response.appendLine(line);
-    }
-
-    @Override
-    public String getRetCode() {
-        checkReady();
-        return response.getRetCode();
-    }
-
-    @Override
-    public synchronized void setRetCode(String retCode) {
-        if (ready) {
-            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
-        }
-        response.setRetCode(retCode);
-    }
-
-    @Override
-    public boolean isEndSession() {
-        checkReady();
-        return response.isEndSession();
-    }
-
-    @Override
-    public synchronized void setEndSession(boolean endSession) {
-        if (ready) {
-            throw new IllegalStateException("FutureResponse MUST NOT get modified after its ready");
-        }
-        response.setEndSession(endSession);
-    }
-
-    @Override
-    public synchronized String toString() {
-        return response.toString();
     }
 
 }

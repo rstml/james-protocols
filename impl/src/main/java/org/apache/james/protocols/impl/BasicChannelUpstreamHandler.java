@@ -81,13 +81,13 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     /**
      * Call the {@link ConnectHandler} instances which are stored in the {@link ProtocolHandlerChain}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         List<ConnectHandler> connectHandlers = chain.getHandlers(ConnectHandler.class);
         List<ProtocolHandlerResultHandler> resultHandlers = chain.getHandlers(ProtocolHandlerResultHandler.class);
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
-        session.getLogger().info("Connection established from " + session.getRemoteIPAddress());
+        session.getLogger().info("Connection established from " + session.getRemoteAddress().getAddress().getHostAddress());
         if (connectHandlers != null) {
             for (int i = 0; i < connectHandlers.size(); i++) {
                 ConnectHandler cHandler = connectHandlers.get(i);
@@ -116,7 +116,8 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
 
 
 
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         List<DisconnectHandler> connectHandlers = chain.getHandlers(DisconnectHandler.class);
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
@@ -132,7 +133,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     /**
      * Call the {@link LineHandler} 
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
         ProtocolSession pSession = (ProtocolSession) ctx.getAttachment();
@@ -181,7 +182,7 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
     public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
         ProtocolSession session = (ProtocolSession) ctx.getAttachment();
         if (session != null) {
-            session.getLogger().info("Connection closed for " + session.getRemoteIPAddress());
+            session.getLogger().info("Connection closed for " + session.getRemoteAddress().getAddress().getHostAddress());
         }
         cleanup(ctx);
 

@@ -19,7 +19,6 @@
 
 package org.apache.james.protocols.pop3.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;

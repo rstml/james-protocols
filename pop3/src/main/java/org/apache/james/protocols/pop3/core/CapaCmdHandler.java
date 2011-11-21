@@ -63,9 +63,9 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<Class<?>> getMarkerInterfaces() {
-        List<Class<?>> mList = new ArrayList();
+		List<Class<?>> mList = new ArrayList();
         mList.add(CapaCapability.class);
         return mList;
     }
@@ -74,7 +74,7 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class,
      *      java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
         if (interfaceName.equals(CapaCapability.class)) {
             caps = extension;

@@ -39,6 +39,8 @@ public class POP3Response extends AbstractResponse {
      */
     public final static String ERR_RESPONSE = "-ERR";
 
+    public final static String WS = " ";
+    
     /**
      * Construct a new POP3Response. The given code and description can not be
      * null, if null an IllegalArgumentException get thrown
@@ -69,7 +71,7 @@ public class POP3Response extends AbstractResponse {
         List<CharSequence> responseList = new ArrayList<CharSequence>();
         for (int i = 0; i < lines.size(); i++) {
             if (i == 0) {
-                responseList.add(getRetCode() + " " +lines.get(i));
+                responseList.add(getRetCode() + WS +lines.get(i));
             } else {
                 responseList.add(lines.get(i));
             }

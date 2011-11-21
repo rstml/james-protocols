@@ -77,7 +77,7 @@ public abstract class AbstractResponse implements Response{
      * @param retCode the SMTPCode
      */
     public void setRetCode(String retCode) {
-        this.retCode = retCode;
+        this.retCode = retCode.trim();
     }
 
    

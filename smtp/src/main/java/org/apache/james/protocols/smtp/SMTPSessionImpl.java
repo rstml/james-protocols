@@ -26,6 +26,7 @@ import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
+import org.apache.mailet.MailAddress;
 import org.slf4j.Logger;
 
 /**
@@ -105,7 +106,7 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
 
         // check if the key exists
         if (getState().get(SMTPSession.RCPT_LIST) != null) {
-            count = ((Collection) getState().get(SMTPSession.RCPT_LIST)).size();
+            count = ((Collection<MailAddress>) getState().get(SMTPSession.RCPT_LIST)).size();
         }
 
         return count;

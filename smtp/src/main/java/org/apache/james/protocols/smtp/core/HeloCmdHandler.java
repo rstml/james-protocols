@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -52,7 +53,7 @@ public class HeloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
      * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#doCoreCmd(org.apache.james.protocols.smtp.SMTPSession,
      *      java.lang.String, java.lang.String)
      */
-    protected SMTPResponse doCoreCmd(SMTPSession session, String command,
+    protected Response doCoreCmd(SMTPSession session, String command,
             String parameters) {
         session.getConnectionState().put(SMTPSession.CURRENT_HELO_MODE,
         		COMMAND_NAME);
@@ -67,7 +68,7 @@ public class HeloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
      * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#doFilterChecks(org.apache.james.protocols.smtp.SMTPSession,
      *      java.lang.String, java.lang.String)
      */
-    protected SMTPResponse doFilterChecks(SMTPSession session, String command,
+    protected Response doFilterChecks(SMTPSession session, String command,
             String parameters) {
         session.resetState();
 

@@ -70,7 +70,7 @@ public class AuthCmdHandler
            
         }
 
-        private SMTPResponse handleCommand(SMTPSession session, String line) {
+        private Response handleCommand(SMTPSession session, String line) {
             // See JAMES-939
             
             // According to RFC2554:
@@ -84,7 +84,7 @@ public class AuthCmdHandler
             return onCommand(session, line);
         }
 
-        protected abstract SMTPResponse onCommand(SMTPSession session, String l);
+        protected abstract Response onCommand(SMTPSession session, String l);
     }
 
 
@@ -123,7 +123,7 @@ public class AuthCmdHandler
      * @param session SMTP session
      * @param argument the argument passed in with the command by the SMTP client
      */
-    private SMTPResponse doAUTH(SMTPSession session, String argument) {
+    private Response doAUTH(SMTPSession session, String argument) {
         if (session.getUser() != null) {
             return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" User has previously authenticated. "
                     + " Further authentication is not required!");
@@ -140,7 +140,7 @@ public class AuthCmdHandler
                 String userpass;
                 if (initialResponse == null) {
                     session.pushLineHandler(new AbstractSMTPLineHandler() {
-                        protected SMTPResponse onCommand(SMTPSession session, String l) {
+                        protected Response onCommand(SMTPSession session, String l) {
                             return doPlainAuthPass(session, l);
                         }
                     });
@@ -153,7 +153,7 @@ public class AuthCmdHandler
                 
                 if (initialResponse == null) {
                     session.pushLineHandler(new AbstractSMTPLineHandler() {
-                        protected SMTPResponse onCommand(SMTPSession session, String l) {
+                        protected Response onCommand(SMTPSession session, String l) {
                             return doLoginAuthPass(session, l);
                         }
                     });
@@ -182,7 +182,7 @@ public class AuthCmdHandler
      * @param session SMTP session object
      * @param initialResponse the initial response line passed in with the AUTH command
      */
-    private SMTPResponse doPlainAuthPass(SMTPSession session, String userpass) {
+    private Response doPlainAuthPass(SMTPSession session, String userpass) {
         String user = null, pass = null;
         try {
             if (userpass != null) {
@@ -237,7 +237,7 @@ public class AuthCmdHandler
             // with in the if clause below
         }
         // Authenticate user
-        SMTPResponse response = doAuthTest(session, user, pass, "PLAIN");
+        Response response = doAuthTest(session, user, pass, "PLAIN");
         
         session.popLineHandler();
 
@@ -250,7 +250,7 @@ public class AuthCmdHandler
      * @param session SMTP session object
      * @param initialResponse the initial response line passed in with the AUTH command
      */
-    private SMTPResponse doLoginAuthPass(SMTPSession session, String user) {
+    private Response doLoginAuthPass(SMTPSession session, String user) {
         if (user != null) {
             try {
                 user = new String(Base64.decodeBase64(user));
@@ -272,7 +272,7 @@ public class AuthCmdHandler
                 return this;
             }
 
-            protected SMTPResponse onCommand(SMTPSession session, String l) {
+            protected Response onCommand(SMTPSession session, String l) {
                 return doLoginAuthPassCheck(session, user, l);
             }
             
@@ -280,7 +280,7 @@ public class AuthCmdHandler
         return new SMTPResponse(SMTPRetCode.AUTH_READY, "UGFzc3dvcmQ6"); // base64 encoded "Password:"
     }
     
-    private SMTPResponse doLoginAuthPassCheck(SMTPSession session, String user, String pass) {
+    private Response doLoginAuthPassCheck(SMTPSession session, String user, String pass) {
         if (pass != null) {
             try {
                 pass = new String(Base64.decodeBase64(pass));
@@ -295,7 +295,7 @@ public class AuthCmdHandler
 
         
         // Authenticate user
-        SMTPResponse response = doAuthTest(session, user, pass, "LOGIN");
+        Response response = doAuthTest(session, user, pass, "LOGIN");
        
         return response;
     }
@@ -309,12 +309,12 @@ public class AuthCmdHandler
      * @param authType
      * @return
      */
-    private SMTPResponse doAuthTest(SMTPSession session, String user, String pass, String authType) {
+    private Response doAuthTest(SMTPSession session, String user, String pass, String authType) {
         if ((user == null) || (pass == null)) {
             return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,"Could not decode parameters for AUTH "+authType);
         }
 
-        SMTPResponse res = null;
+        Response res = null;
         
         List<AuthHook> hooks = getHooks();
         
@@ -366,7 +366,7 @@ public class AuthCmdHandler
      * @param result the HookResult which should converted to SMTPResponse
      * @return the calculated SMTPResponse for the given HookReslut
      */
-    protected SMTPResponse calcDefaultSMTPResponse(HookResult result) {
+    protected Response calcDefaultSMTPResponse(HookResult result) {
         if (result != null) {
             int rCode = result.getResult();
             String smtpRetCode = result.getSmtpRetCode();
@@ -429,7 +429,7 @@ public class AuthCmdHandler
      * @param authType the unknown auth type
      * @param initialResponse the initial response line passed in with the AUTH command
      */
-    private SMTPResponse doUnknownAuth(SMTPSession session, String authType, String initialResponse) {
+    private Response doUnknownAuth(SMTPSession session, String authType, String initialResponse) {
         if (session.getLogger().isInfoEnabled()) {
             StringBuilder errorBuffer =
                 new StringBuilder(128)

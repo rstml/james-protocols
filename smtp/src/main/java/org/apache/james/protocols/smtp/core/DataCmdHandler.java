@@ -93,7 +93,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
      */
     public Response onCommand(SMTPSession session, Request request) {
         String parameters = request.getArgument();
-        SMTPResponse response = doDATAFilter(session,parameters);
+        Response response = doDATAFilter(session,parameters);
         
         if (response == null) {
             return doDATA(session, parameters);
@@ -163,7 +163,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
         }
     }
 
-    protected SMTPResponse doDATAFilter(SMTPSession session, String argument) {
+    protected Response doDATAFilter(SMTPSession session, String argument) {
         if ((argument != null) && (argument.length() > 0)) {
             return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_INVALID_ARG)+" Unexpected argument provided with DATA command");
         }

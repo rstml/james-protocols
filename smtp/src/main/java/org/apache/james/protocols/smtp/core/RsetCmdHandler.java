@@ -59,7 +59,7 @@ public class RsetCmdHandler implements CommandHandler<SMTPSession> {
      * @param argument the argument passed in with the command by the SMTP client
      * @return 
      */
-    private SMTPResponse doRSET(SMTPSession session, String argument) {
+    private Response doRSET(SMTPSession session, String argument) {
         if ((argument == null) || (argument.length() == 0)) {
             session.resetState();
             return new SMTPResponse(SMTPRetCode.MAIL_OK, DSNStatus.getStatus(DSNStatus.SUCCESS,DSNStatus.UNDEFINED_STATUS)+" OK");

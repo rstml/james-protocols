@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -51,14 +52,14 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
     }
 
     @Override
-    protected SMTPResponse doCoreCmd(SMTPSession session, String command, String parameters) {
+    protected Response doCoreCmd(SMTPSession session, String command, String parameters) {
         StringBuilder result = new StringBuilder();
         result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD)).append(" Command ").append(command).append(" unrecognized.");
         return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
     }
 
     @Override
-    protected SMTPResponse doFilterChecks(SMTPSession session, String command, String parameters) {
+    protected Response doFilterChecks(SMTPSession session, String command, String parameters) {
         session.getState().put("CURR_COMMAND", command);
         return null;
     }

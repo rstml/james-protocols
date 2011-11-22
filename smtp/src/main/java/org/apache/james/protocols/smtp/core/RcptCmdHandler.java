@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -59,7 +60,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
      *            parameters passed in with the command by the SMTP client
      */
     @SuppressWarnings("unchecked")
-    protected SMTPResponse doCoreCmd(SMTPSession session, String command,
+    protected Response doCoreCmd(SMTPSession session, String command,
             String parameters) {
         Collection<MailAddress> rcptColl = (Collection<MailAddress>) session.getState().get(
                 SMTPSession.RCPT_LIST);
@@ -86,7 +87,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
      * @param argument
      *            the argument passed in with the command by the SMTP client
      */
-    protected SMTPResponse doFilterChecks(SMTPSession session, String command,
+    protected Response doFilterChecks(SMTPSession session, String command,
             String argument) {
         String recipient = null;
         if ((argument != null) && (argument.indexOf(":") > 0)) {

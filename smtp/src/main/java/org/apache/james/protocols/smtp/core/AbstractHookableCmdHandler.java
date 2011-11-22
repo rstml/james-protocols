@@ -52,7 +52,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
     public Response onCommand(SMTPSession session, Request request) {
         String command = request.getCommand();
         String parameters = request.getArgument();
-        SMTPResponse response = doFilterChecks(session, command, parameters);
+        Response response = doFilterChecks(session, command, parameters);
 
         if (response == null) {
 
@@ -79,7 +79,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
      *            the paramaters
      * @return SMTPResponse
      */
-    private SMTPResponse processHooks(SMTPSession session, String command,
+    private Response processHooks(SMTPSession session, String command,
             String parameters) {
         List<Hook> hooks = getHooks();
         if (hooks != null) {
@@ -102,11 +102,27 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
                 
                 // call the core cmd if we receive a ok return code of the hook so no other hooks are executed
                 if ((hRes.getResult() & HookReturnCode.OK) == HookReturnCode.OK) {
-                    SMTPResponse response = doCoreCmd(session, command, parameters);
+                    final Response response = doCoreCmd(session, command, parameters);
                     if ((hRes.getResult() & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
-                        response.setEndSession(true);
+                        return new Response() {
+                            
+                            @Override
+                            public boolean isEndSession() {
+                                return true;
+                            }
+                            
+                            @Override
+                            public String getRetCode() {
+                                return response.getRetCode();
+                            }
+                            
+                            @Override
+                            public List<CharSequence> getLines() {
+                                return response.getLines();
+                            }
+                        };
                     }
-                      return response;
+                    return response;
                 } else {
                 	SMTPResponse res = calcDefaultSMTPResponse(hRes);
                 	if (res != null) {
@@ -195,7 +211,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
      * @param parameters
      * @return smtp response if a syntax error was detected, otherwise <code>null</code>
      */
-    protected abstract SMTPResponse doFilterChecks(SMTPSession session,
+    protected abstract Response doFilterChecks(SMTPSession session,
             String command, String parameters);
 
     /**
@@ -206,7 +222,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
      * @param parameters
      * @return smtp response
      */
-    protected abstract SMTPResponse doCoreCmd(SMTPSession session,
+    protected abstract Response doCoreCmd(SMTPSession session,
             String command, String parameters);
     
 

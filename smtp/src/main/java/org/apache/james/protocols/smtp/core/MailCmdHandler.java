@@ -76,7 +76,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      * @param argument
      *            the argument passed in with the command by the SMTP client
      */
-    private SMTPResponse doMAIL(SMTPSession session, String argument) {
+    private Response doMAIL(SMTPSession session, String argument) {
         StringBuilder responseBuffer = new StringBuilder();
         MailAddress sender = (MailAddress) session.getState().get(
                 SMTPSession.SENDER);
@@ -101,7 +101,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#doCoreCmd(org.apache.james.protocols.smtp.SMTPSession,
      *      java.lang.String, java.lang.String)
      */
-    protected SMTPResponse doCoreCmd(SMTPSession session, String command,
+    protected Response doCoreCmd(SMTPSession session, String command,
             String parameters) {
         return doMAIL(session, parameters);
     }
@@ -110,7 +110,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#doFilterChecks(org.apache.james.protocols.smtp.SMTPSession,
      *      java.lang.String, java.lang.String)
      */
-    protected SMTPResponse doFilterChecks(SMTPSession session, String command,
+    protected Response doFilterChecks(SMTPSession session, String command,
             String parameters) {
         return doMAILFilter(session, parameters);
     }
@@ -121,7 +121,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      * @param argument
      *            the argument passed in with the command by the SMTP client
      */
-    private SMTPResponse doMAILFilter(SMTPSession session, String argument) {
+    private Response doMAILFilter(SMTPSession session, String argument) {
         String sender = null;
 
         if ((argument != null) && (argument.indexOf(":") > 0)) {

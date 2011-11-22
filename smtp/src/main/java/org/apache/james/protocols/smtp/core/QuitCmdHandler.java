@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -49,7 +50,7 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
      * @param argument
      *            the argument passed in with the command by the SMTP client
      */
-    private SMTPResponse doQUIT(SMTPSession session, String argument) {
+    private Response doQUIT(SMTPSession session, String argument) {
         SMTPResponse ret;
         if ((argument == null) || (argument.length() == 0)) {
             StringBuilder response = new StringBuilder();
@@ -81,7 +82,7 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
      * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#doCoreCmd(org.apache.james.protocols.smtp.SMTPSession,
      *      java.lang.String, java.lang.String)
      */
-    protected SMTPResponse doCoreCmd(SMTPSession session, String command,
+    protected Response doCoreCmd(SMTPSession session, String command,
             String parameters) {
         return doQUIT(session, parameters);
     }
@@ -90,7 +91,7 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
      * @see org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler#doFilterChecks(org.apache.james.protocols.smtp.SMTPSession,
      *      java.lang.String, java.lang.String)
      */
-    protected SMTPResponse doFilterChecks(SMTPSession session, String command,
+    protected Response doFilterChecks(SMTPSession session, String command,
             String parameters) {
         return null;
     }

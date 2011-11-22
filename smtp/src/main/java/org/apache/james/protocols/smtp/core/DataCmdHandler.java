@@ -112,7 +112,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
      * @param argument the argument passed in with the command by the SMTP client
      */
     @SuppressWarnings("unchecked")
-    protected SMTPResponse doDATA(SMTPSession session, String argument) {
+    protected Response doDATA(SMTPSession session, String argument) {
         MailEnvelope env = createEnvelope(session, (MailAddress) session.getState().get(SMTPSession.SENDER), new ArrayList<MailAddress>((Collection<MailAddress>)session.getState().get(SMTPSession.RCPT_LIST)));
         session.getState().put(MAILENV, env);
         session.pushLineHandler(lineHandler);

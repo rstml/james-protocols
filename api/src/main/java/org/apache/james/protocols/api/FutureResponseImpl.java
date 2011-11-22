@@ -30,12 +30,11 @@ import java.util.List;
 public class FutureResponseImpl implements FutureResponse{
 
     protected Response response;
-    private boolean ready = false;
     private List<ResponseListener> listeners;
     private int waiters;
 
     protected final synchronized void checkReady() {
-        while (!ready) {
+        while (!isReady()) {
             try {
                 waiters++;
                 wait();
@@ -48,7 +47,7 @@ public class FutureResponseImpl implements FutureResponse{
     }
     @Override
     public synchronized void addListener(ResponseListener listener) {
-        if (ready) {
+        if (isReady()) {
             listener.onResponse(this);
         } else {
             if (listeners == null) {
@@ -67,7 +66,7 @@ public class FutureResponseImpl implements FutureResponse{
 
     @Override
     public synchronized boolean isReady() {
-        return ready;
+        return response != null;
     }
     
     @Override
@@ -97,13 +96,12 @@ public class FutureResponseImpl implements FutureResponse{
     }
     
     public synchronized void setResponse(Response response) {
-        if (!ready) {
-            ready = true;
+        if (!isReady()) {
+        	this.response = response;
             
             if (waiters > 0) {
                 notifyAll();
             }
-            
             for (ResponseListener listener: listeners) {
                 listener.onResponse(this);
             }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChainImpl;
@@ -60,7 +61,6 @@ import org.apache.james.protocols.smtp.hook.Hook;
  * 
  */
 public class SMTPProtocolHandlerChain extends ProtocolHandlerChainImpl {
-    private volatile boolean authHandler = false;
     
     public SMTPProtocolHandlerChain() {
         this(true);
@@ -109,17 +109,22 @@ public class SMTPProtocolHandlerChain extends ProtocolHandlerChainImpl {
         defaultHandlers.add(new StartTlsCmdHandler());
         return defaultHandlers;
     }
-    
 
-    private boolean checkForAuth(ProtocolHandler handler) {
+    private synchronized boolean checkForAuth(ProtocolHandler handler) {
         if (isReadyOnly()) {
             throw new UnsupportedOperationException("Read-Only");
         }
-        if (handler instanceof AuthHook && !authHandler) {
+        if (handler instanceof AuthHook) {
+            // check if we need to add the AuthCmdHandler
+            List<ExtensibleHandler> handlers = getHandlers(ExtensibleHandler.class);
+            for (ExtensibleHandler h: handlers) {
+                if (h.getMarkerInterfaces().contains(AuthHook.class)) {
+                    return true;
+                }
+            }
             if (!add(new AuthCmdHandler())) {
                 return false;
             }
-            authHandler = true;
         }
         return true;
     }

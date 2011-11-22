@@ -92,12 +92,12 @@ public class AuthCmdHandler
     /**
      * The text string for the SMTP AUTH type PLAIN.
      */
-    private final static String AUTH_TYPE_PLAIN = "PLAIN";
+    protected final static String AUTH_TYPE_PLAIN = "PLAIN";
 
     /**
      * The text string for the SMTP AUTH type LOGIN.
      */
-    private final static String AUTH_TYPE_LOGIN = "LOGIN";
+    protected final static String AUTH_TYPE_LOGIN = "LOGIN";
 
     /**
      * The AuthHooks
@@ -309,7 +309,7 @@ public class AuthCmdHandler
      * @param authType
      * @return
      */
-    private Response doAuthTest(SMTPSession session, String user, String pass, String authType) {
+    protected Response doAuthTest(SMTPSession session, String user, String pass, String authType) {
         if ((user == null) || (pass == null)) {
             return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,"Could not decode parameters for AUTH "+authType);
         }

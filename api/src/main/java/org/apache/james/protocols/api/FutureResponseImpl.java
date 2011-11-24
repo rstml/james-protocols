@@ -22,6 +22,9 @@ package org.apache.james.protocols.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * {@link FutureResponse} implementation which wraps a {@link AbstractResponse} implementation
  * 
@@ -29,6 +32,8 @@ import java.util.List;
  */
 public class FutureResponseImpl implements FutureResponse{
 
+	private final static Logger LOGGER = LoggerFactory.getLogger(FutureResponseImpl.class);
+	
     protected Response response;
     private List<ResponseListener> listeners;
     private int waiters;
@@ -103,7 +108,11 @@ public class FutureResponseImpl implements FutureResponse{
                 notifyAll();
             }
             for (ResponseListener listener: listeners) {
-                listener.onResponse(this);
+                try {
+                    listener.onResponse(this);
+                } catch (Throwable e) {
+                    LOGGER.warn("An exception was thrown by the listener " + listener, e);
+                }
             }
             listeners = null;
         }

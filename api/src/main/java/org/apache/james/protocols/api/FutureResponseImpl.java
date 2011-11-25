@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public class FutureResponseImpl implements FutureResponse{
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(FutureResponseImpl.class);
-	
+    private final static Logger LOGGER = LoggerFactory.getLogger(FutureResponseImpl.class);
+
     protected Response response;
     private List<ResponseListener> listeners;
     private int waiters;
@@ -64,8 +64,10 @@ public class FutureResponseImpl implements FutureResponse{
 
     @Override
     public synchronized void removeListener(ResponseListener listener) {
-        if (listeners != null) {
-            listeners.remove(listener);
+        if (!isReady()) {
+            if (listeners != null) {
+                listeners.remove(listener);
+            }
         }
     }
 
@@ -100,14 +102,21 @@ public class FutureResponseImpl implements FutureResponse{
         return response.toString();
     }
     
-    public synchronized void setResponse(Response response) {
-        if (!isReady()) {
-        	this.response = response;
-            
-            if (waiters > 0) {
-                notifyAll();
+    public void setResponse(Response response) {
+        boolean fire = false;
+        synchronized (this) {
+            if (!isReady()) {
+                this.response = response;
+                fire = true;
+
+                if (waiters > 0) {
+                    notifyAll();
+                }
             }
-            for (ResponseListener listener: listeners) {
+        }
+
+        if (fire) {
+            for (ResponseListener listener : listeners) {
                 try {
                     listener.onResponse(this);
                 } catch (Throwable e) {

@@ -56,7 +56,7 @@
     <distributionManagement>
         <site>
             <id>server-trunk-website</id>
-            <url>scpexe://people.apache.org/www/james.apache.org/protocols/trunk/</url>
+            <url>scpexe://people.apache.org/www/james.apache.org/protocols/</url>
         </site>
     </distributionManagement>
 

@@ -215,13 +215,19 @@ public class BaseFakeSMTPSession implements SMTPSession {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getRemoteAddress()
+     */
     public InetSocketAddress getRemoteAddress() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
 
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getLocalAddress()
+     */
     public InetSocketAddress getLocalAddress() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
 

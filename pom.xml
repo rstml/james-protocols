@@ -43,7 +43,7 @@
         <module>api</module>
         <module>smtp</module>
         <module>lmtp</module>
-        <module>impl</module>
+        <module>netty</module>
         <module>pop3</module>
     </modules>
 

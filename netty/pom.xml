@@ -31,9 +31,9 @@
     </parent>
 
     <groupId>org.apache.james.protocols</groupId>
-    <artifactId>protocols-impl</artifactId>
+    <artifactId>protocols-netty</artifactId>
 
-    <name>Apache James Protocols Implementation</name>
+    <name>Apache James Protocols Netty Implementation</name>
 
     <dependencies>
         <dependency>

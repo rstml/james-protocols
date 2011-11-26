@@ -27,7 +27,10 @@ public class POP3ConfigurationImpl implements POP3Configuration {
 		this.helloName = helloName;
 	}
 	
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.james.protocols.pop3.POP3Configuration#getHelloName()
+	 */
 	public String getHelloName() {
 		return helloName;
 	}

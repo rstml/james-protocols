@@ -25,12 +25,18 @@ import java.io.SequenceInputStream;
 
 public abstract class AbstractMailbox implements Mailbox{
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.james.protocols.pop3.mailbox.Mailbox#getMessage(long)
+	 */
 	public InputStream getMessage(long uid) throws IOException {
 		return new SequenceInputStream(getMessageHeaders(uid), getMessageBody(uid));
 	}
 
-	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see org.apache.james.protocols.pop3.mailbox.Mailbox#close()
+	 */
 	public void close() throws IOException {
 		// do nothing
 	}

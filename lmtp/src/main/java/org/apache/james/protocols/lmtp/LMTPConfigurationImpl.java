@@ -24,7 +24,10 @@ public class LMTPConfigurationImpl extends LMTPConfiguration{
     private long maxMessageSize = 0;
     private String greeting = "JAMES Protocols LMTP Server";
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#getHelloName()
+     */
     public String getHelloName() {
         return helloName;
     }
@@ -34,7 +37,10 @@ public class LMTPConfigurationImpl extends LMTPConfiguration{
     }
     
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#getMaxMessageSize()
+     */
     public long getMaxMessageSize() {
         return maxMessageSize;
     }
@@ -44,7 +50,10 @@ public class LMTPConfigurationImpl extends LMTPConfiguration{
     }
     
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#getSMTPGreeting()
+     */
     public String getSMTPGreeting() {
         return greeting;
     }

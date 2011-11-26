@@ -48,12 +48,18 @@ public class ProtocolSessionImpl implements ProtocolSession {
 
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getLocalAddress()
+     */
     public InetSocketAddress getLocalAddress() {
         return transport.getLocalAddress();
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getRemoteAddress()
+     */
     public InetSocketAddress getRemoteAddress() {
         return transport.getRemoteAddress();
     }
@@ -142,7 +148,6 @@ public class ProtocolSessionImpl implements ProtocolSession {
      * This implementation just returns <code>null</code>. Sub-classes should
      * overwrite this if needed
      */
-    @Override
     public Response newLineTooLongResponse() {
         return null;
     }
@@ -151,7 +156,6 @@ public class ProtocolSessionImpl implements ProtocolSession {
      * This implementation just returns <code>null</code>. Sub-classes should
      * overwrite this if needed
      */
-    @Override
     public Response newFatalErrorResponse() {
         return null;
     }
@@ -160,7 +164,6 @@ public class ProtocolSessionImpl implements ProtocolSession {
      * This implementation just clears the sessions state. Sub-classes should
      * overwrite this if needed
      */
-    @Override
     public void resetState() {
         sessionState.clear();
     }

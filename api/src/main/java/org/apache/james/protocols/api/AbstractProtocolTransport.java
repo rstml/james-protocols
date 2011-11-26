@@ -20,9 +20,10 @@
 package org.apache.james.protocols.api;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 
 import org.apache.james.protocols.api.FutureResponse.ResponseListener;
 
@@ -36,7 +37,6 @@ import org.apache.james.protocols.api.FutureResponse.ResponseListener;
  */
 public abstract class AbstractProtocolTransport implements ProtocolTransport{
     
-    private final static Charset CHARSET =  Charset.forName("US-ASCII");
     private final static String CRLF = "\r\n";
 
     
@@ -142,7 +142,11 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
                 builder.append(CRLF);
             }
         }
-        return builder.toString().getBytes(CHARSET);
+        try {
+            return builder.toString().getBytes("US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("No US-ASCII ?");
+        }
     }
     
 

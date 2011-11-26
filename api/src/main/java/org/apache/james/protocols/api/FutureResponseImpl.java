@@ -50,7 +50,10 @@ public class FutureResponseImpl implements FutureResponse{
             }
         }
     }
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.FutureResponse#addListener(org.apache.james.protocols.api.FutureResponse.ResponseListener)
+     */
     public synchronized void addListener(ResponseListener listener) {
         if (isReady()) {
             listener.onResponse(this);
@@ -62,7 +65,10 @@ public class FutureResponseImpl implements FutureResponse{
         }
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.FutureResponse#removeListener(org.apache.james.protocols.api.FutureResponse.ResponseListener)
+     */
     public synchronized void removeListener(ResponseListener listener) {
         if (!isReady()) {
             if (listeners != null) {
@@ -71,26 +77,38 @@ public class FutureResponseImpl implements FutureResponse{
         }
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.FutureResponse#isReady()
+     */
     public synchronized boolean isReady() {
         return response != null;
     }
     
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Response#getLines()
+     */
     public List<CharSequence> getLines() {
         checkReady();
         return response.getLines();
     }
 
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Response#getRetCode()
+     */
     public String getRetCode() {
         checkReady();
         return response.getRetCode();
     }
 
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Response#isEndSession()
+     */
     public boolean isEndSession() {
         checkReady();
         return response.isEndSession();

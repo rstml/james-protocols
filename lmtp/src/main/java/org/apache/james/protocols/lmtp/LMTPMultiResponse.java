@@ -37,12 +37,18 @@ public class LMTPMultiResponse implements Response {
         
     }
     
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Response#getRetCode()
+     */
     public String getRetCode() {
         return responses.get(0).getRetCode();
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Response#getLines()
+     */
     public List<CharSequence> getLines() {
         List<CharSequence> lines = new ArrayList<CharSequence>();
         for (Response response: responses) {
@@ -52,7 +58,10 @@ public class LMTPMultiResponse implements Response {
     }
 
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Response#isEndSession()
+     */
     public boolean isEndSession() {
         for (Response response: responses) {
             if (response.isEndSession()) {

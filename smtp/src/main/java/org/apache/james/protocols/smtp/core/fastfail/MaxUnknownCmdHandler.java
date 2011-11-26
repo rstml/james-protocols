@@ -41,7 +41,10 @@ public class MaxUnknownCmdHandler implements UnknownHook{
         this.maxUnknown = maxUnknown;
     }
     
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.hook.UnknownHook#doUnknown(org.apache.james.protocols.smtp.SMTPSession, java.lang.String)
+     */
     public HookResult doUnknown(SMTPSession session, String command) {
         Integer count = (Integer) session.getState().get(UNKOWN_COMMAND_COUNT);
         if (count == null) {

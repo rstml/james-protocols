@@ -106,17 +106,26 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
                     if ((hRes.getResult() & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
                         return new Response() {
                             
-                            @Override
+                            /*
+                             * (non-Javadoc)
+                             * @see org.apache.james.protocols.api.Response#isEndSession()
+                             */
                             public boolean isEndSession() {
                                 return true;
                             }
                             
-                            @Override
+                            /*
+                             * (non-Javadoc)
+                             * @see org.apache.james.protocols.api.Response#getRetCode()
+                             */
                             public String getRetCode() {
                                 return response.getRetCode();
                             }
                             
-                            @Override
+                            /*
+                             * (non-Javadoc)
+                             * @see org.apache.james.protocols.api.Response#getLines()
+                             */
                             public List<CharSequence> getLines() {
                                 return response.getLines();
                             }

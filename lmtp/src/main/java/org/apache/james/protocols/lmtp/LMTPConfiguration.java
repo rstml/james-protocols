@@ -22,22 +22,34 @@ import org.apache.james.protocols.smtp.SMTPConfiguration;
 
 public abstract class LMTPConfiguration implements SMTPConfiguration{
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#isRelayingAllowed(java.lang.String)
+     */
     public boolean isRelayingAllowed(String remoteIP) {
         return false;
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#isAuthRequired(java.lang.String)
+     */
     public boolean isAuthRequired(String remoteIP) {
         return false;
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#useHeloEhloEnforcement()
+     */
     public boolean useHeloEhloEnforcement() {
         return false;
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#useAddressBracketsEnforcement()
+     */
     public boolean useAddressBracketsEnforcement() {
         return false;
     }

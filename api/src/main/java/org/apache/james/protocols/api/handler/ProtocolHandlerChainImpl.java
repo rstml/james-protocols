@@ -66,37 +66,58 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return Collections.unmodifiableList(handlers);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#size()
+     */
     public int size() {
         return handlers.size();
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#isEmpty()
+     */
     public boolean isEmpty() {
         return handlers.isEmpty();
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#contains(java.lang.Object)
+     */
     public boolean contains(Object o) {
         return handlers.contains(o);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#iterator()
+     */
     public Iterator<ProtocolHandler> iterator() {
         return new ProtocolHandlerIterator(handlers.listIterator());
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#toArray()
+     */
     public Object[] toArray() {
         return handlers.toArray();
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#toArray(T[])
+     */
     public <T> T[] toArray(T[] a) {
         return handlers.toArray(a);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#remove(java.lang.Object)
+     */
     public boolean remove(Object o) {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -104,12 +125,18 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return handlers.remove(o);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#containsAll(java.util.Collection)
+     */
     public boolean containsAll(Collection<?> c) {
         return handlers.containsAll(c);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#addAll(java.util.Collection)
+     */
     public boolean addAll(Collection<? extends ProtocolHandler> c) {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -117,7 +144,10 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return handlers.addAll(c);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#addAll(int, java.util.Collection)
+     */
     public boolean addAll(int index, Collection<? extends ProtocolHandler> c) {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -125,7 +155,10 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return handlers.addAll(index, c);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#removeAll(java.util.Collection)
+     */
     public boolean removeAll(Collection<?> c) {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -133,12 +166,18 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return handlers.removeAll(c);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#retainAll(java.util.Collection)
+     */
     public boolean retainAll(Collection<?> c) {
         return handlers.retainAll(c);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#clear()
+     */
     public void clear() {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -146,12 +185,18 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         handlers.clear();
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#get(int)
+     */
     public ProtocolHandler get(int index) {
         return (ProtocolHandler) handlers.get(index);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#set(int, java.lang.Object)
+     */
     public ProtocolHandler set(int index, ProtocolHandler element) {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -159,7 +204,10 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return (ProtocolHandler) handlers.set(index, element);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#add(int, java.lang.Object)
+     */
     public void add(int index, ProtocolHandler element) {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -167,7 +215,10 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         handlers.add(index, element);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#remove(int)
+     */
     public ProtocolHandler remove(int index) {
         if (readyOnly) {
             throw new UnsupportedOperationException("Ready-only");
@@ -175,27 +226,44 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return (ProtocolHandler) handlers.remove(index);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#indexOf(java.lang.Object)
+     */
     public int indexOf(Object o) {
         return handlers.indexOf(o);
     }
 
-    @Override
+
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#lastIndexOf(java.lang.Object)
+     */
     public int lastIndexOf(Object o) {
         return handlers.lastIndexOf(o);
     }
 
-    @Override
+    /*
+     * 
+     * (non-Javadoc)
+     * @see java.util.List#listIterator()
+     */
     public ListIterator<ProtocolHandler> listIterator() {
         return new ProtocolHandlerIterator(handlers.listIterator());
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#listIterator(int)
+     */
     public ListIterator<ProtocolHandler> listIterator(int index) {
         return new ProtocolHandlerIterator(handlers.listIterator(index));
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#subList(int, int)
+     */
     public List<ProtocolHandler> subList(int fromIndex, int toIndex) {
         List<ProtocolHandler> sList = new ArrayList<ProtocolHandler>();
         for (Object handler : handlers.subList(fromIndex, toIndex)) {
@@ -214,37 +282,58 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
             this.handlers = handlers;
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#hasNext()
+         */
         public boolean hasNext() {
             return handlers.hasNext();
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#next()
+         */
         public ProtocolHandler next() {
             return (ProtocolHandler) handlers.next();
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#hasPrevious()
+         */
         public boolean hasPrevious() {
             return handlers.hasPrevious();
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#previous()
+         */
         public ProtocolHandler previous() {
             return handlers.previous();
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#nextIndex()
+         */
         public int nextIndex() {
             return handlers.nextIndex();
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#previousIndex()
+         */
         public int previousIndex() {
             return handlers.previousIndex();
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#remove()
+         */
         public void remove() {
             if (readyOnly) {
                 throw new UnsupportedOperationException("Ready-only");
@@ -252,7 +341,10 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
             handlers.previousIndex();
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#set(java.lang.Object)
+         */
         public void set(ProtocolHandler e) {
             if (readyOnly) {
                 throw new UnsupportedOperationException("Ready-only");
@@ -260,7 +352,10 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
             handlers.set(e);
         }
 
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see java.util.ListIterator#add(java.lang.Object)
+         */
         public void add(ProtocolHandler e) {
             if (readyOnly) {
                 throw new UnsupportedOperationException("Ready-only");

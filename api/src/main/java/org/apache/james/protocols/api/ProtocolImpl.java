@@ -35,12 +35,18 @@ public class ProtocolImpl implements Protocol{
         this.chain = chain;
     }
     
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Protocol#getProtocolChain()
+     */
     public ProtocolHandlerChain getProtocolChain() {
         return chain;
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Protocol#newSession(org.apache.james.protocols.api.ProtocolTransport)
+     */
     public ProtocolSession newSession(ProtocolTransport transport) {
         return new ProtocolSessionImpl(logger, transport);
     }

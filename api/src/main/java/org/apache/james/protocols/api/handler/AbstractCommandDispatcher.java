@@ -19,7 +19,7 @@
 
 package org.apache.james.protocols.api.handler;
 
-import java.nio.charset.Charset;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,9 +47,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     private HashMap<String, List<CommandHandler<Session>>> commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
 
     private List<ProtocolHandlerResultHandler<Response, Session>> rHandlers = new ArrayList<ProtocolHandlerResultHandler<Response, Session>>();
-    
-    private final Charset charset = Charset.forName(getLineDecodingCharset());
-    
+        
     /**
      * Add it to map (key as command name, value is an array list of CommandHandlers)
      *
@@ -131,48 +129,55 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     public Response onLine(final Session session, byte[] line) {
         String curCommandName = null;
         String curCommandArgument = null;
-        String cmdString = new String(line, charset).trim(); 
-        int spaceIndex = cmdString.indexOf(" ");
-        if (spaceIndex > 0) {
-            curCommandName = cmdString.substring(0, spaceIndex);
-            curCommandArgument = cmdString.substring(spaceIndex + 1);
-        } else {
-            curCommandName = cmdString;
-        }
-        curCommandName = curCommandName.toUpperCase(Locale.US);
+        String cmdString;
+        try {
+            cmdString = new String(line, getLineDecodingCharset()).trim();
+            int spaceIndex = cmdString.indexOf(" ");
+            if (spaceIndex > 0) {
+                curCommandName = cmdString.substring(0, spaceIndex);
+                curCommandArgument = cmdString.substring(spaceIndex + 1);
+            } else {
+                curCommandName = cmdString;
+            }
+            curCommandName = curCommandName.toUpperCase(Locale.US);
 
-        if (session.getLogger().isDebugEnabled()) {
-            session.getLogger().debug(getClass().getName() + " received: " + cmdString);
-        }
-        List<CommandHandler<Session>> commandHandlers = getCommandHandlers(curCommandName, session);
-        // fetch the command handlers registered to the command
+            if (session.getLogger().isDebugEnabled()) {
+                session.getLogger().debug(getClass().getName() + " received: " + cmdString);
+            }
+            List<CommandHandler<Session>> commandHandlers = getCommandHandlers(curCommandName, session);
+            // fetch the command handlers registered to the command
 
-        BaseRequest request = new BaseRequest(curCommandName, curCommandArgument);
-        Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
-        
-        while (handlers.hasNext()) {
-            final long start = System.currentTimeMillis();
-            CommandHandler<Session> cHandler = handlers.next();
-            Response response = cHandler.onCommand(session, request);
-            if (response != null) {
-                long executionTime = System.currentTimeMillis() - start;
+            BaseRequest request = new BaseRequest(curCommandName, curCommandArgument);
+            Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
+            
+            while (handlers.hasNext()) {
+                final long start = System.currentTimeMillis();
+                CommandHandler<Session> cHandler = handlers.next();
+                Response response = cHandler.onCommand(session, request);
+                if (response != null) {
+                    long executionTime = System.currentTimeMillis() - start;
 
-                // now process the result handlers
-                for (int a = 0; a < rHandlers.size(); a++) {
-                    // Disable till PROTOCOLS-37 is implemented
-                    if (response instanceof FutureResponse) {
-                        session.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
-                        break;
-                    } 
-                    response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
+                    // now process the result handlers
+                    for (int a = 0; a < rHandlers.size(); a++) {
+                        // Disable till PROTOCOLS-37 is implemented
+                        if (response instanceof FutureResponse) {
+                            session.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
+                            break;
+                        } 
+                        response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
+                    }
                 }
-            }
-            if (response != null) {
-                return response;
-            }
+                if (response != null) {
+                    return response;
+                }
 
-        }
+            }
+        } catch (UnsupportedEncodingException e) {
+            // Should never happen !
+            e.printStackTrace();
+        } 
         return null;
+
        
     }
 

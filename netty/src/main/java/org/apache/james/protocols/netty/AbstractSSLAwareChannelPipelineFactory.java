@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.impl;
+package org.apache.james.protocols.netty;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;

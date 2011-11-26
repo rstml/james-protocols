@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.impl;
+package org.apache.james.protocols.netty;
 
 import java.io.InputStream;
 import java.net.InetSocketAddress;

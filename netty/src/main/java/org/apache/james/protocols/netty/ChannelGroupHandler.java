@@ -16,39 +16,34 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.impl.log;
 
-import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.handler.CommandHandler;
-import org.apache.james.protocols.api.handler.ProtocolHandler;
-import org.apache.james.protocols.api.handler.ProtocolHandlerResultHandler;
+package org.apache.james.protocols.netty;
+
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.channel.group.ChannelGroup;
 
 /**
+ * Add channels to the channel group after the channel was opened.
  * 
- * 
+ * This handler is thread-safe and thus can be shared across pipelines
  *
  */
-public abstract class AbstractCommandHandlerResultLogger<R extends Response, S extends ProtocolSession> implements ProtocolHandlerResultHandler<R, S> {
-
-    
-
-
-    public Response onResponse(ProtocolSession session, R response, long executionTime, ProtocolHandler handler) {
-        if (handler instanceof CommandHandler) {
-            String code = response.getRetCode();
-            String msg = handler.getClass().getName() + ": " + response.toString();
-        
-            // check if the response should log with info 
-            if (logWithInfo(code)) {
-                session.getLogger().info(msg);
-            } else {
-                session.getLogger().debug(msg);
-            }
-        }
-        return response;
+public final class ChannelGroupHandler extends SimpleChannelUpstreamHandler {
+    private ChannelGroup channels;
+    public ChannelGroupHandler(ChannelGroup channels) {
+        this.channels = channels;
     }
-    
-    protected abstract boolean logWithInfo(String retCode);
+   
+    @Override
+    public void channelOpen(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception{
+        // Add all open channels to the global group so that they are
+        // closed on shutdown.
+        channels.add(e.getChannel());
+        
+        // call the next handler in the chain
+        super.channelOpen(ctx, e);
+    }
 
 }

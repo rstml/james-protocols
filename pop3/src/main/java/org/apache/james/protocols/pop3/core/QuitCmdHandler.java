@@ -56,7 +56,7 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
             ;
             long uids[] = new long[toBeRemoved.size()];
             for (int i = 0;i < toBeRemoved.size(); i++) {
-            	uids[i] = toBeRemoved.get(i);
+                uids[i] = toBeRemoved.get(i);
             }
             mailbox.remove(uids);
             response = new POP3Response(POP3Response.OK_RESPONSE, "Apache James POP3 Server signing off.");
@@ -66,10 +66,10 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
         }     
         response.setEndSession(true);
         try {
-			mailbox.close();
-		} catch (IOException e) {
-			// ignore on close
-		}
+            mailbox.close();
+        } catch (IOException e) {
+            // ignore on close
+        }
         return response;
     }
 
@@ -77,7 +77,7 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-    	return COMMANDS;
+        return COMMANDS;
     }
 
 }

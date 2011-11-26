@@ -72,6 +72,6 @@ public class StlsCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-    	return COMMANDS;
+        return COMMANDS;
     }
 }

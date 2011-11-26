@@ -63,23 +63,17 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
 
                 Long uid = uidList.get(num - 1).getUid();
                 if (deletedUidList.contains(uid) == false) {
-                	
                     InputStream content = session.getUserMailbox().getMessage(uid);
 
                     if (content != null) {
-
                         InputStream in = new CRLFTerminatedInputStream(new ExtraDotInputStream(content));
                         response = new POP3StreamResponse(POP3Response.OK_RESPONSE, "Message follows", in);
                         return response;
-
-                        
-
                     } else {
                         StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
                         response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                     }
                 } else {
-
                     StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") already deleted.");
                     response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                 }
@@ -92,12 +86,11 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
         return response;
     }
 
-
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-    	return COMMANDS;
+        return COMMANDS;
     }
 
 }

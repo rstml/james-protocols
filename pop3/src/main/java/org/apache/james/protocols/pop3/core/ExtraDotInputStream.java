@@ -32,7 +32,7 @@ public class ExtraDotInputStream extends InputStream {
 
     boolean startLine = true;
     private int last;
-	private final PushbackInputStream in;
+    private final PushbackInputStream in;
 
     public ExtraDotInputStream(InputStream in) {
         this.in = new PushbackInputStream(in, 2);
@@ -46,7 +46,7 @@ public class ExtraDotInputStream extends InputStream {
        if (startLine) {
            startLine = false;
            if (i == '.') {
-        	   in.unread(i);
+                in.unread(i);
                return '.';
            }
            
@@ -58,43 +58,36 @@ public class ExtraDotInputStream extends InputStream {
        last = i;
        return i;
        
-
     }
 
+    @Override
+    public long skip(long n) throws IOException {
+        throw new IOException("Skip not supported");
+    }
 
-	@Override
-	public long skip(long n) throws IOException {
-		throw new IOException("Skip not supported");
-	}
+    @Override
+    public int available() throws IOException {
+        return in.available();
+    }
 
+    @Override
+    public void close() throws IOException {
+        in.close();
+    }
 
-	@Override
-	public int available() throws IOException {
-		return in.available();
-	}
+    @Override
+    public void mark(int readlimit) {
+        // not supported
+    }
 
+    @Override
+    public void reset() throws IOException {
+        // not supported
+    }
 
-	@Override
-	public void close() throws IOException {
-		in.close();
-	}
-
-
-	@Override
-	public void mark(int readlimit) {
-		// not supported
-	}
-
-
-	@Override
-	public void reset() throws IOException {
-		// not supported
-	}
-
-
-	@Override
-	public boolean markSupported() {
-		return false;
-	}
+    @Override
+    public boolean markSupported() {
+        return false;
+    }
 
 }

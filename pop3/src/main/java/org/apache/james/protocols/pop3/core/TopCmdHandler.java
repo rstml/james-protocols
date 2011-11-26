@@ -102,7 +102,6 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
                 }
             } catch (IOException ioe) {
                 response = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.");
-            
             } catch (IndexOutOfBoundsException iob) {
                 StringBuilder exceptionBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
                 response = new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
@@ -121,11 +120,11 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
     @SuppressWarnings("unchecked")
-	public List<String> getImplementedCapabilities(POP3Session session) {
+    public List<String> getImplementedCapabilities(POP3Session session) {
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
-        	return CAPS;
+            return CAPS;
         } else {
-        	return Collections.EMPTY_LIST;
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -133,20 +132,19 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-    	return COMMANDS;
+        return COMMANDS;
     }
 
     /**
      * This {@link InputStream} implementation can be used to limit the body
      * lines which will be read from the wrapped {@link InputStream}
-     */
-    // TODO: Fix me!
+     */    // TODO: Fix me!
     private final class CountingBodyInputStream extends InputStream {
 
         private int count = 0;
         private int limit = -1;
         private int lastChar;
-		private InputStream in;
+        private InputStream in;
 
         /**
          * 
@@ -181,36 +179,35 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
 
         }
 
-		@Override
-		public long skip(long n) throws IOException {
-			return in.skip(n);
-		}
+        @Override
+        public long skip(long n) throws IOException {
+            return in.skip(n);
+        }
 
-		@Override
-		public int available() throws IOException {
-			return in.available();
-		}
+        @Override
+        public int available() throws IOException {
+            return in.available();
+        }
 
-		@Override
-		public void close() throws IOException {
-			in.close();
-		}
+        @Override
+        public void close() throws IOException {
+            in.close();
+        }
 
-		@Override
-		public void mark(int readlimit) {
-			// not supported
-		}
+        @Override
+        public void mark(int readlimit) {
+            // not supported
+        }
 
-		@Override
-		public synchronized void reset() throws IOException {
-			// do nothing as mark is not supported
-		}
+        @Override
+        public synchronized void reset() throws IOException {
+            // do nothing as mark is not supported
+        }
 
-		@Override
-		public boolean markSupported() {
-			return false;
-		}
-        
-        
+        @Override
+        public boolean markSupported() {
+            return false;
+        }
+
     }
 }

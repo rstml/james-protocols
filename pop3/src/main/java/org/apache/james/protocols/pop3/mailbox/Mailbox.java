@@ -22,71 +22,74 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-
 /**
  * A Mailbox which is used in POP3 to retrieve messages
  * 
- *
+ * 
  */
 public interface Mailbox {
-	
-	/**
-	 * Returns the message body as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
-	 * 
-	 * @param uid
-	 * @return body
-	 * @throws IOException
-	 */
-	InputStream getMessageBody(long uid) throws IOException;
-	
-	/**
-	 * Returns the message headers as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
-	 * 
-	 * @param uid
-	 * @return headers
-	 * @throws IOException
-	 */
-	InputStream getMessageHeaders(long uid) throws IOException;
-	
-	/**
-	 * Return the full message (headers + body) as {@link InputStream} or <code>null</code> if no message can be found for the given <code>uid</code>
-	 * @param uid
-	 * @return message
-	 * @throws IOException
-	 */
-	InputStream getMessage(long uid) throws IOException;
 
-	
-	/**
-	 * Return a immutable {@link List} which holds the {@link MessageMetaData} for all messages in the {@link Mailbox}
-	 * 
-	 * @return messages
-	 * @throws IOException
-	 */
-	List<MessageMetaData> getMessages() throws IOException;;
-	
-	/**
-	 * Remove the messages with the given uids
-	 * 
-	 * @param uids
-	 */
-	void remove(long... uids) throws IOException;
-	
-	
-	/**
-	 * Return the identifier for the mailbox. This MUST not change 
-	 * 
-	 * @return identifer
-	 * @throws IOException
-	 */
-	String getIdentifier() throws IOException;
-	
-	
-	/**
-	 * Close the mailbox, Any futher attempt to access or change the {@link Mailbox}'s content will fail
-	 * 
-	 * @throws IOException
-	 */
-	void close() throws IOException;
+    /**
+     * Returns the message body as {@link InputStream} or <code>null</code> if
+     * no message can be found for the given <code>uid</code>
+     * 
+     * @param uid
+     * @return body
+     * @throws IOException
+     */
+    InputStream getMessageBody(long uid) throws IOException;
+
+    /**
+     * Returns the message headers as {@link InputStream} or <code>null</code>
+     * if no message can be found for the given <code>uid</code>
+     * 
+     * @param uid
+     * @return headers
+     * @throws IOException
+     */
+    InputStream getMessageHeaders(long uid) throws IOException;
+
+    /**
+     * Return the full message (headers + body) as {@link InputStream} or
+     * <code>null</code> if no message can be found for the given
+     * <code>uid</code>
+     * 
+     * @param uid
+     * @return message
+     * @throws IOException
+     */
+    InputStream getMessage(long uid) throws IOException;
+
+    /**
+     * Return a immutable {@link List} which holds the {@link MessageMetaData}
+     * for all messages in the {@link Mailbox}
+     * 
+     * @return messages
+     * @throws IOException
+     */
+    List<MessageMetaData> getMessages() throws IOException;;
+
+    /**
+     * Remove the messages with the given uids
+     * 
+     * @param uids
+     */
+    void remove(long... uids) throws IOException;
+
+    /**
+     * Return the identifier for the mailbox. This MUST not change
+     * 
+     * @return identifer
+     * @throws IOException
+     */
+    String getIdentifier() throws IOException;
+
+    /**
+     * Close the mailbox, Any futher attempt to access or change the
+     * {@link Mailbox}'s content will fail
+     * 
+     * @throws IOException
+     */
+    void close() throws IOException;
 
 }

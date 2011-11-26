@@ -21,18 +21,19 @@ package org.apache.james.protocols.pop3;
 
 public class POP3ConfigurationImpl implements POP3Configuration {
 
-	private final String helloName;
+    private final String helloName;
 
-	public POP3ConfigurationImpl(String helloName) {
-		this.helloName = helloName;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.james.protocols.pop3.POP3Configuration#getHelloName()
-	 */
-	public String getHelloName() {
-		return helloName;
-	}
+    public POP3ConfigurationImpl(String helloName) {
+        this.helloName = helloName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.james.protocols.pop3.POP3Configuration#getHelloName()
+     */
+    public String getHelloName() {
+        return helloName;
+    }
 
 }

@@ -94,8 +94,4 @@ public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session 
     public Response newFatalErrorResponse() {
         return null;
     }
-
-
-
-
 }

@@ -102,11 +102,11 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
     @SuppressWarnings("unchecked")
-	public List<String> getImplementedCapabilities(POP3Session session) {
+    public List<String> getImplementedCapabilities(POP3Session session) {
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
-        	return CAPS;
+            return CAPS;
         } else {
-        	return Collections.EMPTY_LIST;
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -114,6 +114,6 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-    	return COMMANDS;
+        return COMMANDS;
     }
 }

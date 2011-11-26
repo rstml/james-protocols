@@ -23,22 +23,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 
-public abstract class AbstractMailbox implements Mailbox{
+public abstract class AbstractMailbox implements Mailbox {
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.james.protocols.pop3.mailbox.Mailbox#getMessage(long)
-	 */
-	public InputStream getMessage(long uid) throws IOException {
-		return new SequenceInputStream(getMessageHeaders(uid), getMessageBody(uid));
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.james.protocols.pop3.mailbox.Mailbox#getMessage(long)
+     */
+    public InputStream getMessage(long uid) throws IOException {
+        return new SequenceInputStream(getMessageHeaders(uid), getMessageBody(uid));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.apache.james.protocols.pop3.mailbox.Mailbox#close()
-	 */
-	public void close() throws IOException {
-		// do nothing
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.james.protocols.pop3.mailbox.Mailbox#close()
+     */
+    public void close() throws IOException {
+        // do nothing
+    }
 
 }

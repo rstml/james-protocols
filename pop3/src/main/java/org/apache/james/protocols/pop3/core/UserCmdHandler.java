@@ -60,13 +60,13 @@ public class UserCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
     public List<String> getImplementedCapabilities(POP3Session session) {
-    	return CAPS;
+        return CAPS;
     }
 
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-    	return COMMANDS;
+        return COMMANDS;
     }
 }

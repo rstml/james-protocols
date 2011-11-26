@@ -29,14 +29,15 @@ import org.apache.james.protocols.pop3.POP3Session;
  */
 public interface MailboxFactory {
 
-	/**
-	 * Returns the {@link Mailbox} for the {@link POP3Session}. If the user does not exist or the password is not valid it will return <code>null</code>
-	 * 
-	 * @param user
-	 * @param password
-	 * @return mailbox or null if not valid user or password was given
-	 * @throws IOException
-	 */
-	public Mailbox getMailbox(POP3Session session, String password) throws IOException;
-	
+    /**
+     * Returns the {@link Mailbox} for the {@link POP3Session}. If the user does
+     * not exist or the password is not valid it will return <code>null</code>
+     * 
+     * @param user
+     * @param password
+     * @return mailbox or null if not valid user or password was given
+     * @throws IOException
+     */
+    public Mailbox getMailbox(POP3Session session, String password) throws IOException;
+
 }

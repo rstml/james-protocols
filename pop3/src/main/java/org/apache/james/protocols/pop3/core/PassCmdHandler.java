@@ -84,7 +84,7 @@ public class PassCmdHandler extends RsetCmdHandler {
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
     public Collection<String> getImplCommands() {
-    	return COMMANDS;
+        return COMMANDS;
     }
 
 }

@@ -90,13 +90,13 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.6.1</version>
+                <version>1.6.3</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
-                <version>1.6</version>
+                <version>1.7</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-digester</artifactId>
@@ -111,7 +111,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.6.1</version>
+                <version>1.6.3</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -149,7 +149,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.4</version>
+                <version>1.5</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.netty</groupId>

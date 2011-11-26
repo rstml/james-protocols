@@ -88,7 +88,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>org.apache.james.protocols.impl.*, org.jboss.netty.handler.connection</Export-Package>
+                        <Export-Package>org.apache.james.protocols.netty.*</Export-Package>
                         <Embed-Dependency>*;scope=runtime</Embed-Dependency>
                     </instructions>
                 </configuration>

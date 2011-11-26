@@ -133,17 +133,26 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         channel.write(new ChunkedStream(in));
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#setReadable(boolean)
+     */
     public void setReadable(boolean readable) {
         channel.setReadable(readable);
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#isReadable()
+     */
     public boolean isReadable() {
         return channel.isReadable();
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolTransport#getLocalAddress()
+     */
     public InetSocketAddress getLocalAddress() {
         return (InetSocketAddress) channel.getLocalAddress();
     }

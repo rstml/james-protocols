@@ -101,7 +101,10 @@ public abstract class AbstractChannelPipelineFactory implements ChannelPipelineF
     protected abstract ChannelUpstreamHandler createHandler();
 
     
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.jboss.netty.util.ExternalResourceReleasable#releaseExternalResources()
+     */
     public void releaseExternalResources() {
         timer.stop();
     }

@@ -182,5 +182,8 @@
             </plugin>
         </plugins>
     </build>
-
+    <properties>
+        <!-- Use java 5 -->
+        <target.jdk>1.5</target.jdk>
+    </properties>
 </project>

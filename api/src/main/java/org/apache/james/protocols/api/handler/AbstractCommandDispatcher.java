@@ -91,7 +91,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      * @throws WiringException 
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void wireExtensions(Class interfaceName, List extension) throws WiringException {
         if (interfaceName.equals(ProtocolHandlerResultHandler.class)) {
             rHandlers.addAll(extension);
@@ -209,7 +209,7 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<Class<?>> getMarkerInterfaces() {
         List res = new LinkedList();
         res.add(CommandHandler.class);

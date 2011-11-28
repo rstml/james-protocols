@@ -21,6 +21,7 @@ package org.apache.james.protocols.api.handler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -221,7 +222,10 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      * 
      * @return mCommands
      */
-    protected abstract List<String> getMandatoryCommands();
+    @SuppressWarnings("unchecked")
+    protected List<String> getMandatoryCommands() {
+        return Collections.EMPTY_LIST;
+    }
     
     /**
      * Return the identifier to lookup the UnknownCmdHandler in the handler map

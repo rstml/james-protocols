@@ -19,7 +19,6 @@
 
 package org.apache.james.protocols.api.handler;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +30,7 @@ import java.util.Locale;
 import org.apache.james.protocols.api.BaseRequest;
 import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 
 
@@ -127,27 +127,16 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
      * @see org.apache.james.protocols.api.handler.LineHandler#onLine(ProtocolSession, byte[])
      */
     public Response onLine(final Session session, byte[] line) {
-        String curCommandName = null;
-        String curCommandArgument = null;
-        String cmdString;
+        
         try {
-            cmdString = new String(line, getLineDecodingCharset()).trim();
-            int spaceIndex = cmdString.indexOf(" ");
-            if (spaceIndex > 0) {
-                curCommandName = cmdString.substring(0, spaceIndex);
-                curCommandArgument = cmdString.substring(spaceIndex + 1);
-            } else {
-                curCommandName = cmdString;
-            }
-            curCommandName = curCommandName.toUpperCase(Locale.US);
-
+            
+            Request request = parseRequest(session, line);
             if (session.getLogger().isDebugEnabled()) {
-                session.getLogger().debug(getClass().getName() + " received: " + cmdString);
+                session.getLogger().debug(getClass().getName() + " received: " + request.getCommand());
             }
-            List<CommandHandler<Session>> commandHandlers = getCommandHandlers(curCommandName, session);
+            List<CommandHandler<Session>> commandHandlers = getCommandHandlers(request.getCommand(), session);
             // fetch the command handlers registered to the command
 
-            BaseRequest request = new BaseRequest(curCommandName, curCommandArgument);
             Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
             
             while (handlers.hasNext()) {
@@ -172,15 +161,46 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
                 }
 
             }
-        } catch (UnsupportedEncodingException e) {
-            // Should never happen !
-            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            session.getLogger().debug("Unable to parse request", e);
+            return session.newFatalErrorResponse();
         } 
-        return null;
 
        
     }
 
+    /**
+     * Parse the line into a {@link Request}
+     * 
+     * @param session
+     * @param line
+     * @return request
+     * @throws Exception
+     */
+    protected Request parseRequest(Session session, byte[] line) throws Exception {
+        String curCommandName = null;
+        String curCommandArgument = null;
+        String cmdString = new String(line, getLineDecodingCharset()).trim();
+        int spaceIndex = cmdString.indexOf(" ");
+        if (spaceIndex > 0) {
+            curCommandName = cmdString.substring(0, spaceIndex);
+            curCommandArgument = cmdString.substring(spaceIndex + 1);
+        } else {
+            curCommandName = cmdString;
+        }
+        curCommandName = curCommandName.toUpperCase(Locale.US);
+
+        if (session.getLogger().isDebugEnabled()) {
+            session.getLogger().debug(getClass().getName() + " received: " + cmdString);
+        }
+
+        BaseRequest request = new BaseRequest(curCommandName, curCommandArgument);
+        return request;
+
+    }
+    
+    
     protected String getLineDecodingCharset() {
         return "US-ASCII";
     }

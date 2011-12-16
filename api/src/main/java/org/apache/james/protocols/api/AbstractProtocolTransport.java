@@ -106,18 +106,21 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
      */
     protected void writeResponseToClient(Response response, ProtocolSession session) {
         if (response != null) {
-            writeToClient(toBytes(response), session);
-            if (response instanceof StreamResponse) {
-                writeToClient(((StreamResponse) response).getStream(), session);
-            }
-           
+            boolean startTLS = false;
             if (response instanceof StartTlsResponse) {
                 if (isStartTLSSupported()) {
-                    startTLS(session);
-                    session.resetState();
-
+                    startTLS = true;
                 }
             }
+            
+            
+            if (response instanceof StreamResponse) {
+                writeToClient(toBytes(response), session, false);
+                writeToClient(((StreamResponse) response).getStream(), session, startTLS);
+            } else {
+                writeToClient(toBytes(response), session, startTLS);
+            }
+            session.resetState();
             
             if (response.isEndSession()) {
                 // close the channel if needed after the message was written out
@@ -153,25 +156,21 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
     /**
      * Write the given <code>byte's</code> to the remote peer
      * 
-     * @param bytes
-     * @param session
+     * @param bytes    the bytes to write 
+     * @param session  the {@link ProtocolSession} for the write request
+     * @param startTLS true if startTLS should be started after the bytes were written to the client
      */
-    protected abstract void writeToClient(byte[] bytes, ProtocolSession session);
+    protected abstract void writeToClient(byte[] bytes, ProtocolSession session, boolean startTLS);
     
     /**
      * Write the given {@link InputStream} to the remote peer
      * 
-     * @param in
-     * @param session
+     * @param in       the {@link InputStream} which should be written back to the client
+     * @param session  the {@link ProtocolSession} for the write request
+     * @param startTLS true if startTLS should be started after the {@link InputStream} was written to the client
      */
-    protected abstract void writeToClient(InputStream in, ProtocolSession session);
+    protected abstract void writeToClient(InputStream in, ProtocolSession session, boolean startTLS);
 
-    /**
-     * Start the TLS encrpytion
-     * 
-     * @param session
-     */
-    protected abstract void startTLS(ProtocolSession session);
     
     /**
      * Close the Transport

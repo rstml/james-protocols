@@ -106,20 +106,22 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         return lineHandlerCount;
     }
 
-    
-
-    @Override
-    protected void startTLS(ProtocolSession session) {
-        channel.setReadable(false);
-        SslHandler filter = new SslHandler(engine);
+    /**
+     * Add the {@link SslHandler} to the pipeline and start encrypting after the next written message
+     */
+    private void prepareStartTLS() {
+        SslHandler filter = new SslHandler(engine, true);
         filter.getEngine().setUseClientMode(false);
         channel.getPipeline().addFirst(HandlerConstants.SSL_HANDLER, filter);
-        channel.setReadable(true);        
     }
 
     @Override
-    protected void writeToClient(byte[] bytes, ProtocolSession session) {
+    protected void writeToClient(byte[] bytes, ProtocolSession session, boolean startTLS) {
+        if (startTLS) {
+            prepareStartTLS();
+        }
         channel.write(ChannelBuffers.wrappedBuffer(bytes));
+        
     }
 
     @Override
@@ -129,7 +131,10 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
 
 
     @Override
-    protected void writeToClient(InputStream in, ProtocolSession session) {
+    protected void writeToClient(InputStream in, ProtocolSession session, boolean startTLS) {
+        if (startTLS) {
+            prepareStartTLS();
+        }
         channel.write(new ChunkedStream(in));
     }
 

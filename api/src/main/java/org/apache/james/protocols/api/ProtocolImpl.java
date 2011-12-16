@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class ProtocolImpl implements Protocol{
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final static Logger logger = LoggerFactory.getLogger(ProtocolImpl.class);
     private final ProtocolHandlerChain chain;
 
     public ProtocolImpl(ProtocolHandlerChain chain) {

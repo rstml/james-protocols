@@ -22,6 +22,10 @@ package org.apache.james.protocols.api;
 public class StartTlsFutureResponse extends FutureResponseImpl implements StartTlsResponse{
 
 
+    /**
+     * Set the {@link StartTlsResponse} to wrap. If a non {@link StartTlsResponse} is set this implementation will throw an {@link IllegalArgumentException}
+     * 
+     */
     @Override
     public void setResponse(Response response) {
         if (response instanceof StartTlsResponse) {

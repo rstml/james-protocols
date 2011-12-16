@@ -23,6 +23,10 @@ import java.io.InputStream;
 
 public class FutureStreamResponseImpl extends FutureResponseImpl implements StreamResponse{
 
+    /**
+     * Set the {@link StreamResponse} to wrap. If a non {@link StreamResponse} is set this implementation will throw an {@link IllegalArgumentException}
+     * 
+     */
     @Override
     public void setResponse(Response response) {
         if (response instanceof StreamResponse) {

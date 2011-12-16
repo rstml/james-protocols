@@ -120,7 +120,10 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
             } else {
                 writeToClient(toBytes(response), session, startTLS);
             }
-            session.resetState();
+            // reset state on starttls
+            if (startTLS) {
+                session.resetState();
+            }
             
             if (response.isEndSession()) {
                 // close the channel if needed after the message was written out

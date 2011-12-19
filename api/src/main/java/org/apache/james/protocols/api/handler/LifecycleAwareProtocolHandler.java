@@ -18,8 +18,6 @@
  ****************************************************************/
 package org.apache.james.protocols.api.handler;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
 
 /**
  * This interface allows to handle lifecycles for handlers and hooks
@@ -29,12 +27,12 @@ public interface LifecycleAwareProtocolHandler extends ProtocolHandler{
 
     
     /**
-     * Init with the given {@link Configuration}
+     * Init with the given {@link ProtocolHandlerConfiguration}
      * 
      * @param config
-     * @throws ConfigurationException
+     * @throws ProtocolHandlerConfigurationException
      */
-    public void init(Configuration config) throws ConfigurationException;
+    public void init(ProtocolHandlerConfiguration config) throws ProtocolHandlerConfigurationException;
     
     /**
      * Destroy object

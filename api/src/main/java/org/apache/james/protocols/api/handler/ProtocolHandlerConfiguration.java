@@ -18,45 +18,28 @@
  ****************************************************************/
 package org.apache.james.protocols.api.handler;
 
-/**
- * Implementations of this interface are responsible for loading instances
- * of {@link ProtocolHandler}. This includes to inject all needed resources and 
- * execute any lifecycle methods
- * 
- *
- */
-public interface ProtocolHandlerLoader {
+
+import java.util.Iterator;
+
+
+public interface ProtocolHandlerConfiguration {
 
     /**
-     * Load the {@link ProtocolHandler} and make sure all lifecycle methods are called and all
-     * needed services injected.
-     * 
-     * 
-     * @param name
-     * @param config
-     * @return handler
-     * @throws LoadingException
-     */
-    public ProtocolHandler load(String name, ProtocolHandlerConfiguration config) throws LoadingException;
-    
-    
-    /**
-     * Exception which will get thrown if the loading of a {@link ProtocolHandler} failed 
-     * 
+     * Returns the value of the named initialization parameter,
+     * or null if the parameter does not exist.
      *
+     * @param name the name of the initialization parameter
+     * @return the value of the initialization parameter, or null
      */
-    public class LoadingException extends Exception {
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 1710169767810301710L;
+    String getInitParameter(String name);
 
-        public LoadingException(String msg, Throwable t) {
-            super(msg, t);
-        }
-        
-        public LoadingException(String msg) {
-            super(msg);
-        }
-    }
+    /**
+     * Returns the names of the mailet's initialization parameters as an
+     * Iterator of String objects, or an empty Iterator if the {@link ProtocolHandler} has
+     * no initialization parameters.
+     *
+     * @return an Iterator of String objects containing the names of the
+     *      mailet's initialization parameters
+     */
+    Iterator<String> getInitParameterNames();
 }

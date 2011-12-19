@@ -18,45 +18,27 @@
  ****************************************************************/
 package org.apache.james.protocols.api.handler;
 
-/**
- * Implementations of this interface are responsible for loading instances
- * of {@link ProtocolHandler}. This includes to inject all needed resources and 
- * execute any lifecycle methods
- * 
- *
- */
-public interface ProtocolHandlerLoader {
+public class ProtocolHandlerConfigurationException extends Exception{
 
     /**
-     * Load the {@link ProtocolHandler} and make sure all lifecycle methods are called and all
-     * needed services injected.
      * 
-     * 
-     * @param name
-     * @param config
-     * @return handler
-     * @throws LoadingException
      */
-    public ProtocolHandler load(String name, ProtocolHandlerConfiguration config) throws LoadingException;
-    
-    
-    /**
-     * Exception which will get thrown if the loading of a {@link ProtocolHandler} failed 
-     * 
-     *
-     */
-    public class LoadingException extends Exception {
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 1710169767810301710L;
+    private static final long serialVersionUID = -7386172691015762042L;
 
-        public LoadingException(String msg, Throwable t) {
-            super(msg, t);
-        }
-        
-        public LoadingException(String msg) {
-            super(msg);
-        }
+    public ProtocolHandlerConfigurationException() {
+        super();
     }
+
+    public ProtocolHandlerConfigurationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ProtocolHandlerConfigurationException(String message) {
+        super(message);
+    }
+
+    public ProtocolHandlerConfigurationException(Throwable cause) {
+        super(cause);
+    }
+
 }

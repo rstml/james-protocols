@@ -42,6 +42,11 @@ import org.apache.james.protocols.smtp.core.esmtp.MailSizeEsmtpExtension;
 import org.apache.james.protocols.smtp.core.esmtp.StartTlsCmdHandler;
 import org.apache.james.protocols.smtp.hook.Hook;
 
+/**
+ * Special {@link SMTPProtocolHandlerChain} sub-class which should be used to build the chain for LMTP.
+ * 
+ *
+ */
 public class LMTPProtocolHandlerChain extends SMTPProtocolHandlerChain{
 
     public LMTPProtocolHandlerChain() {

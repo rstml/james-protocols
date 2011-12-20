@@ -23,6 +23,8 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.Encryption;
+import org.apache.james.protocols.api.handler.ProtocolHandler;
+import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -32,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Generic NettyServer
+ * Generic NettyServer 
  */
 public class NettyServer extends AbstractAsyncServer {
 
@@ -46,6 +48,11 @@ public class NettyServer extends AbstractAsyncServer {
 
     protected final Encryption secure;
 
+    private final ConnectionLimitUpstreamHandler connLimit = new ConnectionLimitUpstreamHandler(-1);
+
+    
+    private final ConnectionPerIpLimitUpstreamHandler connPerIPLimit =  new ConnectionPerIpLimitUpstreamHandler(-1);
+   
     public NettyServer(Protocol protocol) {
         this(protocol, null);
     }
@@ -62,6 +69,12 @@ public class NettyServer extends AbstractAsyncServer {
     }
     
     
+    /**
+     * Set true if an ExecutionHandler should be used to hand over the tasks. This should be done if you have some {@link ProtocolHandler}'s which need to full fill some blocking operation.
+     * 
+     * @param useHandler <code>true</code> if an ExecutionHandler should be used
+     * @param size the thread count to use
+     */
     public void setUseExecutionHandler(boolean useHandler, int size) {
         if (isBound()) throw new IllegalStateException("Server running already");
         if (useHandler) {
@@ -74,7 +87,13 @@ public class NettyServer extends AbstractAsyncServer {
         }
     }
     
+    public void setMaxConcurrentConnections(int maxCurConnections) {
+        connLimit.setMaxConnections(maxCurConnections);
+    }
   
+    public void setMaxConcurrentConnectionsPerIP(int maxCurConnectionsPerIP) {
+        connPerIPLimit.setMaxConnectionsPerIp(maxCurConnectionsPerIP);
+    }
     protected ChannelUpstreamHandler createCoreHandler() {
         return new BasicChannelUpstreamHandler(protocol, logger, secure);
     }
@@ -88,7 +107,17 @@ public class NettyServer extends AbstractAsyncServer {
 
     @Override
     protected ChannelPipelineFactory createPipelineFactory(ChannelGroup group) {
+
         return new AbstractSSLAwareChannelPipelineFactory(getTimeout(), 0, getBacklog(), group, eHandler) {
+            
+            @Override
+            public ChannelPipeline getPipeline() throws Exception {
+                ChannelPipeline cp =  super.getPipeline();
+                cp.addFirst(HandlerConstants.CONNECTION_PER_IP_LIMIT_HANDLER, connPerIPLimit);
+                cp.addFirst(HandlerConstants.CONNECTION_LIMIT_HANDLER, connLimit);
+                
+                return cp;
+            }
 
             @Override
             protected ChannelUpstreamHandler createHandler() {

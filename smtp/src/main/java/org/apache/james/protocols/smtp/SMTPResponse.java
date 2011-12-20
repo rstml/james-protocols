@@ -87,7 +87,7 @@ public class SMTPResponse extends AbstractResponse {
         List<CharSequence> responseList = new ArrayList<CharSequence>();
 
         for (int k = 0; k < lines.size(); k++) {
-            StringBuffer respBuff = new StringBuffer(256);
+            StringBuilder respBuff = new StringBuilder(256);
             respBuff.append(getRetCode());
             if (k == lines.size() - 1) {
                 respBuff.append(" ");

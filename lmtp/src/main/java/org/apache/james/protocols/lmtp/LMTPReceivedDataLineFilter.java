@@ -16,20 +16,24 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-
 package org.apache.james.protocols.lmtp;
 
+import org.apache.james.protocols.smtp.SMTPSession;
+import org.apache.james.protocols.smtp.core.ReceivedDataLineFilter;
 
-/**
- * Greeting for LMTP Server
- */
-public class WelcomeMessageHandler extends org.apache.james.protocols.smtp.core.WelcomeMessageHandler {
+public class LMTPReceivedDataLineFilter extends ReceivedDataLineFilter {
 
-    public final static String SOFTWARE_TYPE = "JAMES Protocols LMTP Server"; 
+    /**
+     * Always returns <code>LMTP</code>
+     */
+    @Override
+    protected String getServiceType(SMTPSession session, String heloMode) {
+        return "LMTP";
+    }
 
     @Override
     protected String getProductName() {
-        return SOFTWARE_TYPE;
+        return WelcomeMessageHandler.SOFTWARE_TYPE;
     }
 
 }

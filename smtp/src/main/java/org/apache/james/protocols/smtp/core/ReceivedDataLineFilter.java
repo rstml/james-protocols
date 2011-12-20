@@ -35,8 +35,6 @@ public class ReceivedDataLineFilter implements DataLineFilter {
 
     private final static String CHARSET = "US-ASCII";
     
-    private final static String SOFTWARE_TYPE = "JAMES SMTP Server ";
-
     private static final ThreadLocal<DateFormat> DATEFORMAT = new ThreadLocal<DateFormat>() {
 
         @Override
@@ -90,27 +88,9 @@ public class ReceivedDataLineFilter implements DataLineFilter {
             }
             headerLineBuffer.delete(0, headerLineBuffer.length());
 
-            headerLineBuffer.append("          by ").append(session.getHelloName()).append(" (").append(SOFTWARE_TYPE).append(") with ");
+            headerLineBuffer.append("          by ").append(session.getHelloName()).append(" (").append(getProductName()).append(") with ").append(getServiceType(session, heloMode));
 
-            // Check if EHLO was used
-            if ("EHLO".equals(heloMode)) {
-                // Not successful auth
-                if (session.getUser() == null) {
-                    headerLineBuffer.append("ESMTP");
-                } else {
-                    // See RFC3848
-                    // The new keyword "ESMTPA" indicates the use of ESMTP when
-                    // the
-                    // SMTP
-                    // AUTH [3] extension is also used and authentication is
-                    // successfully
-                    // achieved.
-                    headerLineBuffer.append("ESMTPA");
-                }
-            } else {
-                headerLineBuffer.append("SMTP");
-            }
-
+           
             headerLineBuffer.append(" ID ").append(session.getSessionID());
 
             if (((Collection<?>) session.getState().get(SMTPSession.RCPT_LIST)).size() == 1) {
@@ -146,6 +126,43 @@ public class ReceivedDataLineFilter implements DataLineFilter {
             return next.onLine(session, ("          " + DATEFORMAT.get().format(new Date()) + "\r\n").getBytes(CHARSET));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("No US-ASCII support ?");
+        }
+    }
+    
+    /**
+     * Return the product name to use in the headers
+     * 
+     * @return name
+     */
+    protected String getProductName() {
+        return WelcomeMessageHandler.SOFTWARE_TYPE;
+    }
+    
+    /**
+     * Return the service type which will be used in the Received headers
+     * 
+     * @param session
+     * @param heloMode
+     * @return type
+     */
+    protected String getServiceType(SMTPSession session, String heloMode) {
+     // Check if EHLO was used
+        if ("EHLO".equals(heloMode)) {
+            // Not successful auth
+            if (session.getUser() == null) {
+                return "ESMTP";
+            } else {
+                // See RFC3848
+                // The new keyword "ESMTPA" indicates the use of ESMTP when
+                // the
+                // SMTP
+                // AUTH [3] extension is also used and authentication is
+                // successfully
+                // achieved.
+                return "ESMTPA";
+            }
+        } else {
+            return "SMTP";
         }
     }
 }

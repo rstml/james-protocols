@@ -31,7 +31,6 @@ import org.apache.james.protocols.smtp.core.MailCmdHandler;
 import org.apache.james.protocols.smtp.core.NoopCmdHandler;
 import org.apache.james.protocols.smtp.core.QuitCmdHandler;
 import org.apache.james.protocols.smtp.core.RcptCmdHandler;
-import org.apache.james.protocols.smtp.core.ReceivedDataLineFilter;
 import org.apache.james.protocols.smtp.core.RsetCmdHandler;
 import org.apache.james.protocols.smtp.core.SMTPCommandDispatcherLineHandler;
 import org.apache.james.protocols.smtp.core.VrfyCmdHandler;
@@ -69,7 +68,7 @@ public class LMTPProtocolHandlerChain extends SMTPProtocolHandlerChain{
         defaultHandlers.add(new DataCmdHandler());
         defaultHandlers.add(new MailSizeEsmtpExtension());
         defaultHandlers.add(new WelcomeMessageHandler());
-        defaultHandlers.add(new ReceivedDataLineFilter());
+        defaultHandlers.add(new LMTPReceivedDataLineFilter());
         defaultHandlers.add(new LMTPDataLineMessageHookHandler());
         defaultHandlers.add(new StartTlsCmdHandler());
         return defaultHandlers;

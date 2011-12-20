@@ -31,6 +31,8 @@ import org.apache.james.protocols.smtp.SMTPSession;
  */
 public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
 
+    public final static String SOFTWARE_TYPE = "JAMES Protocols SMTP Server"; // +
+
 
     /**
      * @see org.apache.james.protocols.api.handler.ConnectHandler#onConnect(org.apache.james.protocols.api.ProtocolSession)
@@ -56,7 +58,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
     }
     
     protected String getProductName() {
-        return "JAMES SMTP Server";
+        return SOFTWARE_TYPE;
     }
 
 }

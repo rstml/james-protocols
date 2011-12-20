@@ -120,7 +120,7 @@
                                             <exclude>org/apache/commons/codec/*</exclude>
                                         </excludes>
                                         <includes>
-                                            <include>org/apache/commons/codec/binary/Base64*</include>
+                                            <include>org/apache/commons/codec/binary/Base64.*</include>
                                         </includes>
                                     </filter>
                                 </filters>

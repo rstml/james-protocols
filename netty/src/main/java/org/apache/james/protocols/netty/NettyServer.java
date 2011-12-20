@@ -24,7 +24,6 @@ import javax.net.ssl.SSLContext;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.Encryption;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
-import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -48,10 +47,9 @@ public class NettyServer extends AbstractAsyncServer {
 
     protected final Encryption secure;
 
-    private final ConnectionLimitUpstreamHandler connLimit = new ConnectionLimitUpstreamHandler(-1);
+    private int maxCurConnections;
 
-    
-    private final ConnectionPerIpLimitUpstreamHandler connPerIPLimit =  new ConnectionPerIpLimitUpstreamHandler(-1);
+    private int maxCurConnectionsPerIP;
    
     public NettyServer(Protocol protocol) {
         this(protocol, null);
@@ -88,11 +86,13 @@ public class NettyServer extends AbstractAsyncServer {
     }
     
     public void setMaxConcurrentConnections(int maxCurConnections) {
-        connLimit.setMaxConnections(maxCurConnections);
+        if (isBound()) throw new IllegalStateException("Server running already");
+        this.maxCurConnections = maxCurConnections;
     }
   
     public void setMaxConcurrentConnectionsPerIP(int maxCurConnectionsPerIP) {
-        connPerIPLimit.setMaxConnectionsPerIp(maxCurConnectionsPerIP);
+        if (isBound()) throw new IllegalStateException("Server running already");
+        this.maxCurConnectionsPerIP = maxCurConnectionsPerIP;
     }
     protected ChannelUpstreamHandler createCoreHandler() {
         return new BasicChannelUpstreamHandler(protocol, logger, secure);
@@ -108,16 +108,7 @@ public class NettyServer extends AbstractAsyncServer {
     @Override
     protected ChannelPipelineFactory createPipelineFactory(ChannelGroup group) {
 
-        return new AbstractSSLAwareChannelPipelineFactory(getTimeout(), 0, getBacklog(), group, eHandler) {
-            
-            @Override
-            public ChannelPipeline getPipeline() throws Exception {
-                ChannelPipeline cp =  super.getPipeline();
-                cp.addFirst(HandlerConstants.CONNECTION_PER_IP_LIMIT_HANDLER, connPerIPLimit);
-                cp.addFirst(HandlerConstants.CONNECTION_LIMIT_HANDLER, connLimit);
-                
-                return cp;
-            }
+        return new AbstractSSLAwareChannelPipelineFactory(getTimeout(), maxCurConnections, maxCurConnectionsPerIP, group, eHandler) {
 
             @Override
             protected ChannelUpstreamHandler createHandler() {

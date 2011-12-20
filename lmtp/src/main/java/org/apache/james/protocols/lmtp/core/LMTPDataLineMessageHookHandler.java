@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.lmtp;
+package org.apache.james.protocols.lmtp.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.WiringException;
+import org.apache.james.protocols.lmtp.LMTPMultiResponse;
 import org.apache.james.protocols.lmtp.hook.DeliverToRecipientHook;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailEnvelopeImpl;

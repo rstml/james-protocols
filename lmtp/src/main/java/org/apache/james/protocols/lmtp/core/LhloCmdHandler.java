@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.lmtp;
+package org.apache.james.protocols.lmtp.core;
 
 import java.util.Arrays;
 import java.util.Collection;

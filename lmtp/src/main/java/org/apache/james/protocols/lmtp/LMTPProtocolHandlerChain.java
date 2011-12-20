@@ -23,6 +23,9 @@ import java.util.List;
 
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
+import org.apache.james.protocols.lmtp.core.LMTPDataLineMessageHookHandler;
+import org.apache.james.protocols.lmtp.core.LMTPReceivedDataLineFilter;
+import org.apache.james.protocols.lmtp.core.LhloCmdHandler;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.apache.james.protocols.smtp.core.DataCmdHandler;
 import org.apache.james.protocols.smtp.core.ExpnCmdHandler;

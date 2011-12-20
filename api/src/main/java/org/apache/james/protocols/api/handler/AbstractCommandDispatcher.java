@@ -45,9 +45,9 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     /**
      * The list of available command handlers
      */
-    private HashMap<String, List<CommandHandler<Session>>> commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
+    private final HashMap<String, List<CommandHandler<Session>>> commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
 
-    private List<ProtocolHandlerResultHandler<Response, Session>> rHandlers = new ArrayList<ProtocolHandlerResultHandler<Response, Session>>();
+    private final List<ProtocolHandlerResultHandler<Response, Session>> rHandlers = new ArrayList<ProtocolHandlerResultHandler<Response, Session>>();
         
     /**
      * Add it to map (key as command name, value is an array list of CommandHandlers)

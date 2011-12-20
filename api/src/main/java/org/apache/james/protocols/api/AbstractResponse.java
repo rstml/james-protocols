@@ -102,7 +102,7 @@ public abstract class AbstractResponse implements Response{
     /**
      * @see java.lang.Object#toString()
      */
-    public String toString() {
+    public final String toString() {
         return getLines().toString();
     }
 

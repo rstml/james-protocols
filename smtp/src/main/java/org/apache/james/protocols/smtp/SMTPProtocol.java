@@ -25,12 +25,19 @@ import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSessionImpl;
+
+/**
+ * {@link ProtocolImpl} which creates {@link SMTPSessionImpl} instances
+ * 
+ *
+ */
 public class SMTPProtocol extends ProtocolImpl {
 
     public SMTPProtocol(ProtocolHandlerChain chain, SMTPConfiguration config) {
         super(chain, config);
     }
 
+    @Override
     public ProtocolSession newSession(ProtocolTransport transport) {
         return new SMTPSessionImpl(logger, transport, (SMTPConfiguration) config);
     }

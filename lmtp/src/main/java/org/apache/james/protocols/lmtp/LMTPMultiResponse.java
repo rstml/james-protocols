@@ -26,7 +26,7 @@ import org.apache.james.protocols.api.Response;
 
 public class LMTPMultiResponse implements Response {
 
-    private List<Response> responses = new ArrayList<Response>();
+    private final List<Response> responses = new ArrayList<Response>();
 
     public LMTPMultiResponse(Response response) {
         addResponse(response);

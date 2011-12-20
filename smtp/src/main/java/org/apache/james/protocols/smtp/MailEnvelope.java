@@ -17,7 +17,6 @@
  * under the License.                                           *
  ****************************************************************/
 
-
 package org.apache.james.protocols.smtp;
 
 import java.io.IOException;
@@ -25,50 +24,49 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-
 /**
  * The MailEnvelope of a SMTP-Transaction
  * 
- *
+ * 
  */
 public interface MailEnvelope {
 
     /**
-     * Return the size of the message. If the message is "empty" it will return -1
+     * Return the size of the message. If the message is "empty" it will return
+     * -1
      * 
      * @return size
      */
-	int getSize();
+    int getSize();
 
-	/**
-	 * Return the recipients which where supplied in the RCPT TO: command
-	 * 
-	 * @return recipients
-	 */
-	List<MailAddress> getRecipients();
+    /**
+     * Return the recipients which where supplied in the RCPT TO: command
+     * 
+     * @return recipients
+     */
+    List<MailAddress> getRecipients();
 
-	/**
-	 * Return the sender of the mail which was supplied int the MAIL FROM: command. If its a "null" sender,
-	 * null will get returned
-	 * 
-	 * @return sender
-	 */
-	MailAddress getSender();
+    /**
+     * Return the sender of the mail which was supplied int the MAIL FROM:
+     * command. If its a "null" sender, null will get returned
+     * 
+     * @return sender
+     */
+    MailAddress getSender();
 
+    /**
+     * Return the OutputStream of the message
+     * 
+     * @return out
+     * @throws IOException
+     */
+    OutputStream getMessageOutputStream() throws IOException;
 
-	/**
-	 * Return the OutputStream of the message
-	 * 
-	 * @return out
-	 * @throws IOException
-	 */
-	OutputStream getMessageOutputStream() throws IOException;
-
-	/**
-	 * Return the InputStream of the message
-	 * 
-	 * @return in
-	 * @throws IOException
-	 */
-	InputStream getMessageInputStream() throws IOException;
+    /**
+     * Return the InputStream of the message
+     * 
+     * @return in
+     * @throws IOException
+     */
+    InputStream getMessageInputStream() throws IOException;
 }

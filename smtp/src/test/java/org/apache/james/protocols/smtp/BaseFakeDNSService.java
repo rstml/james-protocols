@@ -21,11 +21,9 @@ package org.apache.james.protocols.smtp;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.TemporaryResolutionException;
-import org.apache.mailet.HostAddress;
 
 public class BaseFakeDNSService implements DNSService{
 
@@ -55,11 +53,6 @@ public class BaseFakeDNSService implements DNSService{
     }
 
     public InetAddress getLocalHost() throws UnknownHostException {
-        throw new UnsupportedOperationException("Unimplemented in mock");
-
-    }
-
-    public Iterator<HostAddress> getSMTPHostAddresses(String domainName) throws TemporaryResolutionException {
         throw new UnsupportedOperationException("Unimplemented in mock");
 
     }

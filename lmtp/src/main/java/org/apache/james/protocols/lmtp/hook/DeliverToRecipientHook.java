@@ -19,11 +19,11 @@
 
 package org.apache.james.protocols.lmtp.hook;
 
+import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.Hook;
 import org.apache.james.protocols.smtp.hook.HookResult;
-import org.apache.mailet.MailAddress;
 
 public interface DeliverToRecipientHook extends Hook {
 

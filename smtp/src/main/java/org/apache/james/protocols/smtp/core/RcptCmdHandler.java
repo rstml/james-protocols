@@ -28,13 +28,13 @@ import java.util.StringTokenizer;
 
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.RcptHook;
-import org.apache.mailet.MailAddress;
 
 /**
  * Handles RCPT command
@@ -214,8 +214,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
         if (null != recipientAddress) {
             sb
                     .append(" [to:"
-                            + (recipientAddress).toInternetAddress()
-                                    .getAddress() + "]");
+                            + recipientAddress.toString() + "]");
         } else if (null != recipient) {
             sb.append(" [to:" + recipient + "]");
         }
@@ -223,8 +222,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
             sb
                     .append(" [from:"
                             + ((MailAddress) session.getState().get(
-                                    SMTPSession.SENDER)).toInternetAddress()
-                                    .getAddress() + "]");
+                                    SMTPSession.SENDER)).toString() + "]");
         }
         return sb.toString();
     }

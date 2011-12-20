@@ -24,17 +24,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.ParseException;
 
 import junit.framework.TestCase;
 
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.DNSService;
+import org.apache.james.protocols.smtp.MailAddress;
+import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.ValidSenderDomainHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
-import org.apache.mailet.MailAddress;
 
 public class ValidSenderDomainHandlerTest extends TestCase {
     
@@ -83,7 +83,7 @@ public class ValidSenderDomainHandlerTest extends TestCase {
         assertEquals("Not blocked cause its a nullsender",response,HookReturnCode.DECLINED);
     }
 
-    public void testInvalidSenderDomainReject() throws ParseException {
+    public void testInvalidSenderDomainReject() throws MailAddressException {
         ValidSenderDomainHandler handler = new ValidSenderDomainHandler();
         SMTPSession session = setupMockedSession(new MailAddress("invalid@invalid"));
         handler.setDNSService(setupDNSServer());

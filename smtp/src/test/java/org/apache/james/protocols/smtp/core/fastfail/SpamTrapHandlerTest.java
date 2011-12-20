@@ -23,13 +23,12 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
-import javax.mail.internet.ParseException;
-
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
+import org.apache.james.protocols.smtp.MailAddress;
+import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.SpamTrapHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
-import org.apache.mailet.MailAddress;
 
 import junit.framework.TestCase;
 
@@ -51,7 +50,7 @@ public class SpamTrapHandlerTest extends TestCase {
         };
     }
     
-    public void testSpamTrap() throws ParseException {
+    public void testSpamTrap() throws MailAddressException {
         String ip = "192.168.100.1";
         String ip2 = "192.168.100.2";
         long blockTime = 2000;

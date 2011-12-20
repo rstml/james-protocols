@@ -25,15 +25,15 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.ParseException;
 
 import junit.framework.TestCase;
 
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
+import org.apache.james.protocols.smtp.MailAddress;
+import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.MaxRcptHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
-import org.apache.mailet.MailAddress;
 
 
 
@@ -59,7 +59,7 @@ public class MaxRcptHandlerTest extends TestCase{
         return session;
     }
     
-    public void testRejectMaxRcpt() throws ParseException {
+    public void testRejectMaxRcpt() throws MailAddressException {
         SMTPSession session = setupMockedSession(3);
         MaxRcptHandler handler = new MaxRcptHandler();
         
@@ -70,7 +70,7 @@ public class MaxRcptHandlerTest extends TestCase{
     }
   
     
-    public void testNotRejectMaxRcpt() throws ParseException {
+    public void testNotRejectMaxRcpt() throws MailAddressException {
         SMTPSession session = setupMockedSession(3);
         MaxRcptHandler handler = new MaxRcptHandler();    
 

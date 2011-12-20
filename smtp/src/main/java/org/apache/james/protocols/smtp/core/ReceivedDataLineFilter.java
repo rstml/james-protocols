@@ -28,8 +28,8 @@ import java.util.Locale;
 
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
+import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.apache.mailet.MailAddress;
 
 public class ReceivedDataLineFilter implements DataLineFilter {
 

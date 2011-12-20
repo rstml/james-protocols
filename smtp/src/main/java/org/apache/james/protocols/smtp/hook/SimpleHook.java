@@ -19,9 +19,9 @@
 
 package org.apache.james.protocols.smtp.hook;
 
+import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.apache.mailet.MailAddress;
 
 
 /**

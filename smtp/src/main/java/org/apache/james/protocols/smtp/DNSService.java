@@ -24,9 +24,6 @@ package org.apache.james.protocols.smtp;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.Iterator;
-
-import org.apache.mailet.HostAddress;
 
 
 /**
@@ -65,26 +62,6 @@ public interface DNSService {
      */
     Collection<String> findTXTRecords(String hostname);
 
-
-    /**
-     * Returns an Iterator over org.apache.mailet.HostAddress, a
-     * specialized subclass of javax.mail.URLName, which provides
-     * location information for servers that are specified as mail
-     * handlers for the given hostname.  This is done using MX records,
-     * and the HostAddress instances are returned sorted by MX priority.
-     * If no host is found for domainName, the Iterator returned will be
-     * empty and the first call to hasNext() will return false.  The
-     * Iterator is a nested iterator: the outer iteration is over the
-     * results of the MX record lookup, and the inner iteration is over
-     * potentially multiple A records for each MX record.  DNS lookups
-     * are deferred until actually needed.
-     *
-     * @since v2.2.0a16-unstable
-     * @param domainName - the domain for which to find mail servers
-     * @return an Iterator over HostAddress instances, sorted by priority
-     * @throws TemporaryResolutionException get thrown on temporary problems
-     */
-    Iterator<HostAddress> getSMTPHostAddresses(String domainName) throws TemporaryResolutionException;
     
     /**
      * @see java.net.InetAddress#getAllByName(String)

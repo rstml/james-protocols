@@ -23,9 +23,9 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.ParseException;
 
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
+import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
 
@@ -34,7 +34,7 @@ import junit.framework.TestCase;
 public class MaxUnknownCmdHandlerTest extends TestCase{
 
     
-    public void testRejectAndClose() throws ParseException {
+    public void testRejectAndClose() throws MailAddressException {
         SMTPSession session = new BaseFakeSMTPSession() {
             private final HashMap<String,Object> state = new HashMap<String,Object>();
 

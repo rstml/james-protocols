@@ -21,6 +21,7 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.util.Collection;
 
 import org.apache.james.protocols.smtp.DNSService;
+import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.TemporaryResolutionException;
@@ -28,7 +29,6 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.MailHook;
-import org.apache.mailet.MailAddress;
 
 /**
  * Add MFDNSCheck feature to SMTPServer. This handler reject mail from domains which have not an an valid MX record.  

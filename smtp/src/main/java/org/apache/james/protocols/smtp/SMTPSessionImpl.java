@@ -26,7 +26,6 @@ import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.apache.mailet.MailAddress;
 import org.slf4j.Logger;
 
 /**

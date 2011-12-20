@@ -18,13 +18,13 @@
  ****************************************************************/
 package org.apache.james.protocols.smtp.core;
 
+import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.RcptHook;
-import org.apache.mailet.MailAddress;
 
 /**
  * Handler which check for authenticated users

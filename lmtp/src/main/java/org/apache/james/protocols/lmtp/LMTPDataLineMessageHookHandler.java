@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.lmtp.hook.DeliverToRecipientHook;
+import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailEnvelopeImpl;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -33,7 +34,6 @@ import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler;
 import org.apache.james.protocols.smtp.core.DataLineMessageHookHandler;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
-import org.apache.mailet.MailAddress;
 
 public class LMTPDataLineMessageHookHandler extends DataLineMessageHookHandler{
 

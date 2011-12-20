@@ -26,17 +26,17 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.ParseException;
 
 import junit.framework.TestCase;
 
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.DNSService;
+import org.apache.james.protocols.smtp.MailAddress;
+import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.ResolvableEhloHeloHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
-import org.apache.mailet.MailAddress;
 
 public class ResolvableEhloHeloHandlerTest extends TestCase {
 
@@ -91,7 +91,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         return dns;
     }
     
-    public void testRejectInvalidHelo() throws ParseException {
+    public void testRejectInvalidHelo() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,false,false,null,mailAddress);
         ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();
@@ -105,7 +105,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
     }
     
     
-    public void testNotRejectValidHelo() throws ParseException {
+    public void testNotRejectValidHelo() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(VALID_HOST,false,false,null,mailAddress);
         ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();
@@ -120,7 +120,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
     }
    
     
-    public void testRejectInvalidHeloAuthUser() throws ParseException {
+    public void testRejectInvalidHeloAuthUser() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,false,true,"valid@user",mailAddress);
         ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();
@@ -137,7 +137,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
     
    
     
-    public void testRejectRelay() throws ParseException {
+    public void testRejectRelay() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,true,false,null,mailAddress);
         ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();

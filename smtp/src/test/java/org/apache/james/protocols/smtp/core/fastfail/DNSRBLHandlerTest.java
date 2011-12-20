@@ -20,7 +20,6 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -30,16 +29,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.internet.ParseException;
 
 import junit.framework.TestCase;
 
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.DNSService;
+import org.apache.james.protocols.smtp.MailAddress;
+import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.DNSRBLHandler;
-import org.apache.mailet.MailAddress;
 
 public class DNSRBLHandlerTest extends TestCase {
 
@@ -154,7 +153,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip is blacklisted and has txt details
-    public void testBlackListedTextPresent() throws ParseException {
+    public void testBlackListedTextPresent() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
        
         setupMockedSMTPSession(new MailAddress("any@domain"));
@@ -169,7 +168,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip is blacklisted and has txt details but we don'T want to retrieve the txt record
-    public void testGetNoDetail() throws ParseException {
+    public void testGetNoDetail() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
         setupMockedSMTPSession(new MailAddress("any@domain"));
         rbl.setDNSService(mockedDnsServer);
@@ -182,7 +181,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip is allowed to relay
-    public void testRelayAllowed() throws ParseException {
+    public void testRelayAllowed() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
         setRelayingAllowed(true);
         setupMockedSMTPSession(new MailAddress("any@domain"));
@@ -197,7 +196,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip not on blacklist
-    public void testNotBlackListed() throws ParseException {
+    public void testNotBlackListed() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
 
         setRemoteIp("192.168.0.1");
@@ -213,7 +212,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip on blacklist without txt details
-    public void testBlackListedNoTxt() throws ParseException {
+    public void testBlackListedNoTxt() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
 
         setRemoteIp("127.0.0.3");
@@ -229,7 +228,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip on whitelist
-    public void testWhiteListed() throws ParseException {
+    public void testWhiteListed() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
 
         setRemoteIp("127.0.0.2");

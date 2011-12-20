@@ -85,7 +85,8 @@ public class MailEnvelopeImpl implements MailEnvelope{
      */
     public OutputStream getMessageOutputStream() {
         if (outputStream == null) {
-            this.outputStream = new ByteArrayOutputStream(100000);
+            // use 100kb as default which should be enough for most emails
+            this.outputStream = new ByteArrayOutputStream(100 * 1024);
         }
         return outputStream;
     }

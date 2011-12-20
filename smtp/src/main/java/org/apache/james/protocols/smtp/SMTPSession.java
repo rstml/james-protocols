@@ -39,40 +39,12 @@ public interface SMTPSession extends ProtocolSession{
     final static String CURRENT_HELO_NAME = "CURRENT_HELO_NAME";
 
     /**
-     * Returns the service wide hello name
+     * Returns the service wide configuration
      *
-     * @return the hello name
+     * @return the configuration
      */
-    String getHelloName();
+    SMTPConfiguration getConfiguration();
     
-    /**
-     * Returns whether the remote server needs to send a HELO/EHLO
-     * of its senders.
-     *
-     * @return whether SMTP authentication is on
-     */
-    boolean useHeloEhloEnforcement();
-    
-    /**
-     * Return the SMTPGreeting which should used.
-     * 
-     * @return the SMTPGreeting
-     */
-    String getSMTPGreeting();
-    
-    /**
-     * Returns the service wide maximum message size in bytes.
-     *
-     * @return the maximum message size
-     */
-    long getMaxMessageSize();
-    
-    /**
-     * Return wheter the mailserver will accept addresses without brackets enclosed.
-     * 
-     * @return true or false
-     */
-    boolean useAddressBracketsEnforcement();
     
     /**
      * Returns whether Relaying is allowed or not

@@ -58,7 +58,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
      *            the argument passed in with the command by the SMTP client
      */
     private Response doEHLO(SMTPSession session, String argument) {
-        SMTPResponse resp = new SMTPResponse(SMTPRetCode.MAIL_OK, new StringBuilder(session.getHelloName()).append(" Hello ").append(argument)
+        SMTPResponse resp = new SMTPResponse(SMTPRetCode.MAIL_OK, new StringBuilder(session.getConfiguration().getHelloName()).append(" Hello ").append(argument)
                 .append(" [")
                 .append(session.getRemoteAddress().getAddress().getHostAddress()).append("])"));
         

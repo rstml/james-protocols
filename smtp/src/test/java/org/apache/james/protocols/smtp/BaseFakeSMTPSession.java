@@ -40,13 +40,6 @@ public class BaseFakeSMTPSession implements SMTPSession {
     private static final Logger log = LoggerFactory.getLogger(BaseFakeSMTPSession.class);
 
     /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getConfigurationData()
-     */
-    public SMTPConfiguration getConfigurationData() {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-    }
-
-    /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getConnectionState()
      */
     public Map<String, Object> getConnectionState() {
@@ -146,40 +139,6 @@ public class BaseFakeSMTPSession implements SMTPSession {
     }
 
     /**
-     * @see org.apache.james.api.protocol.LogEnabledSession#writeResponse(org.apache.james.api.protocol.Response)
-     */
-    public void writeResponse(Response response) {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#sleep(long)
-     */
-    public void sleep(long ms) {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-    }
-
-    public String getHelloName() {
-        return getConfigurationData().getHelloName();
-    }
-
-    public long getMaxMessageSize() {
-        return getConfigurationData().getMaxMessageSize();
-    }
-
-    public String getSMTPGreeting() {
-        return getConfigurationData().getSMTPGreeting();
-    }
-
-    public boolean useAddressBracketsEnforcement() {
-        return getConfigurationData().useAddressBracketsEnforcement();
-    }
-
-    public boolean useHeloEhloEnforcement() {
-        return getConfigurationData().useAddressBracketsEnforcement();
-    }
-
-    /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getLogger()
      */
     public Logger getLogger() {
@@ -231,6 +190,11 @@ public class BaseFakeSMTPSession implements SMTPSession {
     public InetSocketAddress getLocalAddress() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
 
+    }
+
+    @Override
+    public SMTPConfiguration getConfiguration() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
 }

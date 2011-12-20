@@ -38,16 +38,15 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
      * @see org.apache.james.protocols.api.handler.ConnectHandler#onConnect(org.apache.james.protocols.api.ProtocolSession)
      */
     public Response onConnect(SMTPSession session) {
-        String smtpGreeting = session.getSMTPGreeting();
+        String smtpGreeting = session.getConfiguration().getSMTPGreeting();
 
         SMTPResponse welcomeResponse;
         // if no greeting was configured use a default
         if (smtpGreeting == null) {
             // Initially greet the connector
-            // Format is:  Sat, 24 Jan 1998 13:16:09 -0500
             welcomeResponse = new SMTPResponse(SMTPRetCode.SERVICE_READY,
                           new StringBuilder(256)
-                          .append(session.getHelloName())
+                          .append(session.getConfiguration().getHelloName())
                           .append(" SMTP Server (")
                           .append(getProductName())
                           .append(") ready"));

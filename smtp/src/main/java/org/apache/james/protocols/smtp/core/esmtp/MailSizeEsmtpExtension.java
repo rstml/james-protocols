@@ -69,7 +69,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
     @SuppressWarnings("unchecked")
     public List<String> getImplementedEsmtpFeatures(SMTPSession session) {
         // Extension defined in RFC 1870
-        long maxMessageSize = session.getMaxMessageSize();
+        long maxMessageSize = session.getConfiguration().getMaxMessageSize();
         if (maxMessageSize > 0) {
             return Arrays.asList("SIZE " + maxMessageSize);
         } else {
@@ -111,7 +111,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     size).append(".");
             session.getLogger().debug(debugBuffer.toString());
         }
-        long maxMessageSize = session.getMaxMessageSize();
+        long maxMessageSize = session.getConfiguration().getMaxMessageSize();
         if ((maxMessageSize > 0) && (size > maxMessageSize)) {
             // Let the client know that the size limit has been hit.
             StringBuilder errorBuffer = new StringBuilder(256).append(
@@ -159,7 +159,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     newSize = Long.valueOf(currentSize.intValue()+line.length);
                 }
                 
-                if (session.getMaxMessageSize() > 0 && newSize.intValue() > session.getMaxMessageSize()) {
+                if (session.getConfiguration().getMaxMessageSize() > 0 && newSize.intValue() > session.getConfiguration().getMaxMessageSize()) {
                     // Add an item to the state to suppress
                     // logging of extra lines of data
                     // that are sent after the size limit has
@@ -193,7 +193,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     .append(" from ").append(session.getRemoteAddress().getAddress().getHostAddress())
                     .append(" exceeding system maximum message size of ")
                     .append(
-                            session.getMaxMessageSize());
+                            session.getConfiguration().getMaxMessageSize());
             session.getLogger().error(errorBuffer.toString());
             return response;
         } else {

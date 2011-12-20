@@ -41,9 +41,9 @@ public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session 
     }
 
     /**
-     * @see org.apache.james.pop3server.POP3Session#getConfigurationData()
+     * @see org.apache.james.pop3server.POP3Session#getConfiguration()
      */
-    public POP3Configuration getConfigurationData() {
+    public POP3Configuration getConfiguration() {
         return configData;
     }
 

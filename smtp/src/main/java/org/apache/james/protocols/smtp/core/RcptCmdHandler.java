@@ -121,7 +121,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
             // Remove the options from the recipient
             recipient = recipient.substring(0, lastChar + 1);
         }
-        if (session.useAddressBracketsEnforcement()
+        if (session.getConfiguration().useAddressBracketsEnforcement()
                 && (!recipient.startsWith("<") || !recipient.endsWith(">"))) {
             if (session.getLogger().isInfoEnabled()) {
                 StringBuilder errorBuffer = new StringBuilder(192).append(
@@ -137,7 +137,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
         }
         MailAddress recipientAddress = null;
         // Remove < and >
-        if (session.useAddressBracketsEnforcement()
+        if (session.getConfiguration().useAddressBracketsEnforcement()
                 || (recipient.startsWith("<") && recipient.endsWith(">"))) {
             recipient = recipient.substring(1, recipient.length() - 1);
         }

@@ -88,7 +88,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
             }
             headerLineBuffer.delete(0, headerLineBuffer.length());
 
-            headerLineBuffer.append("          by ").append(session.getHelloName()).append(" (").append(getProductName()).append(") with ").append(getServiceType(session, heloMode));
+            headerLineBuffer.append("          by ").append(session.getConfiguration().getHelloName()).append(" (").append(getProductName()).append(") with ").append(getServiceType(session, heloMode));
 
            
             headerLineBuffer.append(" ID ").append(session.getSessionID());

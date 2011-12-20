@@ -57,7 +57,7 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
             response.append(
                     DSNStatus.getStatus(DSNStatus.SUCCESS,
                             DSNStatus.UNDEFINED_STATUS)).append(" ").append(
-                    session.getHelloName()).append(
+                    session.getConfiguration().getHelloName()).append(
                     " Service closing transmission channel");
             ret = new SMTPResponse(SMTPRetCode.SYSTEM_QUIT, response);
         } else {

@@ -32,12 +32,11 @@ import org.slf4j.Logger;
  * {@link SMTPSession} implementation
  */
 public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession {
-    public final static String SMTP_SESSION = "SMTP_SESSION";
 
     private boolean relayingAllowed;
 
 
-    private SMTPConfiguration theConfigData;
+    private final SMTPConfiguration theConfigData;
 
     public SMTPSessionImpl(SMTPConfiguration theConfigData, Logger logger, ProtocolTransport transport) {
         super(logger, transport);
@@ -83,20 +82,6 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getHelloName()
-     */
-    public String getHelloName() {
-        return theConfigData.getHelloName();
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getMaxMessageSize()
-     */
-    public long getMaxMessageSize() {
-        return theConfigData.getMaxMessageSize();
-    }
-
-    /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getRcptCount()
      */
     @SuppressWarnings("unchecked")
@@ -109,13 +94,6 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
         }
 
         return count;
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getSMTPGreeting()
-     */
-    public String getSMTPGreeting() {
-        return theConfigData.getSMTPGreeting();
     }
 
     /**
@@ -133,20 +111,6 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#useAddressBracketsEnforcement()
-     */
-    public boolean useAddressBracketsEnforcement() {
-        return theConfigData.useAddressBracketsEnforcement();
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#useHeloEhloEnforcement()
-     */
-    public boolean useHeloEhloEnforcement() {
-        return theConfigData.useHeloEhloEnforcement();
-    }
-
-    /**
      * @see
      * org.apache.james.protocols.smtp.SMTPSession#getPushedLineHandlerCount()
      */
@@ -160,5 +124,10 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
 
     public Response newFatalErrorResponse() {
         return new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "Unable to process request");
+    }
+
+    @Override
+    public SMTPConfiguration getConfiguration() {
+        return theConfigData;
     }
 }

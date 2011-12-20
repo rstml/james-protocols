@@ -92,6 +92,5 @@ public interface SMTPSession extends ProtocolSession{
      */
     int getPushedLineHandlerCount();
     
-    
 }
 

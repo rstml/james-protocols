@@ -19,18 +19,16 @@
 
 package org.apache.james.protocols.pop3;
 
+import org.apache.james.protocols.api.ProtocolConfiguration;
 import org.apache.james.protocols.api.ProtocolImpl;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 
 public class POP3Protocol extends ProtocolImpl{
-
-    private final POP3Configuration config;
     
-    public POP3Protocol(ProtocolHandlerChain chain, POP3Configuration config) {
-        super(chain);
-        this.config = config;
+    public POP3Protocol(ProtocolHandlerChain chain, ProtocolConfiguration config) {
+        super(chain, config);
     }
 
     

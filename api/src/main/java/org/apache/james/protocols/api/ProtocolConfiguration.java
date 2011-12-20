@@ -17,23 +17,30 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.pop3;
+package org.apache.james.protocols.api;
 
-public class POP3ConfigurationImpl implements POP3Configuration {
+public interface ProtocolConfiguration {
 
-    private final String helloName;
-
-    public POP3ConfigurationImpl(String helloName) {
-        this.helloName = helloName;
-    }
-
-    /*
-     * (non-Javadoc)
+    
+    /**
+     * Return the Greeting which should used.
      * 
-     * @see org.apache.james.protocols.pop3.POP3Configuration#getHelloName()
+     * @return the greeting
      */
-    public String getHelloName() {
-        return helloName;
-    }
-
+    String getGreeting();
+    
+    /**
+     * Return the name of the software.
+     * 
+     * @return softwareName
+     */
+    String getSoftwareName();
+    
+    /**
+     * Returns the service wide hello name
+     *
+     * @return the hello name
+     */
+    String getHelloName();
+    
 }

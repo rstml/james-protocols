@@ -142,5 +142,12 @@ public interface ProtocolSession {
      * @return true
      */
     boolean isTLSStarted();
+    
+    /**
+     * Return the {@link ProtocolConfiguration} 
+     * 
+     * @return config
+     */
+    ProtocolConfiguration getConfiguration();
 
 }

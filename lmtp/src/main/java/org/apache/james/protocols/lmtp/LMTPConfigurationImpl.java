@@ -20,22 +20,7 @@ package org.apache.james.protocols.lmtp;
 
 public class LMTPConfigurationImpl extends LMTPConfiguration{
 
-    private String helloName = "localhost";
-    private long maxMessageSize = 0;
-    private String greeting = "JAMES Protocols LMTP Server";
-
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.smtp.SMTPConfiguration#getHelloName()
-     */
-    public String getHelloName() {
-        return helloName;
-    }
-    
-    public void setHelloName(String helloName) {
-        this.helloName = helloName;
-    }
-    
+    private long maxMessageSize = 0;    
 
     /*
      * (non-Javadoc)
@@ -49,16 +34,4 @@ public class LMTPConfigurationImpl extends LMTPConfiguration{
         this.maxMessageSize = maxMessageSize;
     }
     
-
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.smtp.SMTPConfiguration#getSMTPGreeting()
-     */
-    public String getSMTPGreeting() {
-        return greeting;
-    }
-    
-    public void setGreeting(String greeting) {
-        this.greeting = greeting;
-    }
 }

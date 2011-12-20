@@ -23,17 +23,12 @@ import org.apache.james.protocols.smtp.core.ReceivedDataLineFilter;
 
 public class LMTPReceivedDataLineFilter extends ReceivedDataLineFilter {
 
+    private static final String SERVICE_TYPE = "LMTP";
     /**
      * Always returns <code>LMTP</code>
      */
     @Override
     protected String getServiceType(SMTPSession session, String heloMode) {
-        return "LMTP";
+        return SERVICE_TYPE;
     }
-
-    @Override
-    protected String getProductName() {
-        return WelcomeMessageHandler.SOFTWARE_TYPE;
-    }
-
 }

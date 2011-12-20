@@ -18,6 +18,7 @@
  ****************************************************************/
 package org.apache.james.protocols.pop3;
 
+import org.apache.james.protocols.api.ProtocolConfiguration;
 import org.apache.james.protocols.api.ProtocolSessionImpl;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
@@ -28,23 +29,14 @@ import org.slf4j.Logger;
  * {@link POP3Session} implementation which use Netty
  */
 public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session {
-    private POP3Configuration configData;
 
     private int handlerState;
 
     private Mailbox mailbox;
 
     
-    public POP3SessionImpl(Logger logger, ProtocolTransport transport, POP3Configuration configData) {
-        super(logger, transport);
-        this.configData = configData;
-    }
-
-    /**
-     * @see org.apache.james.pop3server.POP3Session#getConfiguration()
-     */
-    public POP3Configuration getConfiguration() {
-        return configData;
+    public POP3SessionImpl(Logger logger, ProtocolTransport transport, ProtocolConfiguration configData) {
+        super(logger, transport, configData);
     }
 
     /**

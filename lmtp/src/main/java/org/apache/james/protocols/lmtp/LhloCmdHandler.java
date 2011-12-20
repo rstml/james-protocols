@@ -21,6 +21,7 @@ package org.apache.james.protocols.lmtp;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.apache.james.protocols.smtp.core.esmtp.EhloCmdHandler;
 
@@ -29,9 +30,11 @@ import org.apache.james.protocols.smtp.core.esmtp.EhloCmdHandler;
  */
 public class LhloCmdHandler extends EhloCmdHandler {
 
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("LHLO"));
+    
     @Override
     public Collection<String> getImplCommands() {
-        return Arrays.asList("LHLO");
+        return COMMANDS;
     }
 
 }

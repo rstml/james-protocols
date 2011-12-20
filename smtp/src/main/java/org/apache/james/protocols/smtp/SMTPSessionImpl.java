@@ -35,13 +35,9 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
 
     private boolean relayingAllowed;
 
-
-    private final SMTPConfiguration theConfigData;
-
-    public SMTPSessionImpl(SMTPConfiguration theConfigData, Logger logger, ProtocolTransport transport) {
-        super(logger, transport);
-        this.theConfigData = theConfigData;
-        relayingAllowed = theConfigData.isRelayingAllowed(getRemoteIPAddress());
+    public SMTPSessionImpl(Logger logger, ProtocolTransport transport, SMTPConfiguration config) {
+        super(logger, transport, config);
+        relayingAllowed = config.isRelayingAllowed(getRemoteIPAddress());
     }
 
 
@@ -100,7 +96,7 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
      * @see org.apache.james.protocols.smtp.SMTPSession#isAuthSupported()
      */
     public boolean isAuthSupported() {
-        return theConfigData.isAuthRequired(getRemoteAddress().getAddress().getHostAddress());
+        return getConfiguration().isAuthRequired(getRemoteAddress().getAddress().getHostAddress());
     }
 
     /**
@@ -128,6 +124,6 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
 
     @Override
     public SMTPConfiguration getConfiguration() {
-        return theConfigData;
+        return (SMTPConfiguration) config;
     }
 }

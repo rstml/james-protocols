@@ -17,19 +17,49 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.lmtp;
+package org.apache.james.protocols.api;
 
 
-/**
- * Greeting for LMTP Server
- */
-public class WelcomeMessageHandler extends org.apache.james.protocols.smtp.core.WelcomeMessageHandler {
+public class ProtocolConfigurationImpl implements ProtocolConfiguration {
+    private String greeting;
+    private String softwareName = "JAMES Protocols Server";
+    private String helloName = "localhost";
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.james.protocols.pop3.POP3Configuration#getHelloName()
+     */
+    public String getHelloName() {
+        return helloName;
+    }
+    
+    public void setHelloName(String helloName) {
+        this.helloName = helloName;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolConfiguration#getGreeting()
+     */
+    public String getGreeting() {
+        return greeting;
+    }
+    
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
 
-    public final static String SOFTWARE_TYPE = "JAMES Protocols LMTP Server"; 
-
-    @Override
-    protected String getProductName() {
-        return SOFTWARE_TYPE;
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolConfiguration#getSoftwareName()
+     */
+    public String getSoftwareName() {
+        return softwareName;
+    }
+    
+    public void setSoftwareName(String softwareName) {
+        this.softwareName = softwareName;
     }
 
 }

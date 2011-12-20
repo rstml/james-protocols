@@ -20,19 +20,20 @@
 
 package org.apache.james.protocols.smtp;
 
+import org.apache.james.protocols.api.ProtocolConfigurationImpl;
 
-public class SMTPConfigurationImpl implements SMTPConfiguration{
+
+public class SMTPConfigurationImpl extends ProtocolConfigurationImpl implements SMTPConfiguration{
 
     public String helloName = "localhost";
     private long maxMessageSize = 0;
     private boolean bracketsEnforcement = true;
-    private String greeting = "JAMES SMTP Protocols";
     private boolean enforceHeloEhlo = true;
-    
-    public String getHelloName() {
-        return helloName;
-    }
 
+    public SMTPConfigurationImpl() {
+        setSoftwareName("JAMES SMTP Protocols Server");
+    }
+    
     public long getMaxMessageSize() {
         return maxMessageSize;
     }
@@ -52,14 +53,6 @@ public class SMTPConfigurationImpl implements SMTPConfiguration{
     
     public boolean useHeloEhloEnforcement() {
         return enforceHeloEhlo;
-    }
-
-    public String getSMTPGreeting() {
-        return greeting;
-    }
-
-    public void setSMTPGreeting(String greeting) {
-        this.greeting = greeting;
     }
     
     

@@ -18,10 +18,14 @@
  ****************************************************************/
 package org.apache.james.protocols.lmtp;
 
+import org.apache.james.protocols.api.ProtocolConfigurationImpl;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 
-public abstract class LMTPConfiguration implements SMTPConfiguration{
+public abstract class LMTPConfiguration extends ProtocolConfigurationImpl implements SMTPConfiguration{
 
+    public LMTPConfiguration() {
+        setSoftwareName("JAMES Protocols LMTP Server");
+    }
     /*
      * (non-Javadoc)
      * @see org.apache.james.protocols.smtp.SMTPConfiguration#isRelayingAllowed(java.lang.String)

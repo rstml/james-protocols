@@ -16,19 +16,13 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-
 package org.apache.james.protocols.pop3;
 
-/**
- * Provides a number of server-wide constant values to the POP3Handlers
- */
-public interface POP3Configuration {
+import org.apache.james.protocols.api.ProtocolConfigurationImpl;
 
-    /**
-     * Returns the service wide hello name
-     * 
-     * @return the hello name
-     */
-    String getHelloName();
+public class POP3Configuration extends ProtocolConfigurationImpl {
 
+    public POP3Configuration() {
+        setSoftwareName("JAMES Protocols POP3 Server");
+    }
 }

@@ -39,12 +39,14 @@ public class ProtocolSessionImpl implements ProtocolSession {
     private final Map<String, Object> connectionState;
     private final Map<String, Object> sessionState;
     private String user;
+    protected final ProtocolConfiguration config;
 
-    public ProtocolSessionImpl(Logger logger, ProtocolTransport transport) {
+    public ProtocolSessionImpl(Logger logger, ProtocolTransport transport, ProtocolConfiguration config) {
         this.transport = transport;
         this.pLog = new SessionLog(getSessionID(), logger);;
         this.connectionState = new HashMap<String, Object>();
         this.sessionState = new HashMap<String, Object>();
+        this.config = config;
 
     }
 
@@ -166,6 +168,13 @@ public class ProtocolSessionImpl implements ProtocolSession {
      */
     public void resetState() {
         sessionState.clear();
+    }
+
+    /**
+     * @see org.apache.james.protocols.api.ProtocolSession#getConfiguration()
+     */
+    public ProtocolConfiguration getConfiguration() {
+        return config;
     }
 
 }

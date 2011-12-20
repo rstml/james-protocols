@@ -88,7 +88,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
             }
             headerLineBuffer.delete(0, headerLineBuffer.length());
 
-            headerLineBuffer.append("          by ").append(session.getConfiguration().getHelloName()).append(" (").append(getProductName()).append(") with ").append(getServiceType(session, heloMode));
+            headerLineBuffer.append("          by ").append(session.getConfiguration().getHelloName()).append(" (").append(session.getConfiguration().getSoftwareName()).append(") with ").append(getServiceType(session, heloMode));
 
            
             headerLineBuffer.append(" ID ").append(session.getSessionID());
@@ -129,14 +129,6 @@ public class ReceivedDataLineFilter implements DataLineFilter {
         }
     }
     
-    /**
-     * Return the product name to use in the headers
-     * 
-     * @return name
-     */
-    protected String getProductName() {
-        return WelcomeMessageHandler.SOFTWARE_TYPE;
-    }
     
     /**
      * Return the service type which will be used in the Received headers

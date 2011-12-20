@@ -27,15 +27,12 @@ import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSessionImpl;
 public class SMTPProtocol extends ProtocolImpl {
 
-    private SMTPConfiguration config;
-
     public SMTPProtocol(ProtocolHandlerChain chain, SMTPConfiguration config) {
-        super(chain);
-        this.config = config;
+        super(chain, config);
     }
 
     public ProtocolSession newSession(ProtocolTransport transport) {
-        return new SMTPSessionImpl(config, logger, transport);
+        return new SMTPSessionImpl(logger, transport, (SMTPConfiguration) config);
     }
 
 }

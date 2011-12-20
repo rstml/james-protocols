@@ -43,13 +43,6 @@ public interface POP3Session extends ProtocolSession {
     final static int TRANSACTION = 2;
 
     /**
-     * Returns POP3Handler service wide configuration
-     * 
-     * @return config
-     */
-    POP3Configuration getConfiguration();
-
-    /**
      * Returns the current handler state
      * 
      * @return handler state

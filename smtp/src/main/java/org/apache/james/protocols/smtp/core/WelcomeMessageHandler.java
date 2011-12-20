@@ -31,14 +31,11 @@ import org.apache.james.protocols.smtp.SMTPSession;
  */
 public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
 
-    public final static String SOFTWARE_TYPE = "JAMES Protocols SMTP Server"; // +
-
-
     /**
      * @see org.apache.james.protocols.api.handler.ConnectHandler#onConnect(org.apache.james.protocols.api.ProtocolSession)
      */
     public Response onConnect(SMTPSession session) {
-        String smtpGreeting = session.getConfiguration().getSMTPGreeting();
+        String smtpGreeting = session.getConfiguration().getGreeting();
 
         SMTPResponse welcomeResponse;
         // if no greeting was configured use a default
@@ -48,16 +45,12 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
                           new StringBuilder(256)
                           .append(session.getConfiguration().getHelloName())
                           .append(" SMTP Server (")
-                          .append(getProductName())
+                          .append(session.getConfiguration().getSoftwareName())
                           .append(") ready"));
         } else {
             welcomeResponse = new SMTPResponse(SMTPRetCode.SERVICE_READY,smtpGreeting);
         }
         return welcomeResponse;
-    }
-    
-    protected String getProductName() {
-        return SOFTWARE_TYPE;
     }
 
 }

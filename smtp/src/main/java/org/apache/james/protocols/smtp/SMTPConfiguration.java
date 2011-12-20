@@ -21,20 +21,15 @@
 
 package org.apache.james.protocols.smtp;
 
+import org.apache.james.protocols.api.ProtocolConfiguration;
+
 
 /**
  * Provides a number of server-wide constant values to the
  * SMTPHandlers
  *
  */
-public interface SMTPConfiguration {
-
-    /**
-     * Returns the service wide hello name
-     *
-     * @return the hello name
-     */
-    String getHelloName();
+public interface SMTPConfiguration extends ProtocolConfiguration{
 
     /**
      * Returns the service wide maximum message size in bytes.
@@ -67,14 +62,6 @@ public interface SMTPConfiguration {
      * @return whether SMTP authentication is on
      */
     boolean useHeloEhloEnforcement();
-    
-    
-    /**
-     * Return the SMTPGreeting which should used.
-     * 
-     * @return the SMTPGreeting
-     */
-    String getSMTPGreeting();
     
     /**
      * Return wheter the mailserver will accept addresses without brackets enclosed.

@@ -192,7 +192,10 @@ public class BaseFakeSMTPSession implements SMTPSession {
 
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPSession#getConfiguration()
+     */
     public SMTPConfiguration getConfiguration() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }

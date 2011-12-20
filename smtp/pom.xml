@@ -93,10 +93,11 @@
                     <instructions>
                         <Export-Package>org.apache.james.protocols.smtp.*</Export-Package>
                         <Embed-Dependency>*;scope=runtime</Embed-Dependency>
+                        <!-- exclude commons codec as we pull it in via shade plugin -->
+                        <Import-Package>!org.apache.commons.codec.*,*</Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
-            <!-- 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -119,7 +120,7 @@
                                             <exclude>org/apache/commons/codec/*</exclude>
                                         </excludes>
                                         <includes>
-                                            <include>org/apache/commons/codec/binary/Base64*</include>
+                                            <include>org/apache/commons/codec/binary/*</include>
                                         </includes>
                                     </filter>
                                 </filters>
@@ -136,7 +137,6 @@
                     </execution>
                 </executions>
             </plugin>
-            -->
         </plugins>
     </build>
 </project>

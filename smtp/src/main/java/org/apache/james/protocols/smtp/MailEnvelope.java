@@ -37,7 +37,7 @@ public interface MailEnvelope {
      * 
      * @return size
      */
-    int getSize();
+    long getSize();
 
     /**
      * Return the recipients which where supplied in the RCPT TO: command

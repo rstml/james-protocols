@@ -20,24 +20,17 @@
 
 package org.apache.james.protocols.smtp.core;
 
-import java.util.Date;
-
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.apache.mailet.base.RFC822DateFormat;
 
 /**
  * This ConnectHandler print the greeting on connecting
  */
 public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
 
-    /**
-     * Static RFC822DateFormat used to generate date headers
-     */
-    private final static RFC822DateFormat rfc822DateFormat = new RFC822DateFormat();
 
     /**
      * @see org.apache.james.protocols.api.handler.ConnectHandler#onConnect(org.apache.james.protocols.api.ProtocolSession)
@@ -55,8 +48,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
                           .append(session.getHelloName())
                           .append(" SMTP Server (")
                           .append(getProductName())
-                          .append(") ready ")
-                          .append(rfc822DateFormat.format(new Date())));
+                          .append(") ready"));
         } else {
             welcomeResponse = new SMTPResponse(SMTPRetCode.SERVICE_READY,smtpGreeting);
         }

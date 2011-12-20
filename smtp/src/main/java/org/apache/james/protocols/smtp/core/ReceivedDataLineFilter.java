@@ -19,17 +19,17 @@
 package org.apache.james.protocols.smtp.core;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.mailet.MailAddress;
-import org.apache.mailet.base.RFC2822Headers;
-import org.apache.mailet.base.RFC822DateFormat;
 
 public class ReceivedDataLineFilter implements DataLineFilter {
 
@@ -37,13 +37,16 @@ public class ReceivedDataLineFilter implements DataLineFilter {
     
     private final static String SOFTWARE_TYPE = "JAMES SMTP Server ";
 
-    // Replace this with something usefull
-    // + Constants.SOFTWARE_VERSION;
+    private static final ThreadLocal<DateFormat> DATEFORMAT = new ThreadLocal<DateFormat>() {
 
-    /**
-     * Static RFC822DateFormat used to generate date headers
-     */
-    private final static RFC822DateFormat rfc822DateFormat = new RFC822DateFormat();
+        @Override
+        protected DateFormat initialValue() {
+            // See RFC822 for the format
+            return new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z (zzz)", Locale.US);
+        }
+        
+    };
+
     private final static String HEADERS_WRITTEN = "HEADERS_WRITTEN";
 
 
@@ -73,7 +76,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
             String heloName = (String) session.getConnectionState().get(SMTPSession.CURRENT_HELO_NAME);
 
             // Put our Received header first
-            headerLineBuffer.append(RFC2822Headers.RECEIVED + ": from ").append(session.getRemoteAddress().getHostName());
+            headerLineBuffer.append("Received: from ").append(session.getRemoteAddress().getHostName());
 
             if (heloName != null) {
                 headerLineBuffer.append(" (").append(heloMode).append(" ").append(heloName).append(") ");
@@ -140,7 +143,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
                 headerLineBuffer.delete(0, headerLineBuffer.length());
             }
             headerLineBuffer = null;
-            return next.onLine(session, ("          " + rfc822DateFormat.format(new Date()) + "\r\n").getBytes(CHARSET));
+            return next.onLine(session, ("          " + DATEFORMAT.get().format(new Date()) + "\r\n").getBytes(CHARSET));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("No US-ASCII support ?");
         }

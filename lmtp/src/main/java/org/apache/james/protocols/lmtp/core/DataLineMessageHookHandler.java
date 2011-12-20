@@ -33,10 +33,9 @@ import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler;
-import org.apache.james.protocols.smtp.core.DataLineMessageHookHandler;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 
-public class LMTPDataLineMessageHookHandler extends DataLineMessageHookHandler{
+public class DataLineMessageHookHandler extends org.apache.james.protocols.smtp.core.DataLineMessageHookHandler{
 
     private final List<DeliverToRecipientHook> handlers = new ArrayList<DeliverToRecipientHook>();
 

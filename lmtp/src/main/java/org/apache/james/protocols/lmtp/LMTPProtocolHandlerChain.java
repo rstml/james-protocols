@@ -23,9 +23,10 @@ import java.util.List;
 
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
-import org.apache.james.protocols.lmtp.core.LMTPDataLineMessageHookHandler;
-import org.apache.james.protocols.lmtp.core.LMTPReceivedDataLineFilter;
+import org.apache.james.protocols.lmtp.core.DataLineMessageHookHandler;
+import org.apache.james.protocols.lmtp.core.ReceivedDataLineFilter;
 import org.apache.james.protocols.lmtp.core.LhloCmdHandler;
+import org.apache.james.protocols.lmtp.core.WelcomeMessageHandler;
 import org.apache.james.protocols.smtp.SMTPProtocolHandlerChain;
 import org.apache.james.protocols.smtp.core.DataCmdHandler;
 import org.apache.james.protocols.smtp.core.ExpnCmdHandler;
@@ -37,7 +38,6 @@ import org.apache.james.protocols.smtp.core.RcptCmdHandler;
 import org.apache.james.protocols.smtp.core.RsetCmdHandler;
 import org.apache.james.protocols.smtp.core.SMTPCommandDispatcherLineHandler;
 import org.apache.james.protocols.smtp.core.VrfyCmdHandler;
-import org.apache.james.protocols.smtp.core.WelcomeMessageHandler;
 import org.apache.james.protocols.smtp.core.esmtp.MailSizeEsmtpExtension;
 import org.apache.james.protocols.smtp.core.esmtp.StartTlsCmdHandler;
 import org.apache.james.protocols.smtp.hook.Hook;
@@ -77,8 +77,8 @@ public class LMTPProtocolHandlerChain extends SMTPProtocolHandlerChain{
         defaultHandlers.add(new DataCmdHandler());
         defaultHandlers.add(new MailSizeEsmtpExtension());
         defaultHandlers.add(new WelcomeMessageHandler());
-        defaultHandlers.add(new LMTPReceivedDataLineFilter());
-        defaultHandlers.add(new LMTPDataLineMessageHookHandler());
+        defaultHandlers.add(new ReceivedDataLineFilter());
+        defaultHandlers.add(new DataLineMessageHookHandler());
         defaultHandlers.add(new StartTlsCmdHandler());
         return defaultHandlers;
     }

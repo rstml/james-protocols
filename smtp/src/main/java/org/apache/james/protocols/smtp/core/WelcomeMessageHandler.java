@@ -31,6 +31,8 @@ import org.apache.james.protocols.smtp.SMTPSession;
  */
 public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
 
+    private final static String SERVICE_TYPE = "SMTP";
+    
     /**
      * @see org.apache.james.protocols.api.handler.ConnectHandler#onConnect(org.apache.james.protocols.api.ProtocolSession)
      */
@@ -44,7 +46,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
             welcomeResponse = new SMTPResponse(SMTPRetCode.SERVICE_READY,
                           new StringBuilder(256)
                           .append(session.getConfiguration().getHelloName())
-                          .append(" SMTP Server (")
+                          .append(" ").append(getServiceType(session)).append(" Server (")
                           .append(session.getConfiguration().getSoftwareName())
                           .append(") ready"));
         } else {
@@ -53,4 +55,7 @@ public class WelcomeMessageHandler implements ConnectHandler<SMTPSession> {
         return welcomeResponse;
     }
 
+    protected String getServiceType(SMTPSession session) {
+        return SERVICE_TYPE;
+    }
 }

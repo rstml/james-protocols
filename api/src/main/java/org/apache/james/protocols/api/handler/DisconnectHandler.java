@@ -24,12 +24,18 @@ package org.apache.james.protocols.api.handler;
 import org.apache.james.protocols.api.ProtocolSession;
 
 
-public interface DisconnectHandler<Session extends ProtocolSession> extends ProtocolHandler{
+/**
+ * A {@link DisconnectHandler} will get called once a client gets disconnected from the server
+ *
+ * @param <S>
+ */
+public interface DisconnectHandler<S extends ProtocolSession> extends ProtocolHandler{
+    
     /**
      * Get called on disconnect
      *
      * @param session
     **/
-    void onDisconnect(Session session);
+    void onDisconnect(S session);
 
 }

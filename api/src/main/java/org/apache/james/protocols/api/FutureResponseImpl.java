@@ -125,7 +125,7 @@ public class FutureResponseImpl implements FutureResponse{
         synchronized (this) {
             if (!isReady()) {
                 this.response = response;
-                fire = true;
+                fire = listeners != null;
 
                 if (waiters > 0) {
                     notifyAll();
@@ -142,6 +142,7 @@ public class FutureResponseImpl implements FutureResponse{
                 }
             }
             listeners = null;
+            
         }
     }
 

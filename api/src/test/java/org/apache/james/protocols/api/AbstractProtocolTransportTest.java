@@ -100,7 +100,6 @@ public class AbstractProtocolTransportTest extends TestCase{
     private void notifyFutureResponses(final List<Response> messages, final boolean reverse) {
         new Thread(new Runnable() {
             
-            @Override
             public void run() {
                 try {
                     Thread.sleep(200);
@@ -212,17 +211,14 @@ public class AbstractProtocolTransportTest extends TestCase{
             this.msg =  UUID.randomUUID().toString();
         }
         
-        @Override
         public String getRetCode() {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public List<CharSequence> getLines() {
             return Arrays.asList((CharSequence)msg);
         }
 
-        @Override
         public boolean isEndSession() {
             return false;
         }

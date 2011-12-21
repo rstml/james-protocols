@@ -50,7 +50,7 @@ public class BaseRequest implements Request{
 
 
     @Override
-    public String toString() {
+    public final String toString() {
         if (argument == null) {
             return command;
         } else {

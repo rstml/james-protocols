@@ -26,6 +26,8 @@ import org.apache.james.protocols.api.handler.LineHandler;
 /**
  * ProtocolTransport is used by each ProtocolSession to communicate with the underlying transport.
  * Transport implementations will provide their own implementation of the transport.
+ * 
+ * Every new connection gets a new instance of {@link ProtocolTransport}. So its not shared between connections.
  */
 public interface ProtocolTransport {
 

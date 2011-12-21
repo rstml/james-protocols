@@ -58,26 +58,7 @@ public interface ProtocolSession {
      * Reset the state
      */
     void resetState();
-    
-    
-    /**
-     * Returns host name of the client
-     *
-     * @return hostname of the client
-     * @deprecated use {@link #getRemoteAddress()}
-     */
-    @Deprecated
-    String getRemoteHost();
 
-    /**
-     * Returns host ip address of the client
-     *
-     * @return host ip address of the client
-     * @deprecated use {@link #getRemoteAddress()}
-     */
-    @Deprecated
-    String getRemoteIPAddress();
-    
     
     /**
      * Return the {@link InetSocketAddress} of the remote peer

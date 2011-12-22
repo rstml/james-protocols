@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
@@ -49,8 +50,8 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
         POP3Response response = null;
         String parameters = request.getArgument();
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
-            List<MessageMetaData> uidList = (List<MessageMetaData>) session.getState().get(POP3Session.UID_LIST);
-            List<Long> deletedUidList = (List<Long>) session.getState().get(POP3Session.DELETED_UID_LIST);
+            List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
+            List<Long> deletedUidList = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
             try {
                 String identifier = session.getUserMailbox().getIdentifier();
                 if (parameters == null) {

@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
@@ -65,8 +66,8 @@ public class RsetCmdHandler implements CommandHandler<POP3Session> {
         try {
             List<MessageMetaData> messages = session.getUserMailbox().getMessages();
 
-            session.getState().put(POP3Session.UID_LIST, messages);
-            session.getState().put(POP3Session.DELETED_UID_LIST, new ArrayList<Long>());
+            session.setAttachment(POP3Session.UID_LIST, messages, State.Transaction);
+            session.setAttachment(POP3Session.DELETED_UID_LIST, new ArrayList<Long>(), State.Transaction);
         } catch (IOException e) {
             // In the event of an exception being thrown there may or may not be
             // anything in userMailbox

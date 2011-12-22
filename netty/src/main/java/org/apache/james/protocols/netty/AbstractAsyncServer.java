@@ -49,7 +49,7 @@ public abstract class AbstractAsyncServer {
 
     private volatile boolean started;
     
-    private ChannelGroup channels = new DefaultChannelGroup();
+    private final ChannelGroup channels = new DefaultChannelGroup();
 
     private volatile int ioWorker = DEFAULT_IO_WORKER_COUNT;
     

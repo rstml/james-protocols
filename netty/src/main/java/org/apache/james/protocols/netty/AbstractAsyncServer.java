@@ -41,17 +41,17 @@ import org.jboss.netty.util.ExternalResourceReleasable;
 public abstract class AbstractAsyncServer {
 
     public static final int DEFAULT_IO_WORKER_COUNT = Runtime.getRuntime().availableProcessors() * 2;
-    private int backlog = 250;
+    private volatile int backlog = 250;
     
-    private int timeout = 120;
+    private volatile int timeout = 120;
 
     private ServerBootstrap bootstrap;
 
-    private boolean started;
+    private volatile boolean started;
     
     private ChannelGroup channels = new DefaultChannelGroup();
 
-    private int ioWorker = DEFAULT_IO_WORKER_COUNT;
+    private volatile int ioWorker = DEFAULT_IO_WORKER_COUNT;
     
     private List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
     
@@ -65,7 +65,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @param ioWorker
      */
-    public synchronized void setIoWorkerCount(int ioWorker) {
+    public void setIoWorkerCount(int ioWorker) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.ioWorker = ioWorker;
     }
@@ -75,7 +75,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @return ioWorker
      */
-    public synchronized int getIoWorkerCount() {
+    public int getIoWorkerCount() {
         return ioWorker;
     }
     
@@ -159,7 +159,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @param timeout
      */
-    public synchronized void setTimeout(int timeout) {
+    public void setTimeout(int timeout) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.timeout = timeout;
     }
@@ -170,7 +170,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @param backlog
      */
-    public synchronized void setBacklog(int backlog) {
+    public void setBacklog(int backlog) {
         if (started) throw new IllegalStateException("Can only be set when the server is not running");
         this.backlog = backlog;
     }
@@ -180,7 +180,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @return backlog
      */
-    public synchronized int getBacklog() {
+    public int getBacklog() {
         return backlog;
     }
     
@@ -188,7 +188,7 @@ public abstract class AbstractAsyncServer {
      * Return the read/write timeout for the socket.
      * @return the set timeout
      */
-    public synchronized int getTimeout() {
+    public int getTimeout() {
         return timeout;
     }
     
@@ -216,7 +216,7 @@ public abstract class AbstractAsyncServer {
      * 
      * @return bound
      */
-    public synchronized boolean isBound() {
+    public boolean isBound() {
         return started;
     }
 }

@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -52,7 +53,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
     public HookResult doMailParameter(SMTPSession session, String paramName,
             String paramValue) {
         HookResult res = doMailSize(session, paramValue,
-                (String) session.getState().get(SMTPSession.SENDER));
+                (String) session.getAttachment(SMTPSession.SENDER, State.Transaction));
         return res;
     }
 
@@ -131,7 +132,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
         } else {
             // put the message size in the message state so it can be used
             // later to restrict messages for user quotas, etc.
-            session.getState().put(MESG_SIZE, Integer.valueOf(size));
+            session.setAttachment(MESG_SIZE, Integer.valueOf(size), State.Transaction);
         }
         return null;
     }
@@ -142,7 +143,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
      */
     public Response onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
         Response response = null;
-    	Boolean failed = (Boolean) session.getState().get(MESG_FAILED);
+    	Boolean failed = (Boolean) session.getAttachment(MESG_FAILED, State.Transaction);
         // If we already defined we failed and sent a reply we should simply
         // wait for a CRLF.CRLF to be sent by the client.
         if (failed != null && failed.booleanValue()) {
@@ -151,7 +152,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
             if (line.length == 3 && line[0] == 46) {
                 response = next.onLine(session, line);
             } else {
-                Long currentSize = (Long) session.getState().get("CURRENT_SIZE");
+                Long currentSize = (Long) session.getAttachment("CURRENT_SIZE", State.Transaction);
                 Long newSize;
                 if (currentSize == null) {
                     newSize = Long.valueOf(line.length);
@@ -164,7 +165,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     // logging of extra lines of data
                     // that are sent after the size limit has
                     // been hit.
-                    session.getState().put(MESG_FAILED, Boolean.TRUE);
+                    session.setAttachment(MESG_FAILED, Boolean.TRUE, State.Transaction);
                     // then let the client know that the size
                     // limit has been hit.
                     response = next.onLine(session, ".\r\n".getBytes());
@@ -172,7 +173,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     response = next.onLine(session, line);
                 }
                 
-                session.getState().put("CURRENT_SIZE", newSize);
+                session.setAttachment("CURRENT_SIZE", newSize, State.Transaction);
             }
         }
         return response;
@@ -182,14 +183,14 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
      * @see org.apache.james.protocols.smtp.hook.MessageHook#onMessage(SMTPSession, MailEnvelope)
      */
     public HookResult onMessage(SMTPSession session, MailEnvelope mail) {
-        Boolean failed = (Boolean) session.getState().get(MESG_FAILED);
+        Boolean failed = (Boolean) session.getAttachment(MESG_FAILED, State.Transaction);
         if (failed != null && failed.booleanValue()) {
             HookResult response = new HookResult(HookReturnCode.DENY, SMTPRetCode.QUOTA_EXCEEDED,DSNStatus.getStatus(DSNStatus.PERMANENT,
                     DSNStatus.SYSTEM_MSG_TOO_BIG) + " Maximum message size exceeded");
   
             StringBuilder errorBuffer = new StringBuilder(256).append(
                     "Rejected message from ").append(
-                    session.getState().get(SMTPSession.SENDER).toString())
+                    session.getAttachment(SMTPSession.SENDER, State.Transaction).toString())
                     .append(" from ").append(session.getRemoteAddress().getAddress().getHostAddress())
                     .append(" exceeding system maximum message size of ")
                     .append(

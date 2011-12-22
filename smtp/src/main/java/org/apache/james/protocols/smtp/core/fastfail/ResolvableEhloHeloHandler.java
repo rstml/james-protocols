@@ -22,6 +22,7 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.net.UnknownHostException;
 
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -70,7 +71,7 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
     protected void checkEhloHelo(SMTPSession session, String argument) {
         
         if (isBadHelo(session, argument)) {
-            session.getState().put(BAD_EHLO_HELO, "true");
+            session.setAttachment(BAD_EHLO_HELO, "true", State.Transaction);
         }
     }
     
@@ -93,7 +94,7 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
 
     protected boolean check(SMTPSession session,MailAddress rcpt) {
         // not reject it
-        if (session.getState().get(BAD_EHLO_HELO) == null) {
+        if (session.getAttachment(BAD_EHLO_HELO, State.Transaction) == null) {
             return false;
         }
 
@@ -106,7 +107,7 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
         if (check(session,rcpt)) {
             return new HookResult(HookReturnCode.DENY,SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG)
-                    + " Provided EHLO/HELO " + session.getState().get(SMTPSession.CURRENT_HELO_NAME) + " can not resolved.");
+                    + " Provided EHLO/HELO " + session.getAttachment(SMTPSession.CURRENT_HELO_NAME, State.Transaction) + " can not resolved.");
         } else {
             return new HookResult(HookReturnCode.DECLINED);
         }

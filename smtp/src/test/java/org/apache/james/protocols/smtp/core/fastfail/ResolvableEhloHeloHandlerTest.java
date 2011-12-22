@@ -29,6 +29,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.DNSService;
@@ -73,6 +74,37 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
                 return map;
             }
             
+            /*
+             * (non-Javadoc)
+             * @see org.apache.james.protocols.api.ProtocolSession#setAttachment(java.lang.String, java.lang.Object, org.apache.james.protocols.api.ProtocolSession.State)
+             */
+            public Object setAttachment(String key, Object value, State state) {
+                if (state == State.Connection) {
+                    if (value == null) {
+                        return connectionMap.remove(key);
+                    } else {
+                        return connectionMap.put(key, value);
+                    }
+                } else {
+                    if (value == null) {
+                        return map.remove(key);
+                    } else {
+                        return connectionMap.put(key, value);
+                    }
+                }
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see org.apache.james.protocols.api.ProtocolSession#getAttachment(java.lang.String, org.apache.james.protocols.api.ProtocolSession.State)
+             */
+            public Object getAttachment(String key, State state) {
+                if (state == State.Connection) {
+                    return connectionMap.get(key);
+                } else {
+                    return connectionMap.get(key);
+                }
+            }
             
         };
 
@@ -98,7 +130,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         handler.setDNSService(setupMockDNSServer());
         
         handler.doHelo(session, INVALID_HOST);
-        assertNotNull("Invalid HELO",session.getState().get(ResolvableEhloHeloHandler.BAD_EHLO_HELO));
+        assertNotNull("Invalid HELO",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));
         
         int result = handler.doRcpt(session,null, mailAddress).getResult();
         assertEquals("Reject", result,HookReturnCode.DENY);
@@ -113,7 +145,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         handler.setDNSService(setupMockDNSServer());
   
         handler.doHelo(session, VALID_HOST);
-        assertNull("Valid HELO",session.getState().get(ResolvableEhloHeloHandler.BAD_EHLO_HELO));
+        assertNull("Valid HELO",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));
 
         int result = handler.doRcpt(session,null, mailAddress).getResult();
         assertEquals("Not reject", result,HookReturnCode.DECLINED);
@@ -128,7 +160,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         handler.setDNSService(setupMockDNSServer());
 
         handler.doHelo(session, INVALID_HOST);
-        assertNotNull("Value stored",session.getState().get(ResolvableEhloHeloHandler.BAD_EHLO_HELO));
+        assertNotNull("Value stored",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));
         
         
         int result = handler.doRcpt(session,null, mailAddress).getResult();
@@ -146,7 +178,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         handler.setDNSService(setupMockDNSServer());
 
         handler.doHelo(session, INVALID_HOST);
-        assertNotNull("Value stored",session.getState().get(ResolvableEhloHeloHandler.BAD_EHLO_HELO));
+        assertNotNull("Value stored",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));
         
         
         int result = handler.doRcpt(session,null, mailAddress).getResult();

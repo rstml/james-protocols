@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.smtp.MailAddress;
@@ -62,15 +63,15 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
     @SuppressWarnings("unchecked")
     protected Response doCoreCmd(SMTPSession session, String command,
             String parameters) {
-        Collection<MailAddress> rcptColl = (Collection<MailAddress>) session.getState().get(
-                SMTPSession.RCPT_LIST);
+        Collection<MailAddress> rcptColl = (Collection<MailAddress>) session.getAttachment(
+                SMTPSession.RCPT_LIST, State.Transaction);
         if (rcptColl == null) {
             rcptColl = new ArrayList<MailAddress>();
         }
-        MailAddress recipientAddress = (MailAddress) session.getState().get(
-                CURRENT_RECIPIENT);
+        MailAddress recipientAddress = (MailAddress) session.getAttachment(
+                CURRENT_RECIPIENT, State.Transaction);
         rcptColl.add(recipientAddress);
-        session.getState().put(SMTPSession.RCPT_LIST, rcptColl);
+        session.setAttachment(SMTPSession.RCPT_LIST, rcptColl, State.Transaction);
         StringBuilder response = new StringBuilder();
         response
                 .append(
@@ -95,7 +96,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
             recipient = argument.substring(colonIndex + 1);
             argument = argument.substring(0, colonIndex);
         }
-        if (!session.getState().containsKey(SMTPSession.SENDER)) {
+        if (session.getAttachment(SMTPSession.SENDER, State.Transaction) == null) {
             return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
                     .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
                     + " Need MAIL before RCPT");
@@ -203,7 +204,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
             optionTokenizer = null;
         }
 
-        session.getState().put(CURRENT_RECIPIENT,recipientAddress);
+        session.setAttachment(CURRENT_RECIPIENT,recipientAddress, State.Transaction);
 
         return null;
     }
@@ -218,11 +219,10 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
         } else if (null != recipient) {
             sb.append(" [to:" + recipient + "]");
         }
-        if (null != session.getState().get(SMTPSession.SENDER)) {
-            sb
-                    .append(" [from:"
-                            + ((MailAddress) session.getState().get(
-                                    SMTPSession.SENDER)).toString() + "]");
+        if (null != session.getAttachment(SMTPSession.SENDER, State.Transaction)) {
+            sb.append(" [from:"
+                            + ((MailAddress) session.getAttachment(
+                                    SMTPSession.SENDER, State.Transaction)).toString() + "]");
         }
         return sb.toString();
     }
@@ -247,8 +247,8 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
     protected HookResult callHook(RcptHook rawHook, SMTPSession session,
             String parameters) {
         return rawHook.doRcpt(session,
-                (MailAddress) session.getState().get(SMTPSession.SENDER),
-                (MailAddress) session.getState().get(CURRENT_RECIPIENT));
+                (MailAddress) session.getAttachment(SMTPSession.SENDER, State.Transaction),
+                (MailAddress) session.getAttachment(CURRENT_RECIPIENT, State.Transaction));
     }
 
     protected String getDefaultDomain() {

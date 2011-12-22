@@ -36,10 +36,38 @@ public class MaxUnknownCmdHandlerTest extends TestCase{
     
     public void testRejectAndClose() throws MailAddressException {
         SMTPSession session = new BaseFakeSMTPSession() {
-            private final HashMap<String,Object> state = new HashMap<String,Object>();
+            private final HashMap<String,Object> map = new HashMap<String,Object>();
 
             public Map<String,Object> getState() {
-                return state;
+                return map;
+            }
+            /*
+             * (non-Javadoc)
+             * @see org.apache.james.protocols.api.ProtocolSession#setAttachment(java.lang.String, java.lang.Object, org.apache.james.protocols.api.ProtocolSession.State)
+             */
+            public Object setAttachment(String key, Object value, State state) {
+                if (state == State.Connection) {
+                    throw new UnsupportedOperationException();
+
+                } else {
+                    if (value == null) {
+                        return map.remove(key);
+                    } else {
+                        return map.put(key, value);
+                    }
+                }
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see org.apache.james.protocols.api.ProtocolSession#getAttachment(java.lang.String, org.apache.james.protocols.api.ProtocolSession.State)
+             */
+            public Object getAttachment(String key, State state) {
+                if (state == State.Connection) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    return map.get(key);
+                }
             }
         };
         

@@ -20,6 +20,7 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
@@ -46,13 +47,13 @@ public class MaxUnknownCmdHandler implements UnknownHook{
      * @see org.apache.james.protocols.smtp.hook.UnknownHook#doUnknown(org.apache.james.protocols.smtp.SMTPSession, java.lang.String)
      */
     public HookResult doUnknown(SMTPSession session, String command) {
-        Integer count = (Integer) session.getState().get(UNKOWN_COMMAND_COUNT);
+        Integer count = (Integer) session.getAttachment(UNKOWN_COMMAND_COUNT, State.Transaction);
         if (count == null) {
             count = 1;
         } else {
             count++;
         }
-        session.getState().put(UNKOWN_COMMAND_COUNT, count);
+        session.setAttachment(UNKOWN_COMMAND_COUNT, count, State.Transaction);
         if (count > maxUnknown) {
             return new HookResult(HookReturnCode.DENY | HookReturnCode.DISCONNECT, "521", "Closing connection as to many unknown commands received");
 

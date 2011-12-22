@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
@@ -113,8 +114,8 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
      */
     @SuppressWarnings("unchecked")
     protected Response doDATA(SMTPSession session, String argument) {
-        MailEnvelope env = createEnvelope(session, (MailAddress) session.getState().get(SMTPSession.SENDER), new ArrayList<MailAddress>((Collection<MailAddress>)session.getState().get(SMTPSession.RCPT_LIST)));
-        session.getState().put(MAILENV, env);
+        MailEnvelope env = createEnvelope(session, (MailAddress) session.getAttachment(SMTPSession.SENDER,ProtocolSession.State.Transaction), new ArrayList<MailAddress>((Collection<MailAddress>)session.getAttachment(SMTPSession.RCPT_LIST,ProtocolSession.State.Transaction)));
+        session.setAttachment(MAILENV, env,ProtocolSession.State.Transaction);
         session.pushLineHandler(lineHandler);
         
         return new SMTPResponse(SMTPRetCode.DATA_READY, "Ok Send data ending with <CRLF>.<CRLF>");
@@ -167,9 +168,9 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
         if ((argument != null) && (argument.length() > 0)) {
             return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_INVALID_ARG)+" Unexpected argument provided with DATA command");
         }
-        if (!session.getState().containsKey(SMTPSession.SENDER)) {
+        if (session.getAttachment(SMTPSession.SENDER, ProtocolSession.State.Transaction) == null) {
             return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" No sender specified");
-        } else if (!session.getState().containsKey(SMTPSession.RCPT_LIST)) {
+        } else if (session.getAttachment(SMTPSession.RCPT_LIST, ProtocolSession.State.Transaction) == null) {
             return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" No recipients specified");
         }
         return null;

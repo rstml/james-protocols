@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -60,13 +61,13 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
 
     @Override
     protected Response doFilterChecks(SMTPSession session, String command, String parameters) {
-        session.getState().put("CURR_COMMAND", command);
+        session.setAttachment("CURR_COMMAND", command, State.Transaction);
         return null;
     }
 
     @Override
     protected HookResult callHook(UnknownHook rawHook, SMTPSession session, String parameters) {
-        return rawHook.doUnknown(session, (String) session.getState().get("CURR_COMMAND"));
+        return rawHook.doUnknown(session, (String) session.getAttachment("CURR_COMMAND", State.Transaction));
     }
 
     @Override

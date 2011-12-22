@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.LineHandler;
@@ -57,7 +58,7 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
      * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
      */
     public Response onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
-        MailEnvelopeImpl env = (MailEnvelopeImpl) session.getState().get(DataCmdHandler.MAILENV);
+        MailEnvelopeImpl env = (MailEnvelopeImpl) session.getAttachment(DataCmdHandler.MAILENV, ProtocolSession.State.Transaction);
         OutputStream out = env.getMessageOutputStream();
         try {
             // 46 is "."

@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.MailAddress;
@@ -52,10 +53,10 @@ public class ReceivedDataLineFilter implements DataLineFilter {
      * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
      */
     public Response onLine(SMTPSession session,  byte[] line, LineHandler<SMTPSession> next) {
-        if (session.getState().containsKey(HEADERS_WRITTEN) == false) {
+        if (session.getAttachment(HEADERS_WRITTEN, State.Transaction) == null) {
             Response response = addNewReceivedMailHeaders(session, next);
 
-            session.getState().put(HEADERS_WRITTEN, true);
+            session.setAttachment(HEADERS_WRITTEN, true, State.Transaction);
             
             if (response != null) {
                 return response;
@@ -70,8 +71,8 @@ public class ReceivedDataLineFilter implements DataLineFilter {
         try {
             StringBuilder headerLineBuffer = new StringBuilder();
 
-            String heloMode = (String) session.getConnectionState().get(SMTPSession.CURRENT_HELO_MODE);
-            String heloName = (String) session.getConnectionState().get(SMTPSession.CURRENT_HELO_NAME);
+            String heloMode = (String) session.getAttachment(SMTPSession.CURRENT_HELO_MODE, State.Connection);
+            String heloName = (String) session.getAttachment(SMTPSession.CURRENT_HELO_NAME, State.Connection);
 
             // Put our Received header first
             headerLineBuffer.append("Received: from ").append(session.getRemoteAddress().getHostName());
@@ -93,7 +94,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
            
             headerLineBuffer.append(" ID ").append(session.getSessionID());
 
-            if (((Collection<?>) session.getState().get(SMTPSession.RCPT_LIST)).size() == 1) {
+            if (((Collection<?>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).size() == 1) {
                 // Only indicate a recipient if they're the only recipient
                 // (prevents email address harvesting and large headers in
                 // bulk email)
@@ -102,7 +103,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
                 headerLineBuffer.delete(0, headerLineBuffer.length());
 
                 headerLineBuffer.delete(0, headerLineBuffer.length());
-                headerLineBuffer.append("          for <").append(((List<MailAddress>) session.getState().get(SMTPSession.RCPT_LIST)).get(0).toString()).append(">;").append("\r\n");
+                headerLineBuffer.append("          for <").append(((List<MailAddress>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).get(0).toString()).append(">;").append("\r\n");
                 response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
 
                 if (response != null) {

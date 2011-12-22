@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -62,8 +63,8 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
                 .append(" [")
                 .append(session.getRemoteAddress().getAddress().getHostAddress()).append("])"));
         
-        session.getConnectionState().put(SMTPSession.CURRENT_HELO_MODE,
-                COMMAND_NAME);
+        session.setAttachment(SMTPSession.CURRENT_HELO_MODE,
+                COMMAND_NAME, State.Connection);
 
         processExtensions(session, resp);
 
@@ -146,7 +147,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
                             + " Domain address required: " + COMMAND_NAME);
         } else {
             // store provided name
-            session.getState().put(SMTPSession.CURRENT_HELO_NAME, parameters);
+            session.setAttachment(SMTPSession.CURRENT_HELO_NAME, parameters, State.Transaction);
             return null;
         }
     }

@@ -20,6 +20,7 @@ package org.apache.james.protocols.smtp.core;
 
 import java.util.Locale;
 
+import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -40,8 +41,8 @@ public abstract class AbstractSenderAuthIdentifyVerificationRcptHook implements 
             MailAddress rcpt) {
         if (session.getUser() != null) {
             String authUser = (session.getUser()).toLowerCase(Locale.US);
-            MailAddress senderAddress = (MailAddress) session.getState().get(
-                    SMTPSession.SENDER);
+            MailAddress senderAddress = (MailAddress) session.getAttachment(
+                    SMTPSession.SENDER, ProtocolSession.State.Transaction);
             String username= null;
 
             if (senderAddress != null) {

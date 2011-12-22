@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.james.protocols.api.ProtocolSession;
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -55,8 +57,7 @@ public class HeloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
      */
     protected Response doCoreCmd(SMTPSession session, String command,
             String parameters) {
-        session.getConnectionState().put(SMTPSession.CURRENT_HELO_MODE,
-        		COMMAND_NAME);
+        session.setAttachment(SMTPSession.CURRENT_HELO_MODE, COMMAND_NAME, ProtocolSession.State.Connection);
         StringBuilder response = new StringBuilder();
         response.append(session.getConfiguration().getHelloName()).append(
                 " Hello ").append(parameters).append(" [").append(
@@ -79,7 +80,7 @@ public class HeloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
                             + " Domain address required: " + COMMAND_NAME);
         } else {
             // store provided name
-            session.getState().put(SMTPSession.CURRENT_HELO_NAME, parameters);
+            session.setAttachment(SMTPSession.CURRENT_HELO_NAME, parameters, State.Connection);
             return null;
         }
     }

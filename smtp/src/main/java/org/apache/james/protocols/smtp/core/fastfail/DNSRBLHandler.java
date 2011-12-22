@@ -24,6 +24,7 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.util.Collection;
 import java.util.StringTokenizer;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -167,11 +168,11 @@ public class DNSRBLHandler implements  RcptHook{
                             // Set the detail
                             String blocklistedDetail = txt.iterator().next().toString();
                             
-                            session.getConnectionState().put(RBL_DETAIL_MAIL_ATTRIBUTE_NAME, blocklistedDetail);
+                            session.setAttachment(RBL_DETAIL_MAIL_ATTRIBUTE_NAME, blocklistedDetail, State.Connection);
                         }
                     }
                     
-                    session.getConnectionState().put(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME, "true");
+                    session.setAttachment(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME, "true", State.Connection);
                     return;
                 } catch (java.net.UnknownHostException uhe) {
                     // if it is unknown, it isn't blocked
@@ -190,7 +191,7 @@ public class DNSRBLHandler implements  RcptHook{
         checkDNSRBL(session, session.getRemoteAddress().getAddress().getHostAddress());
 
         if (!session.isRelayingAllowed()) {
-            String blocklisted = (String) session.getConnectionState().get(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME);
+            String blocklisted = (String) session.getAttachment(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME, State.Connection);
     
             if (blocklisted != null) { // was found in the RBL
                 if (blocklistedDetail == null) {

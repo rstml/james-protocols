@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.MailAddress;
@@ -61,7 +62,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
         // Check if the response was not ok
         if (response.getRetCode().equals(SMTPRetCode.MAIL_OK) == false) {
             // cleanup the session
-            session.getState().remove(SMTPSession.SENDER);
+            session.setAttachment(SMTPSession.SENDER, null,  State.Transaction);
         }
 
         return response;
@@ -78,8 +79,8 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      */
     private Response doMAIL(SMTPSession session, String argument) {
         StringBuilder responseBuffer = new StringBuilder();
-        MailAddress sender = (MailAddress) session.getState().get(
-                SMTPSession.SENDER);
+        MailAddress sender = (MailAddress) session.getAttachment(
+                SMTPSession.SENDER, State.Transaction);
         responseBuffer.append(
                 DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.ADDRESS_OTHER))
                 .append(" Sender <");
@@ -129,12 +130,12 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
             sender = argument.substring(colonIndex + 1);
             argument = argument.substring(0, colonIndex);
         }
-        if (session.getState().containsKey(SMTPSession.SENDER)) {
+        if (session.getAttachment(SMTPSession.SENDER, State.Transaction) != null) {
             return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
                     .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
                     + " Sender already specified");
-        } else if (!session.getConnectionState().containsKey(
-                SMTPSession.CURRENT_HELO_MODE)
+        } else if (session.getAttachment(
+                SMTPSession.CURRENT_HELO_MODE, State.Connection) == null
                 && session.getConfiguration().useHeloEhloEnforcement()) {
             return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
                     .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
@@ -244,7 +245,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
             }
 
             // Store the senderAddress in session map
-            session.getState().put(SMTPSession.SENDER, senderAddress);
+            session.setAttachment(SMTPSession.SENDER, senderAddress, State.Transaction);
         }
         return null;
     }
@@ -260,7 +261,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      * {@inheritDoc}
      */
     protected HookResult callHook(MailHook rawHook, SMTPSession session, String parameters) {
-        return rawHook.doMail(session,(MailAddress) session.getState().get(SMTPSession.SENDER));
+        return rawHook.doMail(session,(MailAddress) session.getAttachment(SMTPSession.SENDER, State.Transaction));
     }
 
     

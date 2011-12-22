@@ -27,6 +27,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.DNSService;
@@ -55,19 +56,46 @@ public class ValidSenderDomainHandlerTest extends TestCase {
     
     private SMTPSession setupMockedSession(final MailAddress sender) {
         SMTPSession session = new BaseFakeSMTPSession() {
-            HashMap<String,Object> state = new HashMap<String,Object>();
+            HashMap<String,Object> map = new HashMap<String,Object>();
 
             public Map<String,Object> getState() {
 
-                state.put(SMTPSession.SENDER, sender);
+                map.put(SMTPSession.SENDER, sender);
 
-                return state;
+                return map;
             }
             
             public boolean isRelayingAllowed() {
                 return false;
             }
+            /*
+             * (non-Javadoc)
+             * @see org.apache.james.protocols.api.ProtocolSession#setAttachment(java.lang.String, java.lang.Object, org.apache.james.protocols.api.ProtocolSession.State)
+             */
+            public Object setAttachment(String key, Object value, State state) {
+                if (state == State.Connection) {
+                    throw new UnsupportedOperationException();
 
+                } else {
+                    if (value == null) {
+                        return getState().remove(key);
+                    } else {
+                        return getState().put(key, value);
+                    }
+                }
+            }
+
+            /*
+             * (non-Javadoc)
+             * @see org.apache.james.protocols.api.ProtocolSession#getAttachment(java.lang.String, org.apache.james.protocols.api.ProtocolSession.State)
+             */
+            public Object getAttachment(String key, State state) {
+                if (state == State.Connection) {
+                    throw new UnsupportedOperationException();
+                } else {
+                    return getState().get(key);
+                }
+            }
             
         };
         return session;
@@ -87,7 +115,7 @@ public class ValidSenderDomainHandlerTest extends TestCase {
         ValidSenderDomainHandler handler = new ValidSenderDomainHandler();
         SMTPSession session = setupMockedSession(new MailAddress("invalid@invalid"));
         handler.setDNSService(setupDNSServer());
-        int response = handler.doMail(session,(MailAddress) session.getState().get(SMTPSession.SENDER)).getResult();
+        int response = handler.doMail(session,(MailAddress) session.getAttachment(SMTPSession.SENDER, State.Transaction)).getResult();
         
         assertEquals("Blocked cause we use reject action", response,HookReturnCode.DENY);
     }

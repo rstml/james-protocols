@@ -200,4 +200,12 @@ public class BaseFakeSMTPSession implements SMTPSession {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
+    public Object setAttachment(String key, Object value, State state) {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
+    public Object getAttachment(String key, State state) {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
 }

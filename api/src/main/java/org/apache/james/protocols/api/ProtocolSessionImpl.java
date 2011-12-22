@@ -165,4 +165,36 @@ public class ProtocolSessionImpl implements ProtocolSession {
         return config;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#setAttachment(java.lang.String, java.lang.Object, org.apache.james.protocols.api.ProtocolSession.State)
+     */
+    public Object setAttachment(String key, Object value, State state) {
+        if (state == State.Connection) {
+            if (value == null) {
+                return connectionState.remove(key);
+            } else {
+                return connectionState.put(key, value);
+            }
+        } else {
+            if (value == null) {
+                return sessionState.remove(key);
+            } else {
+                return sessionState.put(key, value);
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getAttachment(java.lang.String, org.apache.james.protocols.api.ProtocolSession.State)
+     */
+    public Object getAttachment(String key, State state) {
+        if (state == State.Connection) {
+            return connectionState.get(key);
+        } else {
+            return sessionState.get(key);
+        }
+    }
+
 }

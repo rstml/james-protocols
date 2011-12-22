@@ -31,6 +31,10 @@ import org.slf4j.Logger;
  */
 public interface ProtocolSession {
    
+    public static enum State {
+        Connection,
+        Transaction
+    }
     /**
      * Gets the context sensitive log for this session.
      * @return log, not null
@@ -39,10 +43,32 @@ public interface ProtocolSession {
     
     
     /**
+     * Store the given value with the given key in the specified {@link State}. If you want to remove a value you need to use <code>null</code> as value
+     * 
+     * @param key the key under which the value should get stored
+     * @param value the value which will get stored under the given key or <code>null</code> if you want to remove any value which is stored under the key
+     * @param state the {@link State} to which the mapping belongs
+     * @return oldValue the value which was stored before for this key or <code>null</code> if non was stored before.
+     */
+    Object setAttachment(String key, Object value, State state);
+    
+    /**
+     * Return the value which is stored for the given key in the specified {@link State} or <code>null</code> if non was stored before.
+     * 
+     * @param key the key under which the value should be searched
+     * @param state the {@link State} in which the value was stored for the key
+     * @return value the stored value for the key
+     */
+    Object getAttachment(String key, State state);
+    
+    
+    /**
      * Return Map which can be used to store objects within a session
      * 
      * @return state
+     * @deprecated use {@link #setAttachment(String, Object, State)}
      */
+    @Deprecated
     Map<String, Object> getState();
     
     
@@ -50,7 +76,9 @@ public interface ProtocolSession {
      * Returns Map that consists of the state of the {@link ProtocolSession} per connection
      *
      * @return map of the current {@link ProtocolSession} state per connection
+     * @deprecated use {@link #getAttachment(String, State)}
      */
+    @Deprecated
     Map<String,Object> getConnectionState();
 
     

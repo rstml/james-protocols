@@ -37,7 +37,7 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
 
     public SMTPSessionImpl(Logger logger, ProtocolTransport transport, SMTPConfiguration config) {
         super(logger, transport, config);
-        relayingAllowed = config.isRelayingAllowed(getRemoteIPAddress());
+        relayingAllowed = config.isRelayingAllowed(getRemoteAddress().getAddress().getHostAddress());
     }
 
 

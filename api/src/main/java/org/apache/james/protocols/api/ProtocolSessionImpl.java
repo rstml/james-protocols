@@ -67,20 +67,6 @@ public class ProtocolSessionImpl implements ProtocolSession {
     }
 
     /**
-     * @see org.apache.james.protocols.api.ProtocolSession#getRemoteHost()
-     */
-    public String getRemoteHost() {
-        return getRemoteAddress().getHostName();
-    }
-
-    /**
-     * @see org.apache.james.protocols.api.ProtocolSession#getRemoteIPAddress()
-     */
-    public String getRemoteIPAddress() {
-        return getRemoteAddress().getAddress().getHostAddress();
-    }
-
-    /**
      * @see org.apache.james.protocols.api.ProtocolSession#getUser()
      */
     public String getUser() {
@@ -94,8 +80,10 @@ public class ProtocolSessionImpl implements ProtocolSession {
         this.user = user;
     }
 
-    /*
+    /**
+     * Return the wrapped {@link ProtocolTransport} which is used for this {@link ProtocolSession}
      * 
+     * @return transport
      */
     public ProtocolTransport getProtocolTransport() {
         return transport;

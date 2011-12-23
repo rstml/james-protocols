@@ -22,6 +22,7 @@ package org.apache.james.protocols.pop3.core;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.james.protocols.api.handler.CommandDispatcher;
 import org.apache.james.protocols.api.handler.HandlersPackage;
 
 public class CoreCmdHandlerLoader implements HandlersPackage {
@@ -42,7 +43,7 @@ public class CoreCmdHandlerLoader implements HandlersPackage {
     private final static String UNKOWNCMDHANDLER = UnknownCmdHandler.class.getName();
     private final static String STLSCMDHANDLER = StlsCmdHandler.class.getName();
 
-    private final static String COMMANDDISPATCHER = POP3CommandDispatcherLineHandler.class.getName();
+    private final static String COMMANDDISPATCHER = CommandDispatcher.class.getName();
 
     private final List<String> commands = new LinkedList<String>();
 

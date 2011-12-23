@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.james.protocols.api.handler.CommandDispatcher;
 import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
@@ -39,7 +40,6 @@ import org.apache.james.protocols.smtp.core.QuitCmdHandler;
 import org.apache.james.protocols.smtp.core.RcptCmdHandler;
 import org.apache.james.protocols.smtp.core.ReceivedDataLineFilter;
 import org.apache.james.protocols.smtp.core.RsetCmdHandler;
-import org.apache.james.protocols.smtp.core.SMTPCommandDispatcherLineHandler;
 import org.apache.james.protocols.smtp.core.UnknownCmdHandler;
 import org.apache.james.protocols.smtp.core.VrfyCmdHandler;
 import org.apache.james.protocols.smtp.core.WelcomeMessageHandler;
@@ -90,7 +90,7 @@ public class SMTPProtocolHandlerChain extends ProtocolHandlerChainImpl {
     
     protected List<ProtocolHandler> initDefaultHandlers() {
         List<ProtocolHandler> defaultHandlers = new ArrayList<ProtocolHandler>();
-        defaultHandlers.add(new SMTPCommandDispatcherLineHandler());
+        defaultHandlers.add(new CommandDispatcher<SMTPSession>());
         defaultHandlers.add(new ExpnCmdHandler());
         defaultHandlers.add(new EhloCmdHandler());
         defaultHandlers.add(new HeloCmdHandler());

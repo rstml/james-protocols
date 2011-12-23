@@ -1,5 +1,6 @@
 package org.apache.james.protocols.api.handler;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,15 +25,15 @@ public abstract class MultiLineHandler<S extends ProtocolSession> implements Lin
      * @see org.apache.james.protocols.api.handler.LineHandler#onLine(org.apache.james.protocols.api.ProtocolSession, byte[])
      */
     @SuppressWarnings("unchecked")
-    public Response onLine(S session, byte[] line) {
-        Collection<byte[]> lines = (List<byte[]>) session.getAttachment(BUFFERED_LINES, State.Transaction);
+    public Response onLine(S session, ByteBuffer line) {
+        Collection<ByteBuffer> lines = (List<ByteBuffer>) session.getAttachment(BUFFERED_LINES, State.Transaction);
         if (lines == null)  {
-            lines = new ArrayList<byte[]>();
+            lines = new ArrayList<ByteBuffer>();
             session.setAttachment(BUFFERED_LINES, lines, State.Transaction);
         }
         lines.add(line);
         if (isReady(session, line)) {
-            return onLines(session, (Collection<byte[]>) session.setAttachment(BUFFERED_LINES, null, State.Transaction));
+            return onLines(session, (Collection<ByteBuffer>) session.setAttachment(BUFFERED_LINES, null, State.Transaction));
         }
         return null;
     }
@@ -44,7 +45,7 @@ public abstract class MultiLineHandler<S extends ProtocolSession> implements Lin
      * @param line
      * @return ready
      */
-    protected abstract boolean isReady(S session, byte[] line);
+    protected abstract boolean isReady(S session, ByteBuffer line);
     
     /**
      * Handle the buffered lines
@@ -53,5 +54,5 @@ public abstract class MultiLineHandler<S extends ProtocolSession> implements Lin
      * @param lines
      * @return response
      */
-    protected abstract Response onLines(S session, Collection<byte[]> lines);
+    protected abstract Response onLines(S session, Collection<ByteBuffer> lines);
 }

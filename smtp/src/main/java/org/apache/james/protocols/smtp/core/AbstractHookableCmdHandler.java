@@ -133,10 +133,10 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
                     }
                     return response;
                 } else {
-                	SMTPResponse res = calcDefaultSMTPResponse(hRes);
-                	if (res != null) {
-                		return res;
-                	}
+                    SMTPResponse res = calcDefaultSMTPResponse(hRes);
+                    if (res != null) {
+                        return res;
+                    }
                 }
             }
         }

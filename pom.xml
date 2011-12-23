@@ -81,7 +81,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.james.protocols</groupId>
-                <artifactId>protocols-impl</artifactId>
+                <artifactId>protocols-netty</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -111,6 +111,12 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.10</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>3.0.1</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

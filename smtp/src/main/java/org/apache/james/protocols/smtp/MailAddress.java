@@ -66,6 +66,30 @@ public class MailAddress {
     private String localPart = null;
     private String domain = null;
 
+    private static final MailAddress NULL_SENDER = new MailAddress() {
+
+        @Override
+        public String getDomain() {
+            return "";
+        }
+
+        @Override
+        public String getLocalPart() {
+            return "";
+        }
+
+        @Override
+        public String toString() {
+            return "";
+        }
+
+        @Override
+        public boolean isNullSender() {
+            return true;
+        }
+        
+    };
+    
     /**
      * Strips source routing. According to RFC-2821 it is a valid approach
      * to handle mails containing RFC-821 source-route information.
@@ -86,6 +110,13 @@ public class MailAddress {
         return pos;
     }
     
+    public static MailAddress nullSender() {
+        return NULL_SENDER;
+    }
+    
+    private MailAddress() {
+        
+    }
     /**
      * Constructs a MailAddress by parsing the provided address.
      *
@@ -477,5 +508,14 @@ public class MailAddress {
         }
         dSB.append(result);
         return pos;
+    }
+    
+    /**
+     * Return <code>true</code> if the {@link MailAddress} should represent a null sender (<>)
+     * 
+     * @return nullsender
+     */
+    public boolean isNullSender() {
+        return false;
     }
 }

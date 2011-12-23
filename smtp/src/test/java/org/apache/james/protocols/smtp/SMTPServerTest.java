@@ -674,6 +674,44 @@ public class SMTPServerTest {
     }
     
     @Test
+    public void testNullSender() throws Exception {
+
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            server = new NettyServer(createProtocol(new ProtocolHandler[0]));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            SMTPClient client = createClient();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
+            
+           
+            client.helo("localhost");
+            assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
+
+            client.setSender("");
+            assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
+         
+            client.addRecipient(RCPT1);
+            assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
+
+            
+            client.quit();
+            assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
+            client.disconnect();
+
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
     public void testMessageHookPermanentError() throws Exception {
         TestMessageHook testHook = new TestMessageHook();
 

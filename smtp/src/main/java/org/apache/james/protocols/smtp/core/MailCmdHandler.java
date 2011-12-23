@@ -243,7 +243,9 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
                                     + " Syntax error in sender address");
                 }
             }
-
+            if (senderAddress == null) {
+                senderAddress = MailAddress.nullSender();
+            }
             // Store the senderAddress in session map
             session.setAttachment(SMTPSession.SENDER, senderAddress, State.Transaction);
         }
@@ -261,7 +263,11 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
      * {@inheritDoc}
      */
     protected HookResult callHook(MailHook rawHook, SMTPSession session, String parameters) {
-        return rawHook.doMail(session,(MailAddress) session.getAttachment(SMTPSession.SENDER, State.Transaction));
+        MailAddress sender = (MailAddress) session.getAttachment(SMTPSession.SENDER, State.Transaction);
+        if (sender.isNullSender()) {
+            sender = null;
+        }
+        return rawHook.doMail(session, sender);
     }
 
     
@@ -301,5 +307,6 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
     protected String getDefaultDomain() {
         return "localhost";
     }
+    
 
 }

@@ -320,7 +320,10 @@ public class LMTPServerTest extends SMTPServerTest{
             this.hook = hook;
         }
         
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see org.apache.james.protocols.lmtp.hook.DeliverToRecipientHook#deliver(org.apache.james.protocols.smtp.SMTPSession, org.apache.james.protocols.smtp.MailAddress, org.apache.james.protocols.smtp.MailEnvelope)
+         */
         public HookResult deliver(SMTPSession session, MailAddress recipient, MailEnvelope envelope) {
             if (result == null) {
                 result = hook.onMessage(session, envelope);
@@ -334,7 +337,10 @@ public class LMTPServerTest extends SMTPServerTest{
         
         private final List<MailEnvelope> delivered = new ArrayList<MailEnvelope>();
         
-        @Override
+        /*
+         * (non-Javadoc)
+         * @see org.apache.james.protocols.lmtp.hook.DeliverToRecipientHook#deliver(org.apache.james.protocols.smtp.SMTPSession, org.apache.james.protocols.smtp.MailAddress, org.apache.james.protocols.smtp.MailEnvelope)
+         */
         public HookResult deliver(SMTPSession session, MailAddress recipient, MailEnvelope envelope) {
             if (RCPT1.equals(recipient.toString())) {
                 return new HookResult(HookReturnCode.DENY);

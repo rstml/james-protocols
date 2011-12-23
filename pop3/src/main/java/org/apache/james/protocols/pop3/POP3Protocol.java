@@ -34,7 +34,7 @@ public class POP3Protocol extends ProtocolImpl{
     
     @Override
     public ProtocolSession newSession(ProtocolTransport transport) {
-        return new POP3SessionImpl(logger, transport, config);
+        return new POP3SessionImpl(logger, transport, getConfiguration());
     }
 
 }

@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import org.apache.james.protocols.api.ProtocolServer;
+import org.apache.james.protocols.api.ProtocolSession;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
@@ -38,7 +40,7 @@ import org.jboss.netty.util.ExternalResourceReleasable;
  * Abstract base class for Servers which want to use async io
  *
  */
-public abstract class AbstractAsyncServer {
+public abstract class AbstractAsyncServer implements ProtocolServer{
 
     public static final int DEFAULT_IO_WORKER_COUNT = Runtime.getRuntime().availableProcessors() * 2;
     private volatile int backlog = 250;
@@ -79,11 +81,10 @@ public abstract class AbstractAsyncServer {
         return ioWorker;
     }
     
-    /**
-     * Start the server
-     * 
-     * @throws Exception 
-     * 
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolServer#bind()
      */
     public synchronized void bind() throws Exception {
         if (started) throw new IllegalStateException("Server running already");
@@ -120,8 +121,10 @@ public abstract class AbstractAsyncServer {
         return new NioServerSocketChannelFactory(createBossExecutor(), createWorkerExecutor(), ioWorker);
     }
     
-    /**
-     * Stop the server
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolServer#unbind()
      */
     public synchronized void unbind() {
         if (started == false) return;
@@ -136,10 +139,11 @@ public abstract class AbstractAsyncServer {
     
     
     
-    /**
-     * Return the ip on which the server listen for connections
-     * 
-     * @return ip
+
+    
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolServer#getListenAddresses()
      */
     public synchronized List<InetSocketAddress> getListenAddresses() {
         return addresses;
@@ -175,18 +179,19 @@ public abstract class AbstractAsyncServer {
         this.backlog = backlog;
     }
     
-    /**
-     * Return the backlog for the socket
-     * 
-     * @return backlog
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolServer#getBacklog()
      */
     public int getBacklog() {
         return backlog;
     }
     
-    /**
-     * Return the read/write timeout for the socket.
-     * @return the set timeout
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolServer#getTimeout()
      */
     public int getTimeout() {
         return timeout;
@@ -211,10 +216,10 @@ public abstract class AbstractAsyncServer {
         return Executors.newCachedThreadPool();
     }
     
-    /**
-     * return true if the server is bound 
-     * 
-     * @return bound
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolServer#isBound()
      */
     public boolean isBound() {
         return started;

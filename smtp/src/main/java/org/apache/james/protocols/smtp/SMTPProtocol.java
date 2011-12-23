@@ -39,7 +39,7 @@ public class SMTPProtocol extends ProtocolImpl {
 
     @Override
     public ProtocolSession newSession(ProtocolTransport transport) {
-        return new SMTPSessionImpl(logger, transport, (SMTPConfiguration) config);
+        return new SMTPSessionImpl(logger, transport, (SMTPConfiguration) getConfiguration());
     }
 
 }

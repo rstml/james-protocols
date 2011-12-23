@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 public class ProtocolImpl implements Protocol{
     protected final static Logger logger = LoggerFactory.getLogger(ProtocolImpl.class);
     private final ProtocolHandlerChain chain;
-    protected final ProtocolConfiguration config;
+    private final ProtocolConfiguration config;
 
     public ProtocolImpl(ProtocolHandlerChain chain, ProtocolConfiguration config) {
         this.chain = chain;
@@ -51,6 +51,14 @@ public class ProtocolImpl implements Protocol{
      */
     public ProtocolSession newSession(ProtocolTransport transport) {
         return new ProtocolSessionImpl(logger, transport, config);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.Protocol#getConfiguration()
+     */
+    public ProtocolConfiguration getConfiguration() {
+        return config;
     }
 
 }

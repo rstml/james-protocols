@@ -30,9 +30,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.net.smtp.SMTPClient;
 import org.apache.commons.net.smtp.SMTPReply;
+import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
+import org.apache.james.protocols.api.handler.ProtocolHandler;
+import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.netty.NettyServer;
 import org.apache.james.protocols.smtp.hook.HeloHook;
 import org.apache.james.protocols.smtp.hook.HookResult;
@@ -45,10 +48,10 @@ import static org.junit.Assert.*;
 
 public class SMTPServerTest {
     
-    private final static String MSG1 = "Subject: Testmessage\r\n\r\nThis is a message";
-    private final static String SENDER = "me@sender";
-    private final static String RCPT1 ="rpct1@domain";
-    private final static String RCPT2 ="rpct2@domain";
+    protected final static String MSG1 = "Subject: Testmessage\r\n\r\nThis is a message";
+    protected final static String SENDER = "me@sender";
+    protected final static String RCPT1 ="rpct1@domain";
+    protected final static String RCPT2 ="rpct2@domain";
 
     @Test
     public void testSimpleDelivery() throws Exception {
@@ -57,11 +60,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), new SMTPConfigurationImpl()));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -106,11 +109,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), new SMTPConfigurationImpl()));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -139,11 +142,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), new SMTPConfigurationImpl()));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -167,17 +170,17 @@ public class SMTPServerTest {
     
     
     @Test
-    public void testInvalidMailCommandSyntax() throws Exception {
+    public void testMailWithoutBrackets() throws Exception {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
         NettyServer server = null;
         try {
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), new SMTPConfigurationImpl()));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -216,11 +219,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), new SMTPConfigurationImpl()));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -244,17 +247,17 @@ public class SMTPServerTest {
     
 
     @Test
-    public void testInvalidRcptCommandSyntax() throws Exception {
+    public void testRcptWithoutBrackets() throws Exception {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
         NettyServer server = null;
         try {
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), new SMTPConfigurationImpl()));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -292,13 +295,13 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            config.setUseAddressBracketsEnforcement(false);
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            Protocol protocol = createProtocol(hook);
+            ((SMTPConfigurationImpl) protocol.getConfiguration()).setUseAddressBracketsEnforcement(false);
+            server = new NettyServer(protocol);
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -336,12 +339,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -372,13 +374,13 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            config.setHeloEhloEnforcement(false);
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            Protocol protocol = createProtocol(hook);
+            ((SMTPConfigurationImpl) protocol.getConfiguration()).setHeloEhloEnforcement(false);
+            server = new NettyServer(protocol);
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -416,12 +418,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -456,12 +457,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -495,12 +495,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -537,12 +536,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -585,12 +583,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -641,12 +638,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook), config));
+            server = new NettyServer(createProtocol(hook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -695,12 +691,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook, testHook), config));
+            server = new NettyServer(createProtocol(hook, testHook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -752,12 +747,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            server = new NettyServer(new SMTPProtocol(new SMTPProtocolHandlerChain(hook, testHook), config));
+            server = new NettyServer(createProtocol(hook, testHook));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -807,16 +801,12 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain();
-            chain.add(0, connectHandler);
-            chain.wireExtensibleHandlers();
             
-            server = new NettyServer(new SMTPProtocol(chain, config));
+            server = new NettyServer(createProtocol(connectHandler));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isNegativePermanent(client.getReplyCode()));
             
@@ -847,16 +837,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain();
-            chain.add(0, connectHandler);
-            chain.wireExtensibleHandlers();
-            
-            server = new NettyServer(new SMTPProtocol(chain, config));
+            server = new NettyServer(createProtocol(connectHandler));
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isNegativeTransient(client.getReplyCode()));
             
@@ -888,16 +873,11 @@ public class SMTPServerTest {
         
         NettyServer server = null;
         try {
-            SMTPConfigurationImpl config = new SMTPConfigurationImpl();
-            SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain();
-            chain.add(0, handler);
-            chain.wireExtensibleHandlers();
-            
-            server = new NettyServer(new SMTPProtocol(chain, config));
+            server = new NettyServer(createProtocol(handler));  
             server.setListenAddresses(address);
             server.bind();
             
-            SMTPClient client = new SMTPClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -915,7 +895,18 @@ public class SMTPServerTest {
         
     }
     
-    private static void checkEnvelope(MailEnvelope env, String sender, List<String> recipients, String msg) throws IOException {
+    protected SMTPClient createClient() {
+        return new SMTPClient();
+    }
+    
+    protected Protocol createProtocol(ProtocolHandler... handlers) throws WiringException {
+        SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain();
+        chain.addAll(0, Arrays.asList(handlers));
+        chain.wireExtensibleHandlers();
+        return new SMTPProtocol(chain, new SMTPConfigurationImpl());
+    }
+    
+    protected static void checkEnvelope(MailEnvelope env, String sender, List<String> recipients, String msg) throws IOException {
         assertEquals(sender, env.getSender().toString());
 
         List<MailAddress> envRecipients = env.getRecipients();
@@ -956,7 +947,7 @@ public class SMTPServerTest {
 
     }
     
-    private final class TestMessageHook implements MessageHook {
+    public final class TestMessageHook implements MessageHook {
 
         private final List<MailEnvelope> queued = new ArrayList<MailEnvelope>();
         

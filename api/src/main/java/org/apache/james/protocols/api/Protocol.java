@@ -32,6 +32,13 @@ public interface Protocol {
      */
     ProtocolHandlerChain getProtocolChain();
 
+    /**
+     * Return the {@link ProtocolConfiguration} 
+     * 
+     * @return config
+     */
+    ProtocolConfiguration getConfiguration();
+    
     
     /**
      * Create a new {@link ProtocolSession} for the given {@link ProtocolTransport} 

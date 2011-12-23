@@ -679,7 +679,6 @@ public class SMTPServerTest {
 
         MessageHook hook = new MessageHook() {
 
-            @Override
             public HookResult onMessage(SMTPSession session, MailEnvelope mail) {
                 return new HookResult(HookReturnCode.DENY);
             }
@@ -735,7 +734,7 @@ public class SMTPServerTest {
 
         MessageHook hook = new MessageHook() {
 
-            @Override
+            
             public HookResult onMessage(SMTPSession session, MailEnvelope mail) {
                 return new HookResult(HookReturnCode.DENYSOFT);
             }
@@ -790,7 +789,7 @@ public class SMTPServerTest {
     public void testConnectHandlerPermananet() throws Exception {
         ConnectHandler<SMTPSession> connectHandler = new ConnectHandler<SMTPSession>() {
 
-            @Override
+            
             public Response onConnect(SMTPSession session) {
                 return new SMTPResponse("554", "Bye Bye");
             }
@@ -826,7 +825,7 @@ public class SMTPServerTest {
     public void testConnectHandlerTemporary() throws Exception {
         ConnectHandler<SMTPSession> connectHandler = new ConnectHandler<SMTPSession>() {
 
-            @Override
+            
             public Response onConnect(SMTPSession session) {
                 return new SMTPResponse("451", "Bye Bye");
             }
@@ -862,7 +861,7 @@ public class SMTPServerTest {
         final AtomicBoolean called = new AtomicBoolean(false);
         DisconnectHandler<SMTPSession> handler = new DisconnectHandler<SMTPSession>() {
 
-            @Override
+            
             public void onDisconnect(SMTPSession session) {  
                 called.set(true);
             }

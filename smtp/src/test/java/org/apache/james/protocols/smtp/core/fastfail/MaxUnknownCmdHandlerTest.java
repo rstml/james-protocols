@@ -28,12 +28,14 @@ import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
-public class MaxUnknownCmdHandlerTest extends TestCase{
+public class MaxUnknownCmdHandlerTest {
 
     
+    @Test
     public void testRejectAndClose() throws MailAddressException {
         SMTPSession session = new BaseFakeSMTPSession() {
             private final HashMap<String,Object> map = new HashMap<String,Object>();

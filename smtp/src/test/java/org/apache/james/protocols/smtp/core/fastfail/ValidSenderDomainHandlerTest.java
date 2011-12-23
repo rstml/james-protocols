@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
@@ -36,8 +36,9 @@ import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.ValidSenderDomainHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
+import org.junit.Test;
 
-public class ValidSenderDomainHandlerTest extends TestCase {
+public class ValidSenderDomainHandlerTest {
     
     private DNSService setupDNSServer() {
     	DNSService dns = new BaseFakeDNSService(){
@@ -103,6 +104,7 @@ public class ValidSenderDomainHandlerTest extends TestCase {
     
     
     // Test for JAMES-580
+    @Test
     public void testNullSenderNotReject() {
         ValidSenderDomainHandler handler = new ValidSenderDomainHandler();
         handler.setDNSService(setupDNSServer());
@@ -111,6 +113,7 @@ public class ValidSenderDomainHandlerTest extends TestCase {
         assertEquals("Not blocked cause its a nullsender",response,HookReturnCode.DECLINED);
     }
 
+    @Test
     public void testInvalidSenderDomainReject() throws MailAddressException {
         ValidSenderDomainHandler handler = new ValidSenderDomainHandler();
         SMTPSession session = setupMockedSession(new MailAddress("invalid@invalid"));

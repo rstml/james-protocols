@@ -29,10 +29,11 @@ import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.SpamTrapHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
-public class SpamTrapHandlerTest extends TestCase {
+public class SpamTrapHandlerTest {
     private static final String SPAM_TRAP_RECIP1 = "spamtrap1@localhost";
     private static final String RECIP1 = "recip@localhost";
     
@@ -50,6 +51,7 @@ public class SpamTrapHandlerTest extends TestCase {
         };
     }
     
+    @Test
     public void testSpamTrap() throws MailAddressException {
         String ip = "192.168.100.1";
         String ip2 = "192.168.100.2";

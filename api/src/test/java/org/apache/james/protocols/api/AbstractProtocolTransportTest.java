@@ -30,17 +30,19 @@ import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.james.protocols.api.handler.LineHandler;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 /**
  * Test-case for PROTOCOLS-62
  *
  */
-public class AbstractProtocolTransportTest extends TestCase{
+public class AbstractProtocolTransportTest {
 
     private final static String US_ASCII = "US-ASCII";
     
+    @Test
     public void testWriteOrder() throws InterruptedException, UnsupportedEncodingException {
         final List<Response> messages = new ArrayList<Response>();
         for (int i = 0; i < 2000; i++) {
@@ -50,6 +52,7 @@ public class AbstractProtocolTransportTest extends TestCase{
         checkWrittenResponses(messages);
     }
     
+    @Test
     public void testWriteOrderFutureResponseAllReady() throws InterruptedException, UnsupportedEncodingException {
         final List<Response> messages = new ArrayList<Response>();
         for (int i = 0; i < 2000; i++) {
@@ -61,7 +64,7 @@ public class AbstractProtocolTransportTest extends TestCase{
     }
         
        
-        
+    @Test
     public void testWriteOrderFutureResponse() throws InterruptedException, UnsupportedEncodingException {
         final List<Response> messages = new ArrayList<Response>();
         for (int i = 0; i < 2000; i++) {
@@ -73,6 +76,7 @@ public class AbstractProtocolTransportTest extends TestCase{
         checkWrittenResponses(messages);
     }
 
+    @Test
     public void testWriteOrderFutureResponseReverseNotify() throws InterruptedException, UnsupportedEncodingException {
         final List<Response> messages = new ArrayList<Response>();
         for (int i = 0; i < 2000; i++) {
@@ -82,6 +86,8 @@ public class AbstractProtocolTransportTest extends TestCase{
 
         checkWrittenResponses(messages);
     }
+    
+    @Test
     public void testWriteOrderMixedResponse() throws InterruptedException, UnsupportedEncodingException {
         final List<Response> messages = new ArrayList<Response>();
         for (int i = 0; i < 2000; i++) {

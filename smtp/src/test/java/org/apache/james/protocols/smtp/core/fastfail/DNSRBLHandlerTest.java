@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
@@ -40,8 +40,10 @@ import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.DNSRBLHandler;
+import org.junit.Before;
+import org.junit.Test;
 
-public class DNSRBLHandlerTest extends TestCase {
+public class DNSRBLHandlerTest {
 
     private DNSService mockedDnsServer;
 
@@ -55,8 +57,8 @@ public class DNSRBLHandlerTest extends TestCase {
     
     public static final String RBL_DETAIL_MAIL_ATTRIBUTE_NAME = "org.apache.james.smtpserver.rbl.detail";
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         setupMockedDnsServer();
         setRelayingAllowed(false);
     }
@@ -174,6 +176,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip is blacklisted and has txt details
+    @Test
     public void testBlackListedTextPresent() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
        
@@ -189,6 +192,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip is blacklisted and has txt details but we don'T want to retrieve the txt record
+    @Test
     public void testGetNoDetail() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
         setupMockedSMTPSession(new MailAddress("any@domain"));
@@ -202,6 +206,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip is allowed to relay
+    @Test
     public void testRelayAllowed() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
         setRelayingAllowed(true);
@@ -217,6 +222,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip not on blacklist
+    @Test
     public void testNotBlackListed() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
 
@@ -233,6 +239,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip on blacklist without txt details
+    @Test
     public void testBlackListedNoTxt() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
 
@@ -249,6 +256,7 @@ public class DNSRBLHandlerTest extends TestCase {
     }
 
     // ip on whitelist
+    @Test
     public void testWhiteListed() throws MailAddressException {
         DNSRBLHandler rbl = new DNSRBLHandler();
 

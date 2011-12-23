@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.BaseFakeDNSService;
@@ -38,8 +38,9 @@ import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.ResolvableEhloHeloHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
+import org.junit.Test;
 
-public class ResolvableEhloHeloHandlerTest extends TestCase {
+public class ResolvableEhloHeloHandlerTest {
 
     public final static String INVALID_HOST = "foo.bar";
     
@@ -123,6 +124,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         return dns;
     }
     
+    @Test
     public void testRejectInvalidHelo() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,false,false,null,mailAddress);
@@ -136,7 +138,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         assertEquals("Reject", result,HookReturnCode.DENY);
     }
     
-    
+    @Test
     public void testNotRejectValidHelo() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(VALID_HOST,false,false,null,mailAddress);
@@ -151,7 +153,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
         assertEquals("Not reject", result,HookReturnCode.DECLINED);
     }
    
-    
+    @Test
     public void testRejectInvalidHeloAuthUser() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,false,true,"valid@user",mailAddress);
@@ -168,7 +170,7 @@ public class ResolvableEhloHeloHandlerTest extends TestCase {
     }
     
    
-    
+    @Test
     public void testRejectRelay() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,true,false,null,mailAddress);

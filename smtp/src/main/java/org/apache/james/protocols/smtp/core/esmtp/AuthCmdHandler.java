@@ -22,6 +22,7 @@
 package org.apache.james.protocols.smtp.core.esmtp;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -65,8 +66,15 @@ public class AuthCmdHandler
     private final static String CHARSET = "US-ASCII";
     private abstract class AbstractSMTPLineHandler implements LineHandler<SMTPSession> {
 
-        public Response onLine(SMTPSession session, byte[] l) {
+        public Response onLine(SMTPSession session, ByteBuffer line) {
             try {
+                byte[] l;
+                if (line.hasArray()) {
+                    l = line.array();
+                } else {
+                    l = new byte[line.remaining()];
+                    line.get(l);
+                }
                 return handleCommand(session, new String(l, CHARSET));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException("No " + CHARSET + " support!");

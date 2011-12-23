@@ -144,19 +144,10 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
         if (lineHandlers.size() > 0) {
         
             ChannelBuffer buf = (ChannelBuffer) e.getMessage();      
-            byte[] line;
-            
-            if (buf.hasArray()) {
-                line = buf.array();
-            } else {
-                // copy the ChannelBuffer to a byte array to process the LineHandler
-                line = new byte[buf.capacity()];
-                buf.getBytes(0, line);
-            }
             
             LineHandler lHandler=  (LineHandler) lineHandlers.getLast();
             long start = System.currentTimeMillis();            
-            Response response = lHandler.onLine(pSession,line);
+            Response response = lHandler.onLine(pSession,buf.toByteBuffer());
             long executionTime = System.currentTimeMillis() - start;
 
             for (int i = 0; i < resultHandlers.size(); i++) {

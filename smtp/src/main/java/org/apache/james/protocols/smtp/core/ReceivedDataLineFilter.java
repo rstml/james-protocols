@@ -19,6 +19,7 @@
 package org.apache.james.protocols.smtp.core;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -49,10 +50,12 @@ public class ReceivedDataLineFilter implements DataLineFilter {
     private final static String HEADERS_WRITTEN = "HEADERS_WRITTEN";
 
 
-    /**
-     * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(org.apache.james.protocols.smtp.SMTPSession, java.nio.ByteBuffer, org.apache.james.protocols.api.handler.LineHandler)
      */
-    public Response onLine(SMTPSession session,  byte[] line, LineHandler<SMTPSession> next) {
+    public Response onLine(SMTPSession session,  ByteBuffer line, LineHandler<SMTPSession> next) {
         if (session.getAttachment(HEADERS_WRITTEN, State.Transaction) == null) {
             Response response = addNewReceivedMailHeaders(session, next);
 
@@ -83,7 +86,7 @@ public class ReceivedDataLineFilter implements DataLineFilter {
 
             headerLineBuffer.append(" ([").append(session.getRemoteAddress().getAddress().getHostAddress()).append("])").append("\r\n");
 
-            Response response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+            Response response = next.onLine(session, ByteBuffer.wrap(headerLineBuffer.toString().getBytes(CHARSET)));
             if (response != null) {
                 return response;
             }
@@ -99,12 +102,12 @@ public class ReceivedDataLineFilter implements DataLineFilter {
                 // (prevents email address harvesting and large headers in
                 // bulk email)
                 headerLineBuffer.append("\r\n");
-                next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+                next.onLine(session, ByteBuffer.wrap(headerLineBuffer.toString().getBytes(CHARSET)));
                 headerLineBuffer.delete(0, headerLineBuffer.length());
 
                 headerLineBuffer.delete(0, headerLineBuffer.length());
                 headerLineBuffer.append("          for <").append(((List<MailAddress>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).get(0).toString()).append(">;").append("\r\n");
-                response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+                response = next.onLine(session, ByteBuffer.wrap(headerLineBuffer.toString().getBytes(CHARSET)));
 
                 if (response != null) {
                     return response;
@@ -117,14 +120,14 @@ public class ReceivedDataLineFilter implements DataLineFilter {
                 headerLineBuffer.append(";");
                 headerLineBuffer.append("\r\n");
 
-                response = next.onLine(session, headerLineBuffer.toString().getBytes(CHARSET));
+                response = next.onLine(session, ByteBuffer.wrap(headerLineBuffer.toString().getBytes(CHARSET)));
                 if (response != null) {
                     return response;
                 }
                 headerLineBuffer.delete(0, headerLineBuffer.length());
             }
             headerLineBuffer = null;
-            return next.onLine(session, ("          " + DATEFORMAT.get().format(new Date()) + "\r\n").getBytes(CHARSET));
+            return next.onLine(session, ByteBuffer.wrap(("          " + DATEFORMAT.get().format(new Date()) + "\r\n").getBytes(CHARSET)));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("No US-ASCII support ?");
         }

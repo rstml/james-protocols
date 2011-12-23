@@ -19,6 +19,8 @@
 
 package org.apache.james.protocols.api.handler;
 
+import java.nio.ByteBuffer;
+
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 
@@ -29,14 +31,15 @@ import org.apache.james.protocols.api.Response;
  */
 public interface LineHandler<Session extends ProtocolSession> extends ProtocolHandler{
      
+    public static final String CRLF = "\r\n";
     /**
-     * Processing the give line. The line includes the CRLF delimiter.
+     * Processing the give line. The line includes the {@link #CRLF} delimiter.
      * If true is returned the connection is closed
      * 
      * @param session not null
      * @param line not null 
      * @return response or null
      */
-    Response onLine(Session session, byte[] line);
+    Response onLine(Session session, ByteBuffer buffer);
     
 }

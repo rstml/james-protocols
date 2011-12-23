@@ -21,6 +21,8 @@
 
 package org.apache.james.protocols.smtp.core;
 
+import java.nio.ByteBuffer;
+
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
@@ -39,5 +41,5 @@ public interface DataLineFilter extends ProtocolHandler{
      * @param line
      * @param next
      */
-    Response onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next);
+    Response onLine(SMTPSession session, ByteBuffer line, LineHandler<SMTPSession> next);
 }

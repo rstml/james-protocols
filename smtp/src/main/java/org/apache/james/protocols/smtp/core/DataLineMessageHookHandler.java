@@ -23,6 +23,7 @@ package org.apache.james.protocols.smtp.core;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,16 +55,19 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
     private List<?> rHooks;
     
 
-    /**
-     * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(org.apache.james.protocols.smtp.SMTPSession, java.nio.ByteBuffer, org.apache.james.protocols.api.handler.LineHandler)
      */
-    public Response onLine(final SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
+    public Response onLine(final SMTPSession session, ByteBuffer line, LineHandler<SMTPSession> next) {
         MailEnvelopeImpl env = (MailEnvelopeImpl) session.getAttachment(DataCmdHandler.MAILENV, ProtocolSession.State.Transaction);
         OutputStream out = env.getMessageOutputStream();
         try {
             // 46 is "."
-            // Stream terminated
-            if (line.length == 3 && line[0] == 46) {
+            // Stream terminated            
+            int c = line.get();
+            if (line.remaining() == 2 && c== 46) {
                 out.flush();
                 out.close();
                 
@@ -73,14 +77,15 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
                 return response;
                 
             // DotStuffing.
-            } else if (line[0] == 46 && line[1] == 46) {
-                out.write(line,1,line.length-1);
+            } else if (c == 46 && line.get() == 46) {
+                byte[] bline = readBytes(line);
+                out.write(bline,1,bline.length-1);
             // Standard write
             } else {
                 // TODO: maybe we should handle the Header/Body recognition here
                 // and if needed let a filter to cache the headers to apply some
                 // transformation before writing them to output.
-                out.write(line);
+                out.write(readBytes(line));
             }
             out.flush();
         } catch (IOException e) {
@@ -92,10 +97,21 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
             
             session.resetState();
             return response;
-        } 
+        }
         return null;
     }
 
+    private byte[] readBytes(ByteBuffer line) {
+        line.rewind();
+        byte[] bline;
+        if (line.hasArray()) {
+            bline = line.array();
+        } else {
+            bline = new byte[line.remaining()];
+            line.get(bline);
+        }
+        return bline;
+    }
 
     /**
      * @param session

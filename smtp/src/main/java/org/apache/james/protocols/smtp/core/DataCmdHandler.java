@@ -18,6 +18,7 @@
  ****************************************************************/
 package org.apache.james.protocols.smtp.core;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,14 +51,9 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
 	
     public static final class DataConsumerLineHandler implements LineHandler<SMTPSession> {
 
-        /**
-         * @see org.apache.james.protocols.api.handler.LineHandler
-         * #onLine(org.apache.james.protocols.api.ProtocolSession, byte[])
-         */
-        public SMTPResponse onLine(SMTPSession session, byte[] line) {
-            
+        public SMTPResponse onLine(SMTPSession session, ByteBuffer line) {
             // Discard everything until the end of DATA session
-            if (line.length == 3 && line[0] == 46) {
+            if (line.remaining() == 3 && line.get() == 46) {
                 session.popLineHandler();
             }
             return null;
@@ -74,12 +70,15 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
             this.next = next;
         }
         
-        /**
-         * @see org.apache.james.protocols.api.handler.LineHandler
-         * #onLine(org.apache.james.protocols.api.ProtocolSession, byte[])
+
+        /*
+         * (non-Javadoc)
+         * @see org.apache.james.protocols.api.handler.LineHandler#onLine(org.apache.james.protocols.api.ProtocolSession, java.nio.ByteBuffer)
          */
-        public Response onLine(SMTPSession session, byte[] line) {
-            return filter.onLine(session, line, next);
+        public Response onLine(SMTPSession session, ByteBuffer line) {
+            line.rewind();
+            Response r = filter.onLine(session, line, next);
+            return r;
         }
                 
     }

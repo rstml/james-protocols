@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.smtp.core.esmtp;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -141,7 +142,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
     /**
      * @see org.apache.james.protocols.smtp.core.DataLineFilter#onLine(SMTPSession, byte[], LineHandler)
      */
-    public Response onLine(SMTPSession session, byte[] line, LineHandler<SMTPSession> next) {
+    public Response onLine(SMTPSession session, ByteBuffer line, LineHandler<SMTPSession> next) {
         Response response = null;
     	Boolean failed = (Boolean) session.getAttachment(MESG_FAILED, State.Transaction);
         // If we already defined we failed and sent a reply we should simply
@@ -149,15 +150,17 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
         if (failed != null && failed.booleanValue()) {
             // TODO
         } else {
-            if (line.length == 3 && line[0] == 46) {
+            if (line.remaining() == 3 && line.get() == 46) {
+                line.rewind();
                 response = next.onLine(session, line);
             } else {
+                line.rewind();
                 Long currentSize = (Long) session.getAttachment("CURRENT_SIZE", State.Transaction);
                 Long newSize;
                 if (currentSize == null) {
-                    newSize = Long.valueOf(line.length);
+                    newSize = Long.valueOf(line.remaining());
                 } else {
-                    newSize = Long.valueOf(currentSize.intValue()+line.length);
+                    newSize = Long.valueOf(currentSize.intValue()+line.remaining());
                 }
                 
                 if (session.getConfiguration().getMaxMessageSize() > 0 && newSize.intValue() > session.getConfiguration().getMaxMessageSize()) {
@@ -168,8 +171,9 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     session.setAttachment(MESG_FAILED, Boolean.TRUE, State.Transaction);
                     // then let the client know that the size
                     // limit has been hit.
-                    response = next.onLine(session, ".\r\n".getBytes());
+                    response = next.onLine(session, ByteBuffer.wrap(".\r\n".getBytes()));
                 } else {
+                    line.rewind();
                     response = next.onLine(session, line);
                 }
                 

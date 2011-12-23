@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.api.handler;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -129,10 +130,11 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
 
     }
     
-    /**
-     * @see org.apache.james.protocols.api.handler.LineHandler#onLine(ProtocolSession, byte[])
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.handler.LineHandler#onLine(org.apache.james.protocols.api.ProtocolSession, java.nio.ByteBuffer)
      */
-    public Response onLine(final Session session, byte[] line) {
+    public Response onLine(final Session session, ByteBuffer line) {
         
         try {
             
@@ -184,9 +186,16 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
      * @return request
      * @throws Exception
      */
-    protected Request parseRequest(Session session, byte[] line) throws Exception {
+    protected Request parseRequest(Session session, ByteBuffer buffer) throws Exception {
         String curCommandName = null;
         String curCommandArgument = null;
+        byte[] line;
+        if (buffer.hasArray()) {
+            line = buffer.array();
+        } else {
+            line = new byte[buffer.remaining()];
+            buffer.get(line);
+        }
         String cmdString = new String(line, getLineDecodingCharset()).trim();
         int spaceIndex = cmdString.indexOf(" ");
         if (spaceIndex > 0) {

@@ -46,23 +46,8 @@ public class LineHandlerUpstreamHandler<S extends ProtocolSession> extends Simpl
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {        
         ChannelBuffer buf = (ChannelBuffer) e.getMessage();      
-        byte[] line;
-        if (buf.hasArray()) {
-            if (buf.arrayOffset() == 0 && buf.readableBytes() == buf.capacity()) {
-                // we have no offset and the length is the same as the capacity. Its safe to reuse the array without copy it first
-                line = buf.array();
-            } else {
-                // copy the ChannelBuffer to a byte array to process the LineHandler
-                line = new byte[buf.readableBytes()];
-                buf.getBytes(0, line);
-            }
-        } else {
-            // copy the ChannelBuffer to a byte array to process the LineHandler
-            line = new byte[buf.readableBytes()];
-            buf.getBytes(0, line);
-        }
 
-        Response response = handler.onLine(session, line); 
+        Response response = handler.onLine(session, buf.toByteBuffer()); 
         if (response != null) {
             // TODO: This kind of sucks but I was able to come up with something more elegant here
             ((ProtocolSessionImpl)session).getProtocolTransport().writeResponse(response, session);

@@ -27,7 +27,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.apache.james.protocols.api.ProtocolServer;
-import org.apache.james.protocols.api.ProtocolSession;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.channel.group.ChannelGroup;

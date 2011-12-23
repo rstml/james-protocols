@@ -37,5 +37,10 @@ public interface ProtocolHandlerChain {
      * @return a List of handlers
      */
     <T> LinkedList<T> getHandlers(Class<T> type);
+    
+    /**
+     * Destroy the {@link ProtocolHandlerChain}. After this call it will not be usable anymore
+     */
+    void destroy();
 
 }

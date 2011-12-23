@@ -19,28 +19,16 @@
 
 package org.apache.james.protocols.pop3.core;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.handler.CommandHandler;
+import org.apache.james.protocols.api.handler.UnknownCommandHandler;
 import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * Default command handler for handling unknown commands
  */
-public class UnknownCmdHandler implements CommandHandler<POP3Session> {
-    /**
-     * The name of the command handled by the command handler
-     */
-    public static final String COMMAND_NAME = "UNKNOWN";
-
-    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_NAME));
-
-    
+public class UnknownCmdHandler extends UnknownCommandHandler<POP3Session> {
     /**
      * Handler method called upon receipt of an unrecognized command. Returns an
      * error response and logs the command.
@@ -48,12 +36,4 @@ public class UnknownCmdHandler implements CommandHandler<POP3Session> {
     public Response onCommand(POP3Session session, Request request) {
         return new POP3Response(POP3Response.ERR_RESPONSE);
     }
-
-    /**
-     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
-     */
-    public Collection<String> getImplCommands() {
-        return COMMANDS;
-    }
-
 }

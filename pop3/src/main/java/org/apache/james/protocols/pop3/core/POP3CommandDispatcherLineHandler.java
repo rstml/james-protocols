@@ -20,38 +20,18 @@
 package org.apache.james.protocols.pop3.core;
 
 import java.util.Arrays;
-import java.util.List;
 
-import org.apache.james.protocols.api.handler.AbstractCommandDispatcher;
+import org.apache.james.protocols.api.handler.CommandDispatcher;
 import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.pop3.POP3Session;
 
 /**
  * Dispatch POP3 {@link CommandHandler}
  */
-public class POP3CommandDispatcherLineHandler extends AbstractCommandDispatcher<POP3Session> {
+public class POP3CommandDispatcherLineHandler extends CommandDispatcher<POP3Session> {
     private final static String[] mandatoryCommands = { "USER", "PASS", "LIST" };
-    private final CommandHandler<POP3Session> unknownHandler = new UnknownCmdHandler();
-  
-    /**
-     * @see org.apache.james.protocols.api.handler.AbstractCommandDispatcher#getMandatoryCommands()
-     */
-    protected List<String> getMandatoryCommands() {
-        return Arrays.asList(mandatoryCommands);
+   
+    public POP3CommandDispatcherLineHandler() {
+        super(Arrays.asList(mandatoryCommands));
     }
-
-    /**
-     * @see org.apache.james.protocols.api.handler.AbstractCommandDispatcher#getUnknownCommandHandler()
-     */
-    protected CommandHandler<POP3Session> getUnknownCommandHandler() {
-        return unknownHandler;
-    }
-
-    /**
-     * @see org.apache.james.protocols.api.handler.AbstractCommandDispatcher#getUnknownCommandHandlerIdentifier()
-     */
-    protected String getUnknownCommandHandlerIdentifier() {
-        return UnknownCmdHandler.COMMAND_NAME;
-    }
-
 }

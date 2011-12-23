@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
+import org.apache.james.protocols.api.handler.UnknownCommandHandler;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
@@ -42,8 +43,7 @@ public class UnknownCmdHandler extends AbstractHookableCmdHandler<UnknownHook>{
     /**
      * The name of the command handled by the command handler
      */
-    public static final String UNKNOWN_COMMAND = "UNKNOWN";
-    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(UNKNOWN_COMMAND));
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(UnknownCommandHandler.COMMAND_IDENTIFIER));
 
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()

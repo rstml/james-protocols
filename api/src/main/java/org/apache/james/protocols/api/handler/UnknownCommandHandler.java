@@ -16,25 +16,30 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-
-package org.apache.james.protocols.smtp.core;
+package org.apache.james.protocols.api.handler;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
-import org.apache.james.protocols.api.handler.CommandDispatcher;
-import org.apache.james.protocols.smtp.SMTPSession;
+import org.apache.james.protocols.api.ProtocolSession;
 
+public abstract class UnknownCommandHandler<S extends ProtocolSession> implements CommandHandler<S>{
 
-/**
- * Dispatch CommandHandler for SMTP Requests
- * 
- *
- */
-public class SMTPCommandDispatcherLineHandler extends CommandDispatcher<SMTPSession> {
-
-    private final static String[] mandatoryCommands = { "MAIL" , "RCPT", "DATA"};
+    /**
+     * Identifier which is used in {@link #getImplCommands()} 
+     */
+    public final static String COMMAND_IDENTIFIER ="UNKNOWN_CMD";
     
-    public SMTPCommandDispatcherLineHandler() {
-        super(Arrays.asList(mandatoryCommands));
+    
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_IDENTIFIER));
+  
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
+     */
+    public Collection<String> getImplCommands() {
+        return COMMANDS;
     }
+
 }

@@ -37,18 +37,27 @@ import org.apache.james.protocols.api.Response;
 
 
 /**
- * Abstract base class which CommandDispatcher implementations should extend. A CommandDispatcher is responsible
- * to call the right {@link CommandHandler} for a given Command
+ *  A CommandDispatcher is responsible to call the right {@link CommandHandler} for a given Command
  *
  */
-public abstract class AbstractCommandDispatcher<Session extends ProtocolSession> implements ExtensibleHandler, LineHandler<Session> {
+public class CommandDispatcher<Session extends ProtocolSession> implements ExtensibleHandler, LineHandler<Session> {
     /**
      * The list of available command handlers
      */
     private final HashMap<String, List<CommandHandler<Session>>> commandHandlerMap = new HashMap<String, List<CommandHandler<Session>>>();
 
     private final List<ProtocolHandlerResultHandler<Response, Session>> rHandlers = new ArrayList<ProtocolHandlerResultHandler<Response, Session>>();
-        
+
+    private final Collection<String> mandatoryCommands;
+    
+    public CommandDispatcher(Collection<String> mandatoryCommands) {
+        this.mandatoryCommands = mandatoryCommands;
+    }
+    
+    public CommandDispatcher() {
+        this(Collections.<String>emptyList());
+    }
+    
     /**
      * Add it to map (key as command name, value is an array list of CommandHandlers)
      *
@@ -106,16 +115,12 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
                     addToMap(commandName, (CommandHandler) handler);
                 }
             }
-
-            addToMap(getUnknownCommandHandlerIdentifier(), getUnknownCommandHandler());
-
+            
             if (commandHandlerMap.size() < 1) {
                 throw new WiringException("No commandhandlers configured");
             } else {
-                List<String> mandatoryCommands = getMandatoryCommands();
-                for (int i = 0; i < mandatoryCommands.size(); i++) {
-                    String cmd = mandatoryCommands.get(i);
-                    if (!commandHandlerMap.containsKey(mandatoryCommands.get(i))) {
+                for (String cmd: mandatoryCommands) {
+                    if (!commandHandlerMap.containsKey(cmd)) {
                         throw new WiringException("No commandhandlers configured for mandatory command " + cmd);
                     }
                 }
@@ -218,26 +223,11 @@ public abstract class AbstractCommandDispatcher<Session extends ProtocolSession>
     }
 
     /**
-     * Return a List which holds all mandatory commands
-     * 
-     * @return mCommands
-     */
-    @SuppressWarnings("unchecked")
-    protected List<String> getMandatoryCommands() {
-        return Collections.EMPTY_LIST;
-    }
-    
-    /**
      * Return the identifier to lookup the UnknownCmdHandler in the handler map
      * 
      * @return identifier
      */
-    protected abstract String getUnknownCommandHandlerIdentifier();
-    
-    /**
-     * Return the CommandHandler which should use to handle unknown commands
-     * 
-     * @return unknownCmdHandler
-     */
-    protected abstract CommandHandler<Session> getUnknownCommandHandler();
+    protected String getUnknownCommandHandlerIdentifier() {
+        return UnknownCommandHandler.COMMAND_IDENTIFIER;
+    }
 }

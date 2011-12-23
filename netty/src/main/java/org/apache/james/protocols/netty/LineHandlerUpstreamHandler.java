@@ -49,7 +49,7 @@ public class LineHandlerUpstreamHandler<S extends ProtocolSession> extends Simpl
 
         Response response = handler.onLine(session, buf.toByteBuffer()); 
         if (response != null) {
-            // TODO: This kind of sucks but I was able to come up with something more elegant here
+            // TODO: This kind of sucks but I was not able to come up with something more elegant here
             ((ProtocolSessionImpl)session).getProtocolTransport().writeResponse(response, session);
         }
     }

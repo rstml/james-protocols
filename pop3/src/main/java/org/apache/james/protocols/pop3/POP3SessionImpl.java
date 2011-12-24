@@ -30,6 +30,7 @@ import org.slf4j.Logger;
  */
 public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session {
 
+    private static final Response LINE_TOO_LONG = new POP3Response(POP3Response.ERR_RESPONSE, "Exceed maximal line length").immutable();
     private int handlerState;
 
     private Mailbox mailbox;
@@ -79,11 +80,11 @@ public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session 
 
     @Override
     public Response newLineTooLongResponse() {
-        return null;
+        return LINE_TOO_LONG;
     }
 
     @Override
     public Response newFatalErrorResponse() {
-        return null;
+        return POP3Response.ERR;
     }
 }

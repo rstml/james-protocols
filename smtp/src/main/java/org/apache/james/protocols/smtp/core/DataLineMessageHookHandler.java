@@ -49,6 +49,8 @@ import org.apache.james.protocols.smtp.hook.MessageHook;
  */
 public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHandler {
 
+    private static final Response ERROR_PROCESSING_MESSAGE = new SMTPResponse(SMTPRetCode.LOCAL_ERROR,DSNStatus.getStatus(DSNStatus.TRANSIENT,
+            DSNStatus.UNDEFINED_STATUS) + " Error processing message").immutable();
     
     private List<?> messageHandlers;
     
@@ -89,14 +91,11 @@ public class DataLineMessageHookHandler implements DataLineFilter, ExtensibleHan
             }
             out.flush();
         } catch (IOException e) {
-            SMTPResponse response = new SMTPResponse(SMTPRetCode.LOCAL_ERROR,DSNStatus.getStatus(DSNStatus.TRANSIENT,
-                            DSNStatus.UNDEFINED_STATUS) + " Error processing message: " + e.getMessage());
-            
             session.getLogger().error(
                     "Unknown error occurred while processing DATA.", e);
             
             session.resetState();
-            return response;
+            return ERROR_PROCESSING_MESSAGE;
         }
         return null;
     }

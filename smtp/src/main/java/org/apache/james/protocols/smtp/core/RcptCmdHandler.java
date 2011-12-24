@@ -43,11 +43,13 @@ import org.apache.james.protocols.smtp.hook.RcptHook;
 public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> implements
         CommandHandler<SMTPSession> {
 
-    public static final String CURRENT_RECIPIENT = "CURRENT_RECIPIENT"; // Current recipient
+    public static final String CURRENT_RECIPIENT = "CURRENT_RECIPIENT"; // Current
+                                                                        // recipient
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("RCPT"));
-
-   
-    
+    private static final Response MAIL_NEEDED = new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER) + " Need MAIL before RCPT").immutable();
+    private static final Response SYNTAX_ERROR_ARGS = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_SYNTAX) + " Usage: RCPT TO:<recipient>").immutable();
+    private static final Response SYNTAX_ERROR_DELIVERY = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_SYNTAX) + " Syntax error in parameters or arguments").immutable();
+    private static final Response SYNTAX_ERROR_ADDRESS = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_MAILBOX, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.ADDRESS_SYNTAX) + " Syntax error in recipient address").immutable();
     /**
      * Handler method called upon receipt of a RCPT command. Reads recipient.
      * Does some connection validation.
@@ -97,16 +99,11 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
             argument = argument.substring(0, colonIndex);
         }
         if (session.getAttachment(SMTPSession.SENDER, State.Transaction) == null) {
-            return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
-                    .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
-                    + " Need MAIL before RCPT");
+            return MAIL_NEEDED;
         } else if (argument == null
                 || !argument.toUpperCase(Locale.US).equals("TO")
                 || recipient == null) {
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                    DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.DELIVERY_SYNTAX)
-                            + " Usage: RCPT TO:<recipient>");
+            return SYNTAX_ERROR_ARGS;
         }
 
         recipient = recipient.trim();
@@ -131,10 +128,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
                         getContext(session, null, recipient));
                 session.getLogger().info(errorBuffer.toString());
             }
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                    DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.DELIVERY_SYNTAX)
-                            + " Syntax error in parameters or arguments");
+            return SYNTAX_ERROR_DELIVERY;
         }
         MailAddress recipientAddress = null;
         // Remove < and >
@@ -164,10 +158,7 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
              * from RFC2822; 553 Requested action not taken: mailbox name
              * not allowed (e.g., mailbox syntax incorrect)
              */
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_MAILBOX,
-                    DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.ADDRESS_SYNTAX)
-                            + " Syntax error in recipient address");
+            return SYNTAX_ERROR_ADDRESS;
         }
 
         if (rcptOptionString != null) {
@@ -209,20 +200,15 @@ public class RcptCmdHandler extends AbstractHookableCmdHandler<RcptHook> impleme
         return null;
     }
 
-    private String getContext(SMTPSession session,
-            MailAddress recipientAddress, String recipient) {
+    private String getContext(SMTPSession session, MailAddress recipientAddress, String recipient) {
         StringBuilder sb = new StringBuilder(128);
         if (null != recipientAddress) {
-            sb
-                    .append(" [to:"
-                            + recipientAddress.toString() + "]");
+            sb.append(" [to:" + recipientAddress.toString() + "]");
         } else if (null != recipient) {
             sb.append(" [to:" + recipient + "]");
         }
         if (null != session.getAttachment(SMTPSession.SENDER, State.Transaction)) {
-            sb.append(" [from:"
-                            + ((MailAddress) session.getAttachment(
-                                    SMTPSession.SENDER, State.Transaction)).toString() + "]");
+            sb.append(" [from:" + ((MailAddress) session.getAttachment(SMTPSession.SENDER, State.Transaction)).toString() + "]");
         }
         return sb.toString();
     }

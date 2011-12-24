@@ -45,7 +45,6 @@ public class StatCmdHandler implements CommandHandler<POP3Session> {
      */
     @SuppressWarnings("unchecked")
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
 
             List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
@@ -64,12 +63,11 @@ public class StatCmdHandler implements CommandHandler<POP3Session> {
                 }
             }
             StringBuilder responseBuffer = new StringBuilder(32).append(count).append(" ").append(size);
-            response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
+            return new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
 
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
-        return response;
     }
 
     /**

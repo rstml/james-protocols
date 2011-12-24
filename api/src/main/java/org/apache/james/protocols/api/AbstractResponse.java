@@ -105,5 +105,27 @@ public abstract class AbstractResponse implements Response{
     public final String toString() {
         return getLines().toString();
     }
+    
+    /**
+     * Return a immutable instance of this {@link AbstractResponse}
+     * 
+     * @return immutable
+     */
+    public Response immutable() {
+        return new Response() {
+            
+            public boolean isEndSession() {
+                return AbstractResponse.this.isEndSession();
+            }
+            
+            public String getRetCode() {
+                return AbstractResponse.this.getRetCode();
+            }
+            
+            public List<CharSequence> getLines() {
+                return AbstractResponse.this.getLines();
+            }
+        };
+    }
 
 }

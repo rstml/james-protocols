@@ -39,7 +39,8 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
 public class VrfyCmdHandler implements CommandHandler<SMTPSession> {
     
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("VRFY"));
-
+    private static final Response NOT_SUPPORTED = new SMTPResponse(SMTPRetCode.UNIMPLEMENTED_COMMAND, 
+            DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.SYSTEM_NOT_CAPABLE)+" VRFY is not supported").immutable();
 
     /**
      * Handler method called upon receipt of a VRFY command.
@@ -48,8 +49,7 @@ public class VrfyCmdHandler implements CommandHandler<SMTPSession> {
      *
      */
     public Response onCommand(SMTPSession session, Request request) {
-        return new SMTPResponse(SMTPRetCode.UNIMPLEMENTED_COMMAND, 
-                DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.SYSTEM_NOT_CAPABLE)+" VRFY is not supported");
+        return NOT_SUPPORTED;
     }
     
     /**

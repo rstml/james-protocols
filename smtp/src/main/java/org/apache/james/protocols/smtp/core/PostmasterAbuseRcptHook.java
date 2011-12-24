@@ -21,7 +21,6 @@ package org.apache.james.protocols.smtp.core;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookResult;
-import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.RcptHook;
 
 /**
@@ -35,9 +34,9 @@ public class PostmasterAbuseRcptHook implements RcptHook {
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
         if (rcpt.getLocalPart().equalsIgnoreCase("postmaster") || rcpt.getLocalPart().equalsIgnoreCase("abuse")) {
             session.getLogger().debug("Sender allowed");
-            return new HookResult(HookReturnCode.OK);
+            return HookResult.ok();
         } else {
-            return new HookResult(HookReturnCode.DECLINED);
+            return HookResult.declined();
         }
     }
 

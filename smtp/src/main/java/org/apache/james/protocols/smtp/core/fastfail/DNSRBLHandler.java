@@ -204,6 +204,6 @@ public class DNSRBLHandler implements  RcptHook{
                
             }
         }
-        return new HookResult(HookReturnCode.DECLINED);
+        return HookResult.declined();
     }
 }

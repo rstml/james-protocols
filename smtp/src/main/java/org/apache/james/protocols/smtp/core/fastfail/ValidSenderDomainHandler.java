@@ -77,7 +77,7 @@ public class ValidSenderDomainHandler implements MailHook {
         if (check(session,sender)) {
             return new HookResult(HookReturnCode.DENY,SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.ADDRESS_SYNTAX_SENDER)+ " sender " + sender + " contains a domain with no valid MX records");
         } else {
-            return new HookResult(HookReturnCode.DECLINED);
+            return HookResult.declined();
         }
     }
 }

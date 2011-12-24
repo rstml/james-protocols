@@ -38,7 +38,7 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
   */
 public class HelpCmdHandler implements CommandHandler<SMTPSession> {
     private static final String COMMAND_NAME = "HELP";
-
+    private static final Response NOT_SUPPORTED =  new SMTPResponse(SMTPRetCode.UNIMPLEMENTED_COMMAND, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.SYSTEM_NOT_CAPABLE)+" " + COMMAND_NAME + " is not supported").immutable();
 	/**
      * The name of the command handled by the command handler
      */
@@ -49,7 +49,7 @@ public class HelpCmdHandler implements CommandHandler<SMTPSession> {
      *
     **/
     public Response onCommand(SMTPSession session, Request request){
-        return new SMTPResponse(SMTPRetCode.UNIMPLEMENTED_COMMAND, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.SYSTEM_NOT_CAPABLE)+" " + COMMAND_NAME + " is not supported");
+        return NOT_SUPPORTED;
     }
 
     /**

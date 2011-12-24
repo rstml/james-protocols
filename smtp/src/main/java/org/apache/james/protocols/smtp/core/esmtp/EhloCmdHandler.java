@@ -46,6 +46,8 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
     private final static Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_NAME));
     // see http://issues.apache.org/jira/browse/JAMES-419
     private final static List<String> ESMTP_FEATURES = Collections.unmodifiableList(Arrays.asList("PIPELINING", "ENHANCEDSTATUSCODES", "8BITMIME"));
+    private static final Response DOMAIN_ADDRESS_REQUIRED = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Domain address required: " + COMMAND_NAME).immutable();
+    
     private List<EhloExtension> ehloExtensions;
 
     /**
@@ -141,10 +143,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
         session.resetState();
 
         if (parameters == null) {
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                    DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.DELIVERY_INVALID_ARG)
-                            + " Domain address required: " + COMMAND_NAME);
+            return DOMAIN_ADDRESS_REQUIRED;
         } else {
             // store provided name
             session.setAttachment(SMTPSession.CURRENT_HELO_NAME, parameters, State.Transaction);

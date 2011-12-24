@@ -44,6 +44,10 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
     private final static Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_NAME));
     private final static List<String> FEATURES = Collections.unmodifiableList(Arrays.asList(COMMAND_NAME));
 
+    private static final Response TLS_ALREADY_ACTIVE = new SMTPResponse("500", DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) + " TLS already active RFC2487 5.2").immutable();
+    private static final Response READY_FOR_STARTTLS = new SMTPStartTLSResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS").immutable();
+    private static final Response SYNTAX_ERROR = new SMTPResponse("501 " + DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Syntax error (no parameters allowed) with STARTTLS command").immutable();
+    private static final Response NOT_SUPPORTED = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) +" Command " + COMMAND_NAME +" unrecognized.").immutable();
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
@@ -57,28 +61,20 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
      * 
      */
     public Response onCommand(SMTPSession session, Request request) {
-        String command = request.getCommand();
-        String parameters = request.getArgument();
         if (session.isStartTLSSupported()) {
             if (session.isTLSStarted()) {
-                SMTPResponse response = new SMTPResponse("500", DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) + " TLS already active RFC2487 5.2");
-                return response;
+                return TLS_ALREADY_ACTIVE;
             } else {
-                SMTPResponse response;
+                String parameters = request.getArgument();
                 if ((parameters == null) || (parameters.length() == 0)) {
-                    response = new SMTPStartTLSResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS");
+                    return READY_FOR_STARTTLS;
                 } else {
-                    response = new SMTPResponse("501 " + DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Syntax error (no parameters allowed) with STARTTLS command");
-                }
-                return response;
-                
+                    return SYNTAX_ERROR;
+                } 
             }
 
         } else {
-            StringBuilder result = new StringBuilder();
-            result.append(DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD)).append(" Command ").append(command).append(" unrecognized.");
-            SMTPResponse response = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, result);
-            return response;
+            return NOT_SUPPORTED;
         }
     }
 

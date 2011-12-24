@@ -34,6 +34,6 @@ public class UnknownCmdHandler extends UnknownCommandHandler<POP3Session> {
      * error response and logs the command.
      */
     public Response onCommand(POP3Session session, Request request) {
-        return new POP3Response(POP3Response.ERR_RESPONSE);
+        return POP3Response.ERR;
     }
 }

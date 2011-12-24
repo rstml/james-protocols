@@ -47,8 +47,12 @@ import org.apache.james.protocols.smtp.dsn.DSNStatus;
  */
 public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHandler {
 
-	private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("DATA"));
-	
+    private static final Response NO_RECIPIENT = new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" No recipients specified").immutable();
+    private static final Response NO_SENDER = new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" No sender specified").immutable();
+    private static final Response UNEXPECTED_ARG = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_INVALID_ARG)+" Unexpected argument provided with DATA command").immutable();
+    private static final Response DATA_READY = new SMTPResponse(SMTPRetCode.DATA_READY, "Ok Send data ending with <CRLF>.<CRLF>").immutable();
+    private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("DATA"));
+
     public static final class DataConsumerLineHandler implements LineHandler<SMTPSession> {
 
         public SMTPResponse onLine(SMTPSession session, ByteBuffer line) {
@@ -117,7 +121,7 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
         session.setAttachment(MAILENV, env,ProtocolSession.State.Transaction);
         session.pushLineHandler(lineHandler);
         
-        return new SMTPResponse(SMTPRetCode.DATA_READY, "Ok Send data ending with <CRLF>.<CRLF>");
+        return DATA_READY;
     }
     
     protected MailEnvelope createEnvelope(SMTPSession session, MailAddress sender, List<MailAddress> recipients) {
@@ -165,18 +169,18 @@ public class DataCmdHandler implements CommandHandler<SMTPSession>, ExtensibleHa
 
     protected Response doDATAFilter(SMTPSession session, String argument) {
         if ((argument != null) && (argument.length() > 0)) {
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_INVALID_ARG)+" Unexpected argument provided with DATA command");
+            return UNEXPECTED_ARG;
         }
         if (session.getAttachment(SMTPSession.SENDER, ProtocolSession.State.Transaction) == null) {
-            return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" No sender specified");
+            return NO_SENDER;
         } else if (session.getAttachment(SMTPSession.RCPT_LIST, ProtocolSession.State.Transaction) == null) {
-            return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" No recipients specified");
+            return NO_RECIPIENT;
         }
         return null;
     }
-    
+
     protected LineHandler<SMTPSession> getLineHandler() {
-    	return lineHandler;
+        return lineHandler;
     }
 
 }

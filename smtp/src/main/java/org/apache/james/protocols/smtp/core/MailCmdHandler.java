@@ -46,7 +46,24 @@ import org.apache.james.protocols.smtp.hook.MailParametersHook;
  */
 public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("MAIL"));
-
+    private static final Response SENDER_ALREADY_SPECIFIED =  new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
+            .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
+            + " Sender already specified").immutable();
+    private static final Response EHLO_HELO_NEEDED =  new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
+            .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
+            + " Need HELO or EHLO before MAIL").immutable();
+    private static final Response SYNTAX_ERROR_ARG = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
+            DSNStatus.getStatus(DSNStatus.PERMANENT,
+                    DSNStatus.DELIVERY_INVALID_ARG)
+                    + " Usage: MAIL FROM:<sender>").immutable();
+    private static final Response SYNTAX_ERROR = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
+            DSNStatus.getStatus(DSNStatus.PERMANENT,
+                    DSNStatus.ADDRESS_SYNTAX_SENDER)
+                    + " Syntax error in MAIL command").immutable();
+    private static final Response SYNTAX_ERROR_ADDRESS = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
+            DSNStatus.getStatus(DSNStatus.PERMANENT,
+                    DSNStatus.ADDRESS_SYNTAX_SENDER)
+                    + " Syntax error in sender address").immutable();
     /**
      * A map of parameterHooks
      */
@@ -131,22 +148,15 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
             argument = argument.substring(0, colonIndex);
         }
         if (session.getAttachment(SMTPSession.SENDER, State.Transaction) != null) {
-            return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
-                    .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
-                    + " Sender already specified");
+            return SENDER_ALREADY_SPECIFIED;
         } else if (session.getAttachment(
                 SMTPSession.CURRENT_HELO_MODE, State.Connection) == null
                 && session.getConfiguration().useHeloEhloEnforcement()) {
-            return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus
-                    .getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_OTHER)
-                    + " Need HELO or EHLO before MAIL");
+            return EHLO_HELO_NEEDED;
         } else if (argument == null
                 || !argument.toUpperCase(Locale.US).equals("FROM")
                 || sender == null) {
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                    DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.DELIVERY_INVALID_ARG)
-                            + " Usage: MAIL FROM:<sender>");
+            return SYNTAX_ERROR_ARG;
         } else {
             sender = sender.trim();
             // the next gt after the first lt ... AUTH may add more <>
@@ -204,10 +214,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
                             .append(": did not start and end with < >");
                     session.getLogger().info(errorBuffer.toString());
                 }
-                return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                        DSNStatus.getStatus(DSNStatus.PERMANENT,
-                                DSNStatus.ADDRESS_SYNTAX_SENDER)
-                                + " Syntax error in MAIL command");
+                return SYNTAX_ERROR;
             }
             MailAddress senderAddress = null;
 
@@ -237,10 +244,7 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
                                         pe.getMessage());
                         session.getLogger().info(errorBuffer.toString());
                     }
-                    return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                            DSNStatus.getStatus(DSNStatus.PERMANENT,
-                                    DSNStatus.ADDRESS_SYNTAX_SENDER)
-                                    + " Syntax error in sender address");
+                    return SYNTAX_ERROR_ADDRESS;
                 }
             }
             if (senderAddress == null) {

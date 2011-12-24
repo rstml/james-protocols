@@ -84,7 +84,7 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
         // try to resolv the provided helo. If it can not resolved do not
         // accept it.
         try {
-        	dnsService.getByName(argument);
+            dnsService.getByName(argument);
         } catch (UnknownHostException e) {
             return true;
         }
@@ -109,7 +109,7 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
             return new HookResult(HookReturnCode.DENY,SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG)
                     + " Provided EHLO/HELO " + session.getAttachment(SMTPSession.CURRENT_HELO_NAME, State.Transaction) + " can not resolved.");
         } else {
-            return new HookResult(HookReturnCode.DECLINED);
+            return HookResult.declined();
         }
     }
 
@@ -118,7 +118,7 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
      */
     public HookResult doHelo(SMTPSession session, String helo) {
         checkEhloHelo(session, helo);
-        return new HookResult(HookReturnCode.DECLINED);
+        return HookResult.declined();
     }
 
 }

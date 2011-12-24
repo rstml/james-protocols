@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookResult;
-import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.RcptHook;
 
 /**
@@ -60,17 +59,17 @@ public class SpamTrapHandler implements RcptHook {
     public HookResult doRcpt(SMTPSession session, MailAddress sender, MailAddress rcpt) {
         String address = session.getRemoteAddress().getAddress().getHostAddress();
         if (isBlocked(address, session)) {
-            return new HookResult(HookReturnCode.DENY);
+            return HookResult.deny();
         } else {
          
             if (spamTrapRecips.contains(rcpt.toString().toLowerCase())){
         
                 addIp(address, session);
             
-                return new HookResult(HookReturnCode.DENY);
+                return HookResult.deny();
             }
         }
-        return new HookResult(HookReturnCode.DECLINED);
+        return HookResult.declined();
     }
     
     

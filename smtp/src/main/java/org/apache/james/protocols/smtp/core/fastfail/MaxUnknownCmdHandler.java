@@ -59,7 +59,7 @@ public class MaxUnknownCmdHandler implements UnknownHook{
 
         } else {
             
-            return new HookResult(HookReturnCode.DECLINED);
+            return HookResult.declined();
         }
     }
 

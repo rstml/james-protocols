@@ -33,8 +33,11 @@ import org.slf4j.Logger;
  */
 public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession {
 
+    private static final Response LINE_LENGTH_EXCEEDED = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, "Line length exceeded. See RFC 2821 #4.5.3.1.").immutable();
+    private static final Response FATAL_ERROR = new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "Unable to process request").immutable();
+    
     private boolean relayingAllowed;
-
+    
     public SMTPSessionImpl(Logger logger, ProtocolTransport transport, SMTPConfiguration config) {
         super(logger, transport, config);
         relayingAllowed = config.isRelayingAllowed(getRemoteAddress().getAddress().getHostAddress());
@@ -115,11 +118,11 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
     }
 
     public Response newLineTooLongResponse() {
-        return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, "Line length exceeded. See RFC 2821 #4.5.3.1.");
+        return LINE_LENGTH_EXCEEDED;
     }
 
     public Response newFatalErrorResponse() {
-        return new SMTPResponse(SMTPRetCode.LOCAL_ERROR, "Unable to process request");
+        return FATAL_ERROR;
     }
 
     @Override

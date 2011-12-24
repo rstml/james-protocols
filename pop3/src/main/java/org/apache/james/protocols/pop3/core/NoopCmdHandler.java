@@ -40,13 +40,11 @@ public class NoopCmdHandler implements CommandHandler<POP3Session> {
      * NOOPs, does nothing much.
      */
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
-            response = new POP3Response(POP3Response.OK_RESPONSE);
+            return POP3Response.OK;
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
-        return response;
     }
 
     /**

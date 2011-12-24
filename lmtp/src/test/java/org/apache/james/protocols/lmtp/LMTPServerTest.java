@@ -37,6 +37,7 @@ import org.apache.james.protocols.lmtp.hook.DeliverToRecipientHook;
 import org.apache.james.protocols.netty.NettyServer;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailEnvelope;
+import org.apache.james.protocols.smtp.MockLogger;
 import org.apache.james.protocols.smtp.SMTPProtocol;
 import org.apache.james.protocols.smtp.SMTPServerTest;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -62,7 +63,7 @@ public class LMTPServerTest extends SMTPServerTest{
         }
         chain.addAll(0, hList);
         chain.wireExtensibleHandlers();
-        return new SMTPProtocol(chain, new LMTPConfigurationImpl());
+        return new SMTPProtocol(chain, new LMTPConfigurationImpl(), new MockLogger());
     }
     
     

@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.smtp;
 
+import org.apache.james.protocols.api.Logger;
 import org.apache.james.protocols.api.ProtocolImpl;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
@@ -33,8 +34,8 @@ import org.apache.james.protocols.smtp.SMTPSessionImpl;
  */
 public class SMTPProtocol extends ProtocolImpl {
 
-    public SMTPProtocol(ProtocolHandlerChain chain, SMTPConfiguration config) {
-        super(chain, config);
+    public SMTPProtocol(ProtocolHandlerChain chain, SMTPConfiguration config, Logger logger) {
+        super(chain, config, logger);
     }
 
     @Override

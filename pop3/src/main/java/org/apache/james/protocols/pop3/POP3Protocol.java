@@ -19,6 +19,7 @@
 
 package org.apache.james.protocols.pop3;
 
+import org.apache.james.protocols.api.Logger;
 import org.apache.james.protocols.api.ProtocolConfiguration;
 import org.apache.james.protocols.api.ProtocolImpl;
 import org.apache.james.protocols.api.ProtocolSession;
@@ -27,8 +28,8 @@ import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 
 public class POP3Protocol extends ProtocolImpl{
     
-    public POP3Protocol(ProtocolHandlerChain chain, ProtocolConfiguration config) {
-        super(chain, config);
+    public POP3Protocol(ProtocolHandlerChain chain, ProtocolConfiguration config, Logger logger) {
+        super(chain, config, logger);
     }
 
     

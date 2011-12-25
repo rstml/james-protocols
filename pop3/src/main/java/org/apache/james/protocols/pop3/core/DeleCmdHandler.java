@@ -38,20 +38,21 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 public class DeleCmdHandler implements CommandHandler<POP3Session> {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("DELE"));
 
+    private static final Response SYNTAX_ERROR = new POP3Response(POP3Response.ERR_RESPONSE, "Usage: DELE [mail number]").immutable();
+    private static final Response DELETED = new POP3Response(POP3Response.OK_RESPONSE, "Message deleted").immutable();
+
     /**
      * Handler method called upon receipt of a DELE command. This command
      * deletes a particular mail message from the mailbox.
      */
     @SuppressWarnings("unchecked")
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
             int num = 0;
             try {
                 num = Integer.parseInt(request.getArgument());
             } catch (Exception e) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Usage: DELE [mail number]");
-                return response;
+                return SYNTAX_ERROR;
             }
             try {
                 List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
@@ -61,21 +62,20 @@ public class DeleCmdHandler implements CommandHandler<POP3Session> {
 
                 if (deletedUidList.contains(uid)) {
                     StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") already deleted.");
-                    response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
+                    return new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                 } else {
                     deletedUidList.add(uid);
                     // we are replacing our reference with "DELETED", so we have
                     // to dispose the no-more-referenced mail object.
-                    response = new POP3Response(POP3Response.OK_RESPONSE, "Message deleted");
+                    return DELETED;
                 }
             } catch (IndexOutOfBoundsException iob) {
                 StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
-                response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
+                return  new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
             }
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
-        return response;
     }
 
     /**

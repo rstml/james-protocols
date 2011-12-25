@@ -41,6 +41,17 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
      */
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("QUIT"));
 
+    private static final Response SYNTAX_ERROR;
+    static {
+        SMTPResponse response = new SMTPResponse(
+                SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus
+                .getStatus(DSNStatus.PERMANENT,
+                        DSNStatus.DELIVERY_INVALID_ARG)
+                + " Unexpected argument provided with QUIT command");
+        response.setEndSession(true);
+        SYNTAX_ERROR = response.immutable();
+    }
+    
     /**
      * Handler method called upon receipt of a QUIT command. This method informs
      * the client that the connection is closing.
@@ -51,7 +62,6 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
      *            the argument passed in with the command by the SMTP client
      */
     private Response doQUIT(SMTPSession session, String argument) {
-        SMTPResponse ret;
         if ((argument == null) || (argument.length() == 0)) {
             StringBuilder response = new StringBuilder();
             response.append(
@@ -59,16 +69,12 @@ public class QuitCmdHandler extends AbstractHookableCmdHandler<QuitHook> {
                             DSNStatus.UNDEFINED_STATUS)).append(" ").append(
                     session.getConfiguration().getHelloName()).append(
                     " Service closing transmission channel");
-            ret = new SMTPResponse(SMTPRetCode.SYSTEM_QUIT, response);
+            SMTPResponse ret = new SMTPResponse(SMTPRetCode.SYSTEM_QUIT, response);
+            ret.setEndSession(true);
+            return ret;
         } else {
-            ret = new SMTPResponse(
-                    SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus
-                            .getStatus(DSNStatus.PERMANENT,
-                                    DSNStatus.DELIVERY_INVALID_ARG)
-                            + " Unexpected argument provided with QUIT command");
+            return SYNTAX_ERROR;
         }
-        ret.setEndSession(true);
-        return ret;
     }
 
     /**

@@ -46,14 +46,13 @@ public class RsetCmdHandler implements CommandHandler<POP3Session> {
      * reset the mailbox.
      */
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
             stat(session);
-            response = new POP3Response(POP3Response.OK_RESPONSE);
+            return POP3Response.OK;
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
-        return response;
+        
     }
 
     /**

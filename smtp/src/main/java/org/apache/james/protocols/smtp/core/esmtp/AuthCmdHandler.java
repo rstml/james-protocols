@@ -64,6 +64,16 @@ public class AuthCmdHandler
     private static final List<String> ESMTP_FEATURES = Collections.unmodifiableList(Arrays.asList("AUTH LOGIN PLAIN", "AUTH=LOGIN PLAIN"));
     
     private final static String CHARSET = "US-ASCII";
+    private static final Response AUTH_ABORTED = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.SECURITY_AUTH) + " Authentication aborted").immutable();
+    private static final Response ALREADY_AUTH = new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" User has previously authenticated. "
+            + " Further authentication is not required!").immutable();
+    private static final Response SYNTAX_ERROR = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_INVALID_ARG)+" Usage: AUTH (authentication type) <challenge>").immutable();
+    private static final Response AUTH_READY_PLAIN = new SMTPResponse(SMTPRetCode.AUTH_READY, "OK. Continue authentication").immutable();
+    private static final Response AUTH_READY_USERNAME_LOGIN = new SMTPResponse(SMTPRetCode.AUTH_READY, "VXNlcm5hbWU6").immutable(); // base64 encoded "Username:"
+    private static final Response AUTH_READY_PASSWORD_LOGIN = new SMTPResponse(SMTPRetCode.AUTH_READY, "UGFzc3dvcmQ6").immutable(); // base64 encoded "Password:
+    private static final Response AUTH_FAILED = new SMTPResponse(SMTPRetCode.AUTH_FAILED, "Authentication Failed").immutable();
+    private static final Response UNKNOWN_AUTH_TYPE = new SMTPResponse(SMTPRetCode.PARAMETER_NOT_IMPLEMENTED, "Unrecognized Authentication Type").immutable();
+    
     private abstract class AbstractSMTPLineHandler implements LineHandler<SMTPSession> {
 
         public Response onLine(SMTPSession session, ByteBuffer line) {
@@ -91,7 +101,7 @@ public class AuthCmdHandler
             // command by sending a 501 reply."
             if (line.equals("*\r\n")) {
                 session.popLineHandler();
-                return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.SECURITY_AUTH) + " Authentication aborted");
+                return AUTH_ABORTED;
             }
             return onCommand(session, line);
         }
@@ -137,10 +147,9 @@ public class AuthCmdHandler
      */
     private Response doAUTH(SMTPSession session, String argument) {
         if (session.getUser() != null) {
-            return new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" User has previously authenticated. "
-                    + " Further authentication is not required!");
+            return ALREADY_AUTH;
         } else if (argument == null) {
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_INVALID_ARG)+" Usage: AUTH (authentication type) <challenge>");
+            return SYNTAX_ERROR;
         } else {
             String initialResponse = null;
             if ((argument != null) && (argument.indexOf(" ") > 0)) {
@@ -156,7 +165,7 @@ public class AuthCmdHandler
                             return doPlainAuthPass(session, l);
                         }
                     });
-                    return new SMTPResponse(SMTPRetCode.AUTH_READY, "OK. Continue authentication");
+                    return AUTH_READY_PLAIN;
                 } else {
                     userpass = initialResponse.trim();
                     return doPlainAuthPass(session, userpass);
@@ -169,7 +178,7 @@ public class AuthCmdHandler
                             return doLoginAuthPass(session, l);
                         }
                     });
-                    return new SMTPResponse(SMTPRetCode.AUTH_READY, "VXNlcm5hbWU6"); // base64 encoded "Username:"
+                    return AUTH_READY_USERNAME_LOGIN;
                 } else {
                     String user = initialResponse.trim();
                     return doLoginAuthPass(session, user);
@@ -289,7 +298,7 @@ public class AuthCmdHandler
             }
             
         }.setUser(user));
-        return new SMTPResponse(SMTPRetCode.AUTH_READY, "UGFzc3dvcmQ6"); // base64 encoded "Password:"
+        return AUTH_READY_PASSWORD_LOGIN;
     }
     
     private Response doLoginAuthPassCheck(SMTPSession session, String user, String pass) {
@@ -366,7 +375,7 @@ public class AuthCmdHandler
             }
         }
 
-        res = new SMTPResponse(SMTPRetCode.AUTH_FAILED, "Authentication Failed");
+        res = AUTH_FAILED;
         session.getLogger().error("AUTH method "+authType+" failed from " + user + "@" + session.getRemoteAddress().getAddress().getHostAddress()); 
         return res;
     }
@@ -450,7 +459,7 @@ public class AuthCmdHandler
                         .append(" is an unrecognized authentication type");
             session.getLogger().info(errorBuffer.toString());
         }
-        return new SMTPResponse(SMTPRetCode.PARAMETER_NOT_IMPLEMENTED, "Unrecognized Authentication Type");
+        return UNKNOWN_AUTH_TYPE;
     }
 
 
@@ -516,7 +525,7 @@ public class AuthCmdHandler
     public HookResult doMailParameter(SMTPSession session, String paramName, String paramValue) {
         // Ignore the AUTH command.
         // TODO we should at least check for correct syntax and put the result in session
-        return new HookResult(HookReturnCode.DECLINED);
+        return HookResult.declined();
     }
 
     /**

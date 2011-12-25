@@ -41,6 +41,8 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 public class RetrCmdHandler implements CommandHandler<POP3Session> {
 
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("RETR"));
+    private static final Response SYNTAX_ERROR = new POP3Response(POP3Response.ERR_RESPONSE, "Usage: RETR [mail number]").immutable();
+    private static final Response ERROR_MESSAGE_RETRIEVE = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.").immutable();
 
     /**
      * Handler method called upon receipt of a RETR command. This command
@@ -55,8 +57,7 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
             try {
                 num = Integer.parseInt(parameters.trim());
             } catch (Exception e) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Usage: RETR [mail number]");
-                return response;
+                return SYNTAX_ERROR;
             }
             try {
                 List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
@@ -79,10 +80,10 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
                     response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                 }
             } catch (IOException ioe) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.");
+                return ERROR_MESSAGE_RETRIEVE;
             }
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
         return response;
     }

@@ -25,19 +25,18 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.Map;
 
+import org.apache.james.protocols.api.Logger;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class to simplify the mocks
  */
 public class BaseFakeSMTPSession implements SMTPSession {
 
-    private static final Logger log = LoggerFactory.getLogger(BaseFakeSMTPSession.class);
+    private static final Logger log = new MockLogger();
 
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getConnectionState()

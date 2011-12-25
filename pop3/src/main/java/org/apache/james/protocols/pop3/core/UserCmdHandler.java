@@ -44,16 +44,14 @@ public class UserCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * id.
      */
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
         String parameters = request.getArgument();
         if (session.getHandlerState() == POP3Session.AUTHENTICATION_READY && parameters != null) {
             session.setUser(parameters);
             session.setHandlerState(POP3Session.AUTHENTICATION_USERSET);
-            response = new POP3Response(POP3Response.OK_RESPONSE);
+            return POP3Response.OK;
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
-        return response;
     }
 
     /**

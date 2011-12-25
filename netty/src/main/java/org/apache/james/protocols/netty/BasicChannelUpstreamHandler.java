@@ -46,26 +46,23 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.frame.TooLongFrameException;
-import org.slf4j.Logger;
 
 /**
  * {@link ChannelUpstreamHandler} which is used by the SMTPServer and other line based protocols
  */
 @Sharable
 public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
-    protected final Logger logger;
     protected final Protocol protocol;
     protected final ProtocolHandlerChain chain;
     protected final Encryption secure;
 
-    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger) {
-        this(protocol, logger, null);
+    public BasicChannelUpstreamHandler(Protocol protocol) {
+        this(protocol, null);
     }
 
-    public BasicChannelUpstreamHandler(Protocol protocol, Logger logger, Encryption secure) {
+    public BasicChannelUpstreamHandler(Protocol protocol, Encryption secure) {
         this.protocol = protocol;
         this.chain = protocol.getProtocolChain();
-        this.logger = logger;
         this.secure = secure;
     }
 
@@ -230,8 +227,6 @@ public class BasicChannelUpstreamHandler extends SimpleChannelUpstreamHandler {
             }
             if (session != null) {
                 session.getLogger().debug("Unable to process request", e.getCause());
-            } else {
-                logger.debug("Unable to process request", e.getCause());
             }
             cleanup(ctx);            
         }

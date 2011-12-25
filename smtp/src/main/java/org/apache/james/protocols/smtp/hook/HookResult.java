@@ -25,6 +25,12 @@ package org.apache.james.protocols.smtp.hook;
  */
 public final class HookResult {
 
+    private static final HookResult DECLINED = new HookResult(HookReturnCode.DECLINED);
+    private static final HookResult OK = new HookResult(HookReturnCode.OK);
+    private static final HookResult DENY = new HookResult(HookReturnCode.DENY);
+    private static final HookResult DENYSOFT = new HookResult(HookReturnCode.DENYSOFT);
+    private static final HookResult DISCONNECT = new HookResult(HookReturnCode.DISCONNECT);
+
     private int result;
     private String smtpRetCode;
     private String smtpDescription;
@@ -105,5 +111,25 @@ public final class HookResult {
      */
     public String getSmtpDescription() {
         return smtpDescription;
+    }
+    
+    public static HookResult declined() {
+        return DECLINED;
+    }
+    
+    public static HookResult ok() {
+        return OK;
+    }
+    
+    public static HookResult deny() {
+        return DENY;
+    }
+    
+    public static HookResult denysoft() {
+        return DENYSOFT;
+    }
+    
+    public static HookResult disconnect() {
+        return DISCONNECT;
     }
 }

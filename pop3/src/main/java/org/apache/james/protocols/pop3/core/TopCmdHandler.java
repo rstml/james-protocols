@@ -42,8 +42,10 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("TOP"));
     private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("TOP"));
-
     
+    private static final Response SYNTAX_ERROR = new POP3Response(POP3Response.ERR_RESPONSE, "Usage: TOP [mail number] [Line number]").immutable();
+    private static final Response ERROR_MESSAGE_RETR = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.").immutable();
+
     /**
      * Handler method called upon receipt of a TOP command. This command
      * retrieves the top N lines of a specified message in the mailbox.
@@ -54,11 +56,9 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
     @SuppressWarnings("unchecked")
     @Override
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
         String parameters = request.getArgument();
         if (parameters == null) {
-            response = new POP3Response(POP3Response.ERR_RESPONSE, "Usage: TOP [mail number] [Line number]");
-            return response;
+            return SYNTAX_ERROR;
         }
 
         String argument = "";
@@ -76,8 +76,7 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
                 num = Integer.parseInt(argument);
                 lines = Integer.parseInt(argument1);
             } catch (NumberFormatException nfe) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Usage: TOP [mail number] [Line number]");
-                return response;
+                return SYNTAX_ERROR;
             }
             try {
                 List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
@@ -89,31 +88,29 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
                     InputStream body = new CountingBodyInputStream(new ExtraDotInputStream(new CRLFTerminatedInputStream(session.getUserMailbox().getMessageBody(uid))), lines);
                     InputStream headers = session.getUserMailbox().getMessageHeaders(uid);
                     if (body != null && headers != null) {
-                        response = new POP3StreamResponse(POP3Response.OK_RESPONSE, "Message follows", new SequenceInputStream(headers, body));
-                        return response;
+                        return new POP3StreamResponse(POP3Response.OK_RESPONSE, "Message follows", new SequenceInputStream(headers, body));
 
                     } else {
                         StringBuilder exceptionBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
-                        response = new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
+                        return new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
                     }
 
                 } else {
                     StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") already deleted.");
-                    response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
+                    return new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                 }
             } catch (IOException ioe) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Error while retrieving message.");
+                return ERROR_MESSAGE_RETR;
             } catch (IndexOutOfBoundsException iob) {
                 StringBuilder exceptionBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
-                response = new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
+                return new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
             } catch (NoSuchElementException iob) {
                 StringBuilder exceptionBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
-                response = new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
+                return new POP3Response(POP3Response.ERR_RESPONSE, exceptionBuffer.toString());
             }
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
-        return response;
 
     }
 
@@ -132,6 +129,7 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
+    @Override
     public Collection<String> getImplCommands() {
         return COMMANDS;
     }
@@ -139,7 +137,7 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
     /**
      * This {@link InputStream} implementation can be used to limit the body
      * lines which will be read from the wrapped {@link InputStream}
-     */    // TODO: Fix me!
+     */   
     private final class CountingBodyInputStream extends InputStream {
 
         private int count = 0;

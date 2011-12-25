@@ -25,7 +25,6 @@ import java.util.Map;
 
 
 import org.apache.james.protocols.api.ProtocolTransport;
-import org.slf4j.Logger;
 
 /**
  * Basic implementation of {@link ProtocolSession}
@@ -34,7 +33,7 @@ import org.slf4j.Logger;
  */
 public class ProtocolSessionImpl implements ProtocolSession {
 
-    private final SessionLog pLog;
+    private final ProtocolSessionLogger pLog;
     private final ProtocolTransport transport;
     private final Map<String, Object> connectionState;
     private final Map<String, Object> sessionState;
@@ -43,7 +42,7 @@ public class ProtocolSessionImpl implements ProtocolSession {
 
     public ProtocolSessionImpl(Logger logger, ProtocolTransport transport, ProtocolConfiguration config) {
         this.transport = transport;
-        this.pLog = new SessionLog(getSessionID(), logger);;
+        this.pLog = new ProtocolSessionLogger(transport.getId(), logger);
         this.connectionState = new HashMap<String, Object>();
         this.sessionState = new HashMap<String, Object>();
         this.config = config;

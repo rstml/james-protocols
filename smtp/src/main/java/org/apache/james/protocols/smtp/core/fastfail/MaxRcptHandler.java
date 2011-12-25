@@ -32,6 +32,8 @@ import org.apache.james.protocols.smtp.hook.RcptHook;
 
 public class MaxRcptHandler implements RcptHook {
 
+    private static final HookResult MAX_RCPT = new HookResult(HookReturnCode.DENY, SMTPRetCode.SYSTEM_STORAGE_ERROR, DSNStatus.getStatus(DSNStatus.NETWORK, DSNStatus.DELIVERY_TOO_MANY_REC)
+            + " Requested action not taken: max recipients reached");
     private int maxRcpt = 0;
 
 
@@ -52,10 +54,9 @@ public class MaxRcptHandler implements RcptHook {
         if ((session.getRcptCount() + 1) > maxRcpt) {
             session.getLogger().info("Maximum recipients of " + maxRcpt + " reached");
             
-            return new HookResult(HookReturnCode.DENY, SMTPRetCode.SYSTEM_STORAGE_ERROR, DSNStatus.getStatus(DSNStatus.NETWORK, DSNStatus.DELIVERY_TOO_MANY_REC)
-                    + " Requested action not taken: max recipients reached");
+            return MAX_RCPT;
         } else {
-            return new HookResult(HookReturnCode.DECLINED);
+            return HookResult.declined();
         }
     }
 }

@@ -18,18 +18,19 @@
  ****************************************************************/
 package org.apache.james.protocols.pop3;
 
+import org.apache.james.protocols.api.Logger;
 import org.apache.james.protocols.api.ProtocolConfiguration;
 import org.apache.james.protocols.api.ProtocolSessionImpl;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
-import org.slf4j.Logger;
 
 /**
  * {@link POP3Session} implementation which use Netty
  */
 public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session {
 
+    private static final Response LINE_TOO_LONG = new POP3Response(POP3Response.ERR_RESPONSE, "Exceed maximal line length").immutable();
     private int handlerState;
 
     private Mailbox mailbox;
@@ -79,11 +80,11 @@ public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session 
 
     @Override
     public Response newLineTooLongResponse() {
-        return null;
+        return LINE_TOO_LONG;
     }
 
     @Override
     public Response newFatalErrorResponse() {
-        return null;
+        return POP3Response.ERR;
     }
 }

@@ -52,12 +52,13 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
 
     @SuppressWarnings("unchecked")
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
         String parameters = request.getArgument();
         List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
         List<Long> deletedUidList = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
 
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
+            POP3Response response = null;
+
             if (parameters == null) {
 
                 long size = 0;
@@ -103,10 +104,10 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
                     response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                 }
             }
+            return response;
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
-        return response;
     }
 
     /**

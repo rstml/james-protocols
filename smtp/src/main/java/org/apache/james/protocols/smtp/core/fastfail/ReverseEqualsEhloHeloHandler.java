@@ -30,6 +30,7 @@ public class ReverseEqualsEhloHeloHandler extends ResolvableEhloHeloHandler {
     /**
      * @see org.apache.james.protocols.smtp.core.fastfail.ResolvableEhloHeloHandler#isBadHelo(org.apache.james.protocols.smtp.SMTPSession, java.lang.String)
      */
+    @Override
     protected boolean isBadHelo(SMTPSession session, String argument) {
         try {
             // get reverse entry

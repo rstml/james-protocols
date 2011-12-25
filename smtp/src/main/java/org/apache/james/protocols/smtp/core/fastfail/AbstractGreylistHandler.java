@@ -47,7 +47,10 @@ public abstract class AbstractGreylistHandler implements RcptHook {
     private long unseenLifeTime = 14400000;
 
 
-    
+    private static final HookResult TO_FAST = new HookResult(HookReturnCode.DENYSOFT, SMTPRetCode.LOCAL_ERROR, DSNStatus.getStatus(DSNStatus.TRANSIENT, DSNStatus.NETWORK_DIR_SERVER) 
+            + " Temporary rejected: Reconnect to fast. Please try again later");
+    private static final HookResult TEMPORARY_REJECT = new HookResult(HookReturnCode.DENYSOFT, SMTPRetCode.LOCAL_ERROR, DSNStatus.getStatus(DSNStatus.TRANSIENT, DSNStatus.NETWORK_DIR_SERVER) 
+            + " Temporary rejected: Please try again later");
     public void setUnseenLifeTime(long unseenLifeTime) {
         this.unseenLifeTime = unseenLifeTime;
     }
@@ -91,8 +94,7 @@ public abstract class AbstractGreylistHandler implements RcptHook {
                 long acceptTime = createTimeStamp + tempBlockTime;
         
                 if ((time < acceptTime) && (count == 0)) {
-                    return new HookResult(HookReturnCode.DENYSOFT, SMTPRetCode.LOCAL_ERROR, DSNStatus.getStatus(DSNStatus.TRANSIENT, DSNStatus.NETWORK_DIR_SERVER) 
-                        + " Temporary rejected: Reconnect to fast. Please try again later");
+                    return TO_FAST;
                 } else {
                     
                     session.getLogger().debug("Update triplet " + ipAddress + " | " + sender + " | " + recip + " -> timestamp: " + time);
@@ -108,8 +110,7 @@ public abstract class AbstractGreylistHandler implements RcptHook {
                 insertTriplet(ipAddress, sender, recip, count, time);
       
                 // Tempory block on new triplet!
-                return new HookResult(HookReturnCode.DENYSOFT, SMTPRetCode.LOCAL_ERROR, DSNStatus.getStatus(DSNStatus.TRANSIENT, DSNStatus.NETWORK_DIR_SERVER) 
-                    + " Temporary rejected: Please try again later");
+                return TEMPORARY_REJECT;
             }
 
             // some kind of random cleanup process
@@ -126,7 +127,7 @@ public abstract class AbstractGreylistHandler implements RcptHook {
             // just log the exception
             session.getLogger().error("Error on greylist method: " + e.getMessage());
         }
-        return new HookResult(HookReturnCode.DECLINED);
+        return HookResult.declined();
     }
 
     /**
@@ -210,6 +211,6 @@ public abstract class AbstractGreylistHandler implements RcptHook {
         } else {
             session.getLogger().info("IpAddress " + session.getRemoteAddress().getAddress().getHostAddress() + " is allowed to send. Skip greylisting.");
         }
-        return new HookResult(HookReturnCode.DECLINED);
+        return HookResult.declined();
     }
 }

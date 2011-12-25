@@ -940,7 +940,7 @@ public class SMTPServerTest {
         SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain();
         chain.addAll(0, Arrays.asList(handlers));
         chain.wireExtensibleHandlers();
-        return new SMTPProtocol(chain, new SMTPConfigurationImpl());
+        return new SMTPProtocol(chain, new SMTPConfigurationImpl(), new MockLogger());
     }
     
     protected static void checkEnvelope(MailEnvelope env, String sender, List<String> recipients, String msg) throws IOException {

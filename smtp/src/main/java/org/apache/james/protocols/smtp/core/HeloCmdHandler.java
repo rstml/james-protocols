@@ -44,6 +44,10 @@ public class HeloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
      */
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList(COMMAND_NAME));
 
+    private static final Response DOMAIN_REQUIRED =  new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
+            DSNStatus.getStatus(DSNStatus.PERMANENT,
+                    DSNStatus.DELIVERY_INVALID_ARG)
+                    + " Domain address required: " + COMMAND_NAME).immutable();
     /**
      * @see org.apache.james.protocols.api.handler.CommandHandler#getImplCommands()
      */
@@ -74,10 +78,7 @@ public class HeloCmdHandler extends AbstractHookableCmdHandler<HeloHook> {
         session.resetState();
 
         if (parameters == null) {
-            return new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                    DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.DELIVERY_INVALID_ARG)
-                            + " Domain address required: " + COMMAND_NAME);
+            return DOMAIN_REQUIRED;
         } else {
             // store provided name
             session.setAttachment(SMTPSession.CURRENT_HELO_NAME, parameters, State.Connection);

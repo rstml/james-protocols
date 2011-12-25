@@ -20,21 +20,20 @@
 package org.apache.james.protocols.api;
 
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Basic {@link Protocol} implementation 
  *
  */
 public class ProtocolImpl implements Protocol{
-    protected final static Logger logger = LoggerFactory.getLogger(ProtocolImpl.class);
     private final ProtocolHandlerChain chain;
     private final ProtocolConfiguration config;
+    protected final Logger logger;
 
-    public ProtocolImpl(ProtocolHandlerChain chain, ProtocolConfiguration config) {
+    public ProtocolImpl(ProtocolHandlerChain chain, ProtocolConfiguration config, Logger logger) {
         this.chain = chain;
         this.config = config;
+        this.logger = logger;
     }
     
     /*

@@ -38,18 +38,26 @@ import org.apache.james.protocols.pop3.mailbox.Mailbox;
  */
 public class QuitCmdHandler implements CommandHandler<POP3Session> {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("QUIT"));
-
+    private static final Response SIGN_OFF;
+    private static final Response SIGN_OFF_NOT_CLEAN;
+    static {
+        POP3Response response = new POP3Response(POP3Response.OK_RESPONSE, "Apache James POP3 Server signing off.");
+        response.setEndSession(true);
+        SIGN_OFF = response.immutable();
+        
+        response = new POP3Response(POP3Response.ERR_RESPONSE, "Some deleted messages were not removed");
+        response.setEndSession(true);
+        SIGN_OFF_NOT_CLEAN = response.immutable();
+    }
     /**
      * Handler method called upon receipt of a QUIT command. This method handles
      * cleanup of the POP3Handler state.
      */
     @SuppressWarnings("unchecked")
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response = null;
+        Response response = null;
         if (session.getHandlerState() == POP3Session.AUTHENTICATION_READY || session.getHandlerState() == POP3Session.AUTHENTICATION_USERSET) {
-            response = new POP3Response(POP3Response.OK_RESPONSE, "Apache James POP3 Server signing off.");
-            response.setEndSession(true);
-            return response;
+            return SIGN_OFF;
         }
         List<Long> toBeRemoved = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
         Mailbox mailbox = session.getUserMailbox();
@@ -60,12 +68,11 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
                 uids[i] = toBeRemoved.get(i);
             }
             mailbox.remove(uids);
-            response = new POP3Response(POP3Response.OK_RESPONSE, "Apache James POP3 Server signing off.");
+            response = SIGN_OFF;
         } catch (Exception ex) {
-            response = new POP3Response(POP3Response.ERR_RESPONSE, "Some deleted messages were not removed");
+            response = SIGN_OFF_NOT_CLEAN;
             session.getLogger().error("Some deleted messages were not removed", ex);
         }     
-        response.setEndSession(true);
         try {
             mailbox.close();
         } catch (IOException e) {

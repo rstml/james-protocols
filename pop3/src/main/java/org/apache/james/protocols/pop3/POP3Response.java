@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.james.protocols.api.AbstractResponse;
+import org.apache.james.protocols.api.Response;
 
 /**
  * Contains an POP3 result
@@ -44,12 +45,12 @@ public class POP3Response extends AbstractResponse {
     /**
      * {@link #OK_RESPONSE} with no description
      */
-    public static final POP3Response OK = new POP3Response(OK_RESPONSE);
+    public static final Response OK = new POP3Response(OK_RESPONSE).immutable();
     
     /**
      * {@link #ERR_RESPONSE} with no description
      */
-    public static final POP3Response ERR = new POP3Response(ERR_RESPONSE);
+    public static final Response ERR = new POP3Response(ERR_RESPONSE).immutable();
 
     
     /**

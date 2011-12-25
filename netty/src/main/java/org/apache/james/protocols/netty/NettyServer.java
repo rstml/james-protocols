@@ -29,8 +29,7 @@ import org.jboss.netty.channel.ChannelUpstreamHandler;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.handler.execution.ExecutionHandler;
 import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * Generic NettyServer 
@@ -39,8 +38,6 @@ public class NettyServer extends AbstractAsyncServer {
 
     protected final Protocol protocol;
     
-    protected final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-
     private ExecutionHandler eHandler;
     
     private ChannelUpstreamHandler coreHandler;
@@ -94,8 +91,9 @@ public class NettyServer extends AbstractAsyncServer {
         if (isBound()) throw new IllegalStateException("Server running already");
         this.maxCurConnectionsPerIP = maxCurConnectionsPerIP;
     }
+    
     protected ChannelUpstreamHandler createCoreHandler() {
-        return new BasicChannelUpstreamHandler(protocol, logger, secure);
+        return new BasicChannelUpstreamHandler(protocol, secure);
     }
     
     @Override

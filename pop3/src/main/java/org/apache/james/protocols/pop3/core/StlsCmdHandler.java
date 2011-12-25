@@ -39,20 +39,17 @@ public class StlsCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("STLS"));
     private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("STLS"));
 
+    private static final Response BEGIN_TLS = new StartTlsPop3Response(POP3Response.OK_RESPONSE, "Begin TLS negotiation").immutable();
     /**
      * @see CommandHandler#onCommand(org.apache.james.protocols.api.ProtocolSession, Request)
      */
     public Response onCommand(POP3Session session, Request request) {
-        POP3Response response;
         // check if starttls is supported, the state is the right one and it was
         // not started before
         if (session.isStartTLSSupported() && session.getHandlerState() == POP3Session.AUTHENTICATION_READY && session.isTLSStarted() == false) {
-            response = new StartTlsPop3Response(POP3Response.OK_RESPONSE, "Begin TLS negotiation");
-            return response;
-
+            return BEGIN_TLS;
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
-            return response;
+            return POP3Response.ERR;
         }
     }
 

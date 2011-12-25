@@ -43,13 +43,15 @@ public class NoopCmdHandler implements CommandHandler<SMTPSession> {
      */
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("NOOP"));
 
+    private static final Response NOOP = new SMTPResponse(SMTPRetCode.MAIL_OK, DSNStatus.getStatus(DSNStatus.SUCCESS,DSNStatus.UNDEFINED_STATUS)+" OK").immutable();
+
     /**
      * Handler method called upon receipt of a NOOP command.
      * Just sends back an OK and logs the command.
      *
      */
     public Response onCommand(SMTPSession session, Request request) {
-        return new SMTPResponse(SMTPRetCode.MAIL_OK, DSNStatus.getStatus(DSNStatus.SUCCESS,DSNStatus.UNDEFINED_STATUS)+" OK");
+        return NOOP;
     }
     
     /**

@@ -65,7 +65,7 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<Class<?>> getMarkerInterfaces() {
-		List<Class<?>> mList = new ArrayList();
+        List<Class<?>> mList = new ArrayList();
         mList.add(CapaCapability.class);
         return mList;
     }

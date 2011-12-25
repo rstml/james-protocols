@@ -45,6 +45,9 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
     private final static String MESG_SIZE = "MESG_SIZE"; // The size of the
     private final static String MESG_FAILED = "MESG_FAILED";   // Message failed flag
     private final static String[] MAIL_PARAMS = { "SIZE" };
+    
+    private static final HookResult SYNTAX_ERROR = new HookResult(HookReturnCode.DENY, SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Syntactically incorrect value for SIZE parameter");
+    private static final HookResult QUOTA_EXCEEDED = new HookResult(HookReturnCode.DENY, SMTPRetCode.QUOTA_EXCEEDED, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.SYSTEM_MSG_TOO_BIG) + " Message size exceeds fixed maximum message size");
 
 
 
@@ -101,11 +104,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
             session.getLogger().error("Rejected syntactically incorrect value for SIZE parameter.");
             
             // This is a malformed option value. We return an error
-            return new HookResult(HookReturnCode.DENY, 
-                    SMTPRetCode.SYNTAX_ERROR_ARGUMENTS,
-                    DSNStatus.getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.DELIVERY_INVALID_ARG)
-                            + " Syntactically incorrect value for SIZE parameter");
+            return SYNTAX_ERROR;
         }
         if (session.getLogger().isDebugEnabled()) {
             StringBuilder debugBuffer = new StringBuilder(128).append(
@@ -126,10 +125,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     .append(maxMessageSize).append("based on SIZE option.");
             session.getLogger().error(errorBuffer.toString());
 
-            return new HookResult(HookReturnCode.DENY, SMTPRetCode.QUOTA_EXCEEDED, DSNStatus
-                    .getStatus(DSNStatus.PERMANENT,
-                            DSNStatus.SYSTEM_MSG_TOO_BIG)
-                    + " Message size exceeds fixed maximum message size");
+            return QUOTA_EXCEEDED;
         } else {
             // put the message size in the message state so it can be used
             // later to restrict messages for user quotas, etc.
@@ -189,9 +185,7 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
     public HookResult onMessage(SMTPSession session, MailEnvelope mail) {
         Boolean failed = (Boolean) session.getAttachment(MESG_FAILED, State.Transaction);
         if (failed != null && failed.booleanValue()) {
-            HookResult response = new HookResult(HookReturnCode.DENY, SMTPRetCode.QUOTA_EXCEEDED,DSNStatus.getStatus(DSNStatus.PERMANENT,
-                    DSNStatus.SYSTEM_MSG_TOO_BIG) + " Maximum message size exceeded");
-  
+            
             StringBuilder errorBuffer = new StringBuilder(256).append(
                     "Rejected message from ").append(
                     session.getAttachment(SMTPSession.SENDER, State.Transaction).toString())
@@ -200,9 +194,9 @@ public class MailSizeEsmtpExtension implements MailParametersHook, EhloExtension
                     .append(
                             session.getConfiguration().getMaxMessageSize());
             session.getLogger().error(errorBuffer.toString());
-            return response;
+            return QUOTA_EXCEEDED;
         } else {
-            return new HookResult(HookReturnCode.DECLINED);
+            return HookResult.declined();
         }
     }
 

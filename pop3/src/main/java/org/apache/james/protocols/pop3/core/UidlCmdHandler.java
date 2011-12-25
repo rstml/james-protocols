@@ -89,12 +89,11 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
                     }
                 }
             } catch (IOException e) {
-                response = new POP3Response(POP3Response.ERR_RESPONSE);
-                return response;
+                return POP3Response.ERR;
             }
             
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE);
+            return POP3Response.ERR;
         }
         return response;
     }

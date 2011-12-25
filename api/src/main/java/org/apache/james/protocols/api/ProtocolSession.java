@@ -22,8 +22,6 @@ package org.apache.james.protocols.api;
 import java.net.InetSocketAddress;
 import java.util.Map;
 
-import org.slf4j.Logger;
-
 /**
  * Session for a protocol. Every new connection generates a new session
  * 

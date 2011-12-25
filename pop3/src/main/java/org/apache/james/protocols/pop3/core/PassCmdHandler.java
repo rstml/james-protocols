@@ -37,6 +37,8 @@ import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
  */
 public class PassCmdHandler extends RsetCmdHandler {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("PASS"));
+    private static final Response UNEXPECTED_ERROR = new POP3Response(POP3Response.ERR_RESPONSE, "Unexpected error accessing mailbox").immutable();
+    private static final Response AUTH_FAILED = new POP3Response(POP3Response.ERR_RESPONSE, "Authentication failed.").immutable();
 
     private MailboxFactory mailboxManager;
 
@@ -56,25 +58,24 @@ public class PassCmdHandler extends RsetCmdHandler {
             try {
                 Mailbox mailbox = mailboxManager.getMailbox(session, passArg);
                 if (mailbox != null) {
-                	session.setUserMailbox(mailbox);
-                	stat(session);
-                
-                	StringBuilder responseBuffer = new StringBuilder(64).append("Welcome ").append(session.getUser());
-                	response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
-                	session.setHandlerState(POP3Session.TRANSACTION);
+                    session.setUserMailbox(mailbox);
+                    stat(session);
+
+                    StringBuilder responseBuffer = new StringBuilder(64).append("Welcome ").append(session.getUser());
+                    response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
+                    session.setHandlerState(POP3Session.TRANSACTION);
                 } else {
-                	response = new POP3Response(POP3Response.ERR_RESPONSE, "Authentication failed.");
-                	session.setHandlerState(POP3Session.AUTHENTICATION_READY);
+                    session.setHandlerState(POP3Session.AUTHENTICATION_READY);
+                    return AUTH_FAILED;
                 }
             } catch (IOException e) {
                 session.getLogger().error("Unexpected error accessing mailbox for " + session.getUser(), e);
-                response = new POP3Response(POP3Response.ERR_RESPONSE, "Unexpected error accessing mailbox");
                 session.setHandlerState(POP3Session.AUTHENTICATION_READY);
+                return UNEXPECTED_ERROR;
             }
         } else {
-            response = new POP3Response(POP3Response.ERR_RESPONSE, "Authentication failed.");
-
             session.setHandlerState(POP3Session.AUTHENTICATION_READY);
+            return AUTH_FAILED;
         }
 
         return response;

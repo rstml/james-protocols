@@ -21,7 +21,6 @@ package org.apache.james.protocols.smtp.core;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookResult;
-import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.RcptHook;
 
 /**
@@ -36,9 +35,9 @@ public class AcceptRecipientIfRelayingIsAllowed implements RcptHook {
     public HookResult doRcpt(SMTPSession session, MailAddress sender,
             MailAddress rcpt) {
         if (session.isRelayingAllowed()) {
-            return new HookResult(HookReturnCode.OK);
+            return HookResult.ok();
         }
-        return new HookResult(HookReturnCode.DECLINED);
+        return HookResult.declined();
     }
 
 }

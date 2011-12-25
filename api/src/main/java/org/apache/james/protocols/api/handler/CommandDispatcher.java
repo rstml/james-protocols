@@ -139,43 +139,58 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
         try {
             
             Request request = parseRequest(session, line);
-            if (session.getLogger().isDebugEnabled()) {
-                session.getLogger().debug(getClass().getName() + " received: " + request.getCommand());
+            if (request == null) {
+                return null;
             }
-            List<CommandHandler<Session>> commandHandlers = getCommandHandlers(request.getCommand(), session);
-            // fetch the command handlers registered to the command
-
-            Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
-            
-            while (handlers.hasNext()) {
-                final long start = System.currentTimeMillis();
-                CommandHandler<Session> cHandler = handlers.next();
-                Response response = cHandler.onCommand(session, request);
-                if (response != null) {
-                    long executionTime = System.currentTimeMillis() - start;
-
-                    // now process the result handlers
-                    for (int a = 0; a < rHandlers.size(); a++) {
-                        // Disable till PROTOCOLS-37 is implemented
-                        if (response instanceof FutureResponse) {
-                            session.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
-                            break;
-                        } 
-                        response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
-                    }
-                }
-                if (response != null) {
-                    return response;
-                }
-
-            }
-            return null;
+            return dispatchCommandHandlers(session, request);
         } catch (Exception e) {
             session.getLogger().debug("Unable to parse request", e);
             return session.newFatalErrorResponse();
         } 
 
        
+    }
+    
+    /**
+     * Dispatch the {@link CommandHandler}'s for the given {@link Request} and return a {@link Response} or <code>null</code> if non should get written
+     * back to the client
+     * 
+     * @param session
+     * @param request
+     * @return response
+     */
+    protected Response dispatchCommandHandlers(Session session, Request request) {
+        if (session.getLogger().isDebugEnabled()) {
+            session.getLogger().debug(getClass().getName() + " received: " + request.getCommand());
+        }
+        List<CommandHandler<Session>> commandHandlers = getCommandHandlers(request.getCommand(), session);
+        // fetch the command handlers registered to the command
+
+        Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
+        
+        while (handlers.hasNext()) {
+            final long start = System.currentTimeMillis();
+            CommandHandler<Session> cHandler = handlers.next();
+            Response response = cHandler.onCommand(session, request);
+            if (response != null) {
+                long executionTime = System.currentTimeMillis() - start;
+
+                // now process the result handlers
+                for (int a = 0; a < rHandlers.size(); a++) {
+                    // Disable till PROTOCOLS-37 is implemented
+                    if (response instanceof FutureResponse) {
+                        session.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
+                        break;
+                    } 
+                    response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
+                }
+            }
+            if (response != null) {
+                return response;
+            }
+
+        }
+        return null;
     }
 
     /**

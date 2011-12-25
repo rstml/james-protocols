@@ -1,0 +1,15 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+Apache James Protocols IMAP
+
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Apache James Protocols API (http://james.apache.org/protocols/protocols-api) org.apache.james.protocols:protocols-api:jar:1.6.0-RC2-SNAPSHOT
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
+
+

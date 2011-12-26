@@ -115,6 +115,90 @@
                 <version>3.2.7.Final</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-james-mailbox-api</artifactId>
+                <version>${version.mailbox}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-james-mailbox-api</artifactId>
+                <version>${version.mailbox}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+            
+            <!--
+                START Mail
+            -->
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-core</artifactId>
+                <version>${version.apache-mime4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-mime4j-dom</artifactId>
+                <version>${version.apache-mime4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-activation_1.1_spec</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.javamail</groupId>
+                <artifactId>geronimo-javamail_1.4_mail</artifactId>
+                <version>1.6</version>
+            </dependency>
+            <!--
+                END Mail
+            -->
+
+            <!--
+                Start Commons
+            -->
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${version.commons-collections}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${version.commons-lang}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.7.0</version>
+            </dependency>
+            <!--
+                END Commons
+            -->
+            <dependency>
+                <groupId>com.beetstra.jutf7</groupId>
+                <artifactId>jutf7</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <!--
+                START Testing
+            -->
+
+            <dependency>
+                <groupId>org.jmock</groupId>
+                <artifactId>jmock</artifactId>
+                <version>${version.jmock}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmock</groupId>
+                <artifactId>jmock-junit4</artifactId>
+                <version>${version.jmock}</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.10</version>
@@ -159,5 +243,11 @@
     <properties>
         <!-- Use java 5 -->
         <target.jdk>1.5</target.jdk>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <version.commons-lang>2.4</version.commons-lang>
+        <version.commons-collections>3.2.1</version.commons-collections>
+        <version.apache-mime4j>0.7</version.apache-mime4j>
+        <version.mailbox>0.4-SNAPSHOT</version.mailbox>
+        <version.jmock>2.5.1</version.jmock>
     </properties>
 </project>

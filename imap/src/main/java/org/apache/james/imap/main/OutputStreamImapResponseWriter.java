@@ -64,7 +64,10 @@ public class OutputStreamImapResponseWriter implements ImapResponseWriter {
 
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.imap.encode.ImapResponseWriter#write(byte[])
+     */
     public void write(byte[] buffer) throws IOException {
         output.write(buffer);
     }

@@ -141,7 +141,10 @@ public class SearchCommandParser extends AbstractUidCommandParser {
             request.consumeQuoted();
             request.consumeWord(new CharacterValidator() {
                 
-                @Override
+                /*
+                 * (non-Javadoc)
+                 * @see org.apache.james.imap.decode.ImapRequestLineReader.CharacterValidator#isValid(char)
+                 */
                 public boolean isValid(char chr) {
                     return true;
                 }

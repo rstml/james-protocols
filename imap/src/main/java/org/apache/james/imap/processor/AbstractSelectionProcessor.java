@@ -435,17 +435,26 @@ abstract class AbstractSelectionProcessor<M extends AbstractMailboxSelectionRequ
         }
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.imap.processor.CapabilityImplementingProcessor#getImplementedCapabilities(org.apache.james.imap.api.process.ImapSession)
+     */
     public List<String> getImplementedCapabilities(ImapSession session) {        
         return CAPS;
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.imap.processor.PermitEnableCapabilityProcessor#getPermitEnableCapabilities(org.apache.james.imap.api.process.ImapSession)
+     */
     public List<String> getPermitEnableCapabilities(ImapSession session) {
         return CAPS;
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.imap.processor.PermitEnableCapabilityProcessor#enable(org.apache.james.imap.api.ImapMessage, org.apache.james.imap.api.process.ImapProcessor.Responder, org.apache.james.imap.api.process.ImapSession, java.lang.String)
+     */
     public void enable(ImapMessage message, Responder responder, ImapSession session, String capability) throws EnableException {
 
         if (EnableProcessor.getEnabledCapabilities(session).contains(capability) == false) {

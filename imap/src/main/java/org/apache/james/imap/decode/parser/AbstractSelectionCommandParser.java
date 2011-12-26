@@ -84,7 +84,10 @@ public abstract class AbstractSelectionCommandParser extends AbstractImapCommand
                 request.consumeWord(new CharacterValidator() {
                     int pos = 0;
 
-                    @Override
+                    /*
+                     * (non-Javadoc)
+                     * @see org.apache.james.imap.decode.ImapRequestLineReader.CharacterValidator#isValid(char)
+                     */
                     public boolean isValid(char chr) {
                         if (pos >= QRESYNC.length) {
                             return false;

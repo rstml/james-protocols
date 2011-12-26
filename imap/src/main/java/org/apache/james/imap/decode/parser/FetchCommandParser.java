@@ -78,7 +78,12 @@ public class FetchCommandParser extends AbstractUidCommandParser {
                     // Now check for the CHANGEDSINCE option which is part of CONDSTORE
                     request.consumeWord(new CharacterValidator() {
                         int pos = 0;
-                        @Override
+                        
+
+                        /*
+                         * (non-Javadoc)
+                         * @see org.apache.james.imap.decode.ImapRequestLineReader.CharacterValidator#isValid(char)
+                         */
                         public boolean isValid(char chr) {
                             if (pos > CHANGEDSINCE.length) {
                                 return false;
@@ -95,7 +100,11 @@ public class FetchCommandParser extends AbstractUidCommandParser {
                     // Check for the VANISHED option which is part of QRESYNC
                     request.consumeWord(new CharacterValidator() {
                         int pos = 0;
-                        @Override
+                        
+                        /*
+                         * (non-Javadoc)
+                         * @see org.apache.james.imap.decode.ImapRequestLineReader.CharacterValidator#isValid(char)
+                         */
                         public boolean isValid(char chr) {
                             if (pos > VANISHED.length) {
                                 return false;

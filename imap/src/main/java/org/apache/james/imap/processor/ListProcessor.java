@@ -123,22 +123,34 @@ public class ListProcessor extends AbstractMailboxProcessor<ListRequest> {
                 results = new ArrayList<MailboxMetaData>(1);
                 results.add(new MailboxMetaData() {
 
-                    @Override
+                    /*
+                     * (non-Javadoc)
+                     * @see org.apache.james.mailbox.MailboxMetaData#inferiors()
+                     */
                     public Children inferiors() {
                         return Children.CHILDREN_ALLOWED_BUT_UNKNOWN;
                     }
 
-                    @Override
+                    /*
+                     * (non-Javadoc)
+                     * @see org.apache.james.mailbox.MailboxMetaData#getSelectability()
+                     */
                     public Selectability getSelectability() {
                         return Selectability.NOSELECT;
                     }
 
-                    @Override
+                    /*
+                     * (non-Javadoc)
+                     * @see org.apache.james.mailbox.MailboxMetaData#getHierarchyDelimiter()
+                     */
                     public char getHierarchyDelimiter() {
                         return mailboxSession.getPathDelimiter();
                     }
 
-                    @Override
+                    /*
+                     * (non-Javadoc)
+                     * @see org.apache.james.mailbox.MailboxMetaData#getPath()
+                     */
                     public MailboxPath getPath() {
                         return rootPath;
                     }

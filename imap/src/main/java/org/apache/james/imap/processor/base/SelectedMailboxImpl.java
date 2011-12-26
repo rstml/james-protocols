@@ -173,7 +173,6 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     /**
      * @see SelectedMailbox#getFirstUid()
      */
-    @Override
     public synchronized long getFirstUid() {
         if (uidToMsn.isEmpty()) {
             return -1;
@@ -185,7 +184,6 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     /**
      * @see SelectedMailbox#getLastUid()
      */
-    @Override
     public synchronized long getLastUid() {
         if (uidToMsn.isEmpty()) {
             return -1;
@@ -195,7 +193,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     }
 
 
-    @Override
+    
     public synchronized void deselect() {
         MailboxSession mailboxSession = ImapSessionUtils.getMailboxSession(session);
 
@@ -220,7 +218,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     /**
      * @see org.apache.james.imap.api.process.SelectedMailbox#removeRecent(long)
      */
-    @Override
+    
     public synchronized  boolean removeRecent(long uid) {
         final boolean result = recentUids.remove(uid);
         if (result) {
@@ -239,7 +237,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     /**
      * @see org.apache.james.imap.api.process.SelectedMailbox#getRecent()
      */
-    @Override
+    
     public synchronized Collection<Long> getRecent() {
         checkExpungedRecents();
         return new ArrayList<Long>(recentUids);
@@ -248,7 +246,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     /**
      * @see org.apache.james.imap.api.process.SelectedMailbox#recentCount()
      */
-    @Override
+    
     public synchronized int recentCount() {
         checkExpungedRecents();
         return recentUids.size();
@@ -257,7 +255,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     /**
      * @see org.apache.james.imap.api.process.SelectedMailbox#getPath()
      */
-    @Override
+    
     public synchronized MailboxPath getPath() {
         return path;
     }
@@ -271,7 +269,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     /**
      * @see org.apache.james.imap.api.process.SelectedMailbox#isRecent(long)
      */
-    @Override
+    
     public synchronized boolean isRecent(long uid) {
         return recentUids.contains(uid);
     }
@@ -280,7 +278,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
      * @see
      * org.apache.james.imap.api.process.SelectedMailbox#isRecentUidRemoved()
      */
-    @Override
+    
     public synchronized boolean isRecentUidRemoved() {
         return recentUidRemoved;
     }
@@ -289,7 +287,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
      * @see
      * org.apache.james.imap.api.process.SelectedMailbox#resetRecentUidRemoved()
      */
-    @Override
+    
     public synchronized void resetRecentUidRemoved() {
         recentUidRemoved = false;
     }
@@ -308,7 +306,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
      * @see
      * org.apache.james.imap.api.process.SelectedMailbox#remove(java.lang.Long)
      */
-    @Override
+    
     public synchronized  int remove(Long uid) {
         final int result = msn(uid);
         expunge(uid);
@@ -339,7 +337,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
     }
 
     
-    @Override
+    
     public synchronized void resetExpungedUids() {
         expungedUids.clear();
     }
@@ -370,7 +368,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
      * 
      * @return true if new messages have been added, false otherwise
      */
-    @Override
+    
     public synchronized final boolean isSizeChanged() {
         return sizeChanged;
     }
@@ -381,7 +379,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
      * @return true when the mailbox has been deleted by another session, false
      *         otherwise
      */
-    @Override
+    
     public synchronized final boolean isDeletedByOtherSession() {
         return isDeletedByOtherSession;
     }
@@ -391,7 +389,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
      * 
      * @return uids
      */
-    @Override
+    
     public synchronized Collection<Long> flagUpdateUids() {
         // copy the TreeSet to fix possible
         // java.util.ConcurrentModificationException
@@ -405,7 +403,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
      * 
      * @return uids
      */
-    @Override
+    
     public synchronized Collection<Long> expungedUids() {
         // copy the TreeSet to fix possible
         // java.util.ConcurrentModificationException
@@ -417,22 +415,22 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
 
 
 
-    @Override
+    
     public synchronized Flags getApplicableFlags() {
         return applicableFlags;
     }
 
-    @Override
+    
     public synchronized boolean hasNewApplicableFlags() {
         return applicableFlagsChanged;
     }
 
-    @Override
+    
     public synchronized void resetNewApplicableFlags() {
         applicableFlagsChanged = false;
     }
 
-    @Override
+    
     public synchronized void event(Event event) {
 
         // Check if the event was for the mailbox we are observing
@@ -520,7 +518,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
         }
     }
 
-    @Override
+    
     public synchronized int msn(long uid) {
         Integer msn = uidToMsn.get(uid);
         if (msn != null) {
@@ -530,7 +528,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
         }
     }
 
-    @Override
+    
     public synchronized long uid(int msn) {
         if (msn == -1) {
             return SelectedMailbox.NO_SUCH_MESSAGE;
@@ -543,7 +541,7 @@ public class SelectedMailboxImpl implements SelectedMailbox, MailboxListener{
         }
     }
 
-    @Override
+    
     public synchronized long existsCount() {
         return uidToMsn.size();
     }

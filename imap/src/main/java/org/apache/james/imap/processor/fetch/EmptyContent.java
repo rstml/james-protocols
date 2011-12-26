@@ -37,7 +37,10 @@ public class EmptyContent implements Content{
         return 0;
     }
 
-    @Override
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.mailbox.Content#getInputStream()
+     */
     public InputStream getInputStream() throws IOException {
         return new ByteArrayInputStream("".getBytes());
     }

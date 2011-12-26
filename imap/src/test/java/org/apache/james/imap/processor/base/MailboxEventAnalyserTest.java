@@ -69,206 +69,206 @@ public class MailboxEventAnalyserTest {
     private MailboxPath mailboxPath = new MailboxPath("namespace", "user", "name");
     private final MailboxManager mockManager = new MailboxManager() {
         
-        @Override
+        
         public void removeListener(MailboxPath mailboxPath, MailboxListener listner, MailboxSession session) throws MailboxException {
             
         }
         
-        @Override
+        
         public void removeGlobalListener(MailboxListener listner, MailboxSession session) throws MailboxException {
             
         }
         
-        @Override
+        
         public void addListener(MailboxPath mailboxPath, MailboxListener listener, MailboxSession session) throws MailboxException {
             
         }
         
-        @Override
+        
         public void addGlobalListener(MailboxListener listener, MailboxSession session) throws MailboxException {
             
         }
         
-        @Override
+        
         public void startProcessingRequest(MailboxSession session) {
             
         }
         
-        @Override
+        
         public void endProcessingRequest(MailboxSession session) {
             
         }
         
-        @Override
+        
         public List<MailboxMetaData> search(MailboxQuery expression, MailboxSession session) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
 
         }
         
-        @Override
+        
         public void renameMailbox(MailboxPath from, MailboxPath to, MailboxSession session) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
             
         }
         
-        @Override
+        
         public boolean mailboxExists(MailboxPath mailboxPath, MailboxSession session) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
 
         }
         
-        @Override
+        
         public void logout(MailboxSession session, boolean force) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
             
         }
         
-        @Override
+        
         public MailboxSession login(String userid, String passwd, Logger log) throws BadCredentialsException, MailboxException {
             throw new UnsupportedOperationException("Not implemented");
 
         }
         
-        @Override
+        
         public List<MailboxPath> list(MailboxSession session) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
         }
         
-        @Override
+        
         public MessageManager getMailbox(MailboxPath mailboxPath, MailboxSession session) throws MailboxException {
             return new MessageManager() {
 
-                @Override
+                
                 public long getMessageCount(MailboxSession mailboxSession) throws MailboxException {
                     return 1;
                 }
 
-                @Override
+                
                 public boolean isWriteable(MailboxSession session) {
                     return false;
                 }
 
-                @Override
+                
                 public boolean isModSeqPermanent(MailboxSession session) {
                     return false;
                 }
 
-                @Override
+                
                 public Iterator<Long> search(SearchQuery searchQuery, MailboxSession mailboxSession) throws MailboxException {
                     throw new UnsupportedOperationException("Not implemented");
 
                 }
 
-                @Override
+                
                 public Iterator<Long> expunge(MessageRange set, MailboxSession mailboxSession) throws MailboxException {
                     throw new UnsupportedOperationException("Not implemented");
 
                 }
 
-                @Override
+                
                 public Map<Long, Flags> setFlags(Flags flags, boolean value, boolean replace, MessageRange set, MailboxSession mailboxSession) throws MailboxException {
                     throw new UnsupportedOperationException("Not implemented");
 
                 }
 
-                @Override
+                
                 public long appendMessage(InputStream msgIn, Date internalDate, MailboxSession mailboxSession, boolean isRecent, Flags flags) throws MailboxException {
                     throw new UnsupportedOperationException("Not implemented");
 
                 }
 
-                @Override
+                
                 public MessageResultIterator getMessages(MessageRange set, FetchGroup fetchGroup, MailboxSession mailboxSession) throws MailboxException {
                     return new MessageResultIterator() {
                         boolean done = false;
-                        @Override
+                        
                         public void remove() {
                             throw new UnsupportedOperationException("Not implemented");
                         }
                         
-                        @Override
+                        
                         public MessageResult next() {
                             done = true;
                             return new MessageResult() {
 
-                                @Override
+                                
                                 public int compareTo(MessageResult o) {
                                     return 0;
                                 }
 
-                                @Override
+                                
                                 public long getUid() {
                                     return 1;
                                 }
 
-                                @Override
+                                
                                 public long getModSeq() {
                                     return 0;
                                 }
 
-                                @Override
+                                
                                 public Flags getFlags() {
                                     return new Flags();
                                 }
 
-                                @Override
+                                
                                 public long getSize() {
                                     return 0;
                                 }
 
-                                @Override
+                                
                                 public Date getInternalDate() {
                                     throw new UnsupportedOperationException("Not implemented");
 
                                 }
 
-                                @Override
+                                
                                 public MimeDescriptor getMimeDescriptor() throws MailboxException {
                                     throw new UnsupportedOperationException("Not implemented");
                                 }
 
-                                @Override
+                                
                                 public Iterator<Header> iterateHeaders(MimePath path) throws MailboxException {
                                     throw new UnsupportedOperationException("Not implemented");
 
                                 }
 
-                                @Override
+                                
                                 public Iterator<Header> iterateMimeHeaders(MimePath path) throws MailboxException {
                                     throw new UnsupportedOperationException("Not implemented");
                                 }
 
-                                @Override
+                                
                                 public Content getFullContent() throws MailboxException, IOException {
                                     throw new UnsupportedOperationException("Not implemented");
 
                                 }
 
-                                @Override
+                                
                                 public Content getFullContent(MimePath path) throws MailboxException {
                                     throw new UnsupportedOperationException("Not implemented");
 
                                 }
 
-                                @Override
+                                
                                 public Content getBody() throws MailboxException, IOException {
                                     throw new UnsupportedOperationException("Not implemented");
 
                                 }
 
-                                @Override
+                                
                                 public Content getBody(MimePath path) throws MailboxException {
                                     throw new UnsupportedOperationException("Not implemented");
 
                                 }
 
-                                @Override
+                                
                                 public Content getMimeBody(MimePath path) throws MailboxException {
                                     throw new UnsupportedOperationException("Not implemented");
 
                                 }
 
-                                @Override
+                                
                                 public Headers getHeaders() throws MailboxException {
                                     throw new UnsupportedOperationException("Not implemented");
 
@@ -277,19 +277,19 @@ public class MailboxEventAnalyserTest {
                             };
                         }
                         
-                        @Override
+                        
                         public boolean hasNext() {
                             return !done;
                         }
                         
-                        @Override
+                        
                         public MailboxException getException() {
                             return null;
                         }
                     };
                 }
 
-                @Override
+                
                 public MetaData getMetaData(boolean resetRecent, MailboxSession mailboxSession, org.apache.james.mailbox.MessageManager.MetaData.FetchGroup fetchGroup) throws MailboxException {
                     throw new UnsupportedOperationException("Not implemented");
 
@@ -298,29 +298,29 @@ public class MailboxEventAnalyserTest {
             };
         }
         
-        @Override
+        
         public char getDelimiter() {
             return '.';
         }
         
-        @Override
+        
         public void deleteMailbox(MailboxPath mailboxPath, MailboxSession session) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
 
         }
         
-        @Override
+        
         public MailboxSession createSystemSession(String userName, Logger log) throws BadCredentialsException, MailboxException {
             throw new UnsupportedOperationException("Not implemented");
         }
         
-        @Override
+        
         public void createMailbox(MailboxPath mailboxPath, MailboxSession mailboxSession) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
             
         }
         
-        @Override
+        
         public List<MessageRange> copyMessages(MessageRange set, MailboxPath from, MailboxPath to, MailboxSession session) throws MailboxException {
             throw new UnsupportedOperationException("Not implemented");
 

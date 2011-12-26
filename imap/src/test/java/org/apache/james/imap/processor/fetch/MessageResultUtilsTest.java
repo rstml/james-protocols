@@ -66,7 +66,7 @@ public class MessageResultUtilsTest {
             return value;
         }
 
-        @Override
+        
         public InputStream getInputStream() throws IOException {
             return null;
         }

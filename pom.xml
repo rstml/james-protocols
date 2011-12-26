@@ -153,28 +153,6 @@
             <!--
                 END Mail
             -->
-
-            <!--
-                Start Commons
-            -->
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${version.commons-collections}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${version.commons-lang}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-            <!--
-                END Commons
-            -->
             <dependency>
                 <groupId>com.beetstra.jutf7</groupId>
                 <artifactId>jutf7</artifactId>

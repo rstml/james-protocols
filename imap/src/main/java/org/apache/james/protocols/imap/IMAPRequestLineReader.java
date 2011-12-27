@@ -27,8 +27,8 @@ import java.util.Iterator;
 import org.apache.james.imap.api.display.HumanReadableText;
 import org.apache.james.imap.decode.DecodingException;
 import org.apache.james.imap.decode.ImapRequestLineReader;
-import org.apache.james.imap.decode.base.EolInputStream;
-import org.apache.james.imap.decode.base.FixedLengthInputStream;
+import org.apache.james.protocols.imap.utils.EolInputStream;
+import org.apache.james.protocols.imap.utils.FixedLengthInputStream;
 
 public class IMAPRequestLineReader extends ImapRequestLineReader{
 

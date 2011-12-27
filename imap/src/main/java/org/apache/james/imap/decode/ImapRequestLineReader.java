@@ -43,7 +43,7 @@ import org.apache.james.imap.api.message.IdRange;
 import org.apache.james.imap.api.message.request.DayMonthYear;
 import org.apache.james.imap.api.process.ImapSession;
 import org.apache.james.imap.api.process.SearchResUtil;
-import org.apache.james.imap.utils.io.FastByteArrayOutputStream;
+import org.apache.james.protocols.imap.utils.FastByteArrayOutputStream;
 
 /**
  * Wraps the client input reader with a bunch of convenience methods, allowing

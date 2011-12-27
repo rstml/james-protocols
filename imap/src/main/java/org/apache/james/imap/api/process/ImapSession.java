@@ -149,19 +149,6 @@ public interface ImapSession {
     public boolean startCompression();
 
     /**
-     * Push in a new {@link ImapLineHandler} which is called for the next line received
-     * 
-     * @param lineHandler
-     */
-    public void pushLineHandler(ImapLineHandler lineHandler);
-
-    /**
-     * Pop the current {@link ImapLineHandler}
-     * 
-     */
-    public void popLineHandler();
-    
-    /**
      * Return true if multiple namespaces are supported
      * 
      * @return multipleNamespaces
@@ -175,5 +162,20 @@ public interface ImapSession {
      * @return plainDisallowed
      */
     public boolean isPlainAuthDisallowed();
+    
+    /**
+     * Push in a new {@link ImapLineHandler} which is called for the next line received
+     * 
+     * @param lineHandler
+     */
+    public void pushLineHandler(ImapLineHandler lineHandler);
+
+    /**
+     * Pop the current {@link ImapLineHandler}
+     * 
+     */
+    public void popLineHandler();
+    
+
 
 }

@@ -18,6 +18,8 @@
  ****************************************************************/
 package org.apache.james.protocols.imap;
 
+import org.apache.james.imap.api.ImapSessionState;
+import org.apache.james.imap.api.process.SelectedMailbox;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.handler.LineHandler;
 
@@ -39,4 +41,82 @@ public interface IMAPSession extends ProtocolSession{
      * @return size of the pushed line handler
      */
     int getPushedLineHandlerCount();
+
+    /**
+     * Logs out the session. Marks the connection for closure;
+     */
+    void logout();
+
+    /**
+     * Gets the current client state.
+     * 
+     * @return Returns the current state of this session.
+     */
+    ImapSessionState getSessionState();
+
+    /**
+     * Moves the session into {@link ImapSessionState#AUTHENTICATED} state.
+     */
+    void authenticated();
+
+    /**
+     * Moves this session into {@link ImapSessionState#SELECTED} state and sets
+     * the supplied mailbox to be the currently selected mailbox.
+     * 
+     * @param mailbox
+     *            The selected mailbox.
+     */
+    void selected(SelectedMailbox mailbox);
+
+    /**
+     * Moves the session out of {@link ImapSessionState#SELECTED} state and back
+     * into {@link ImapSessionState#AUTHENTICATED} state. The selected mailbox
+     * is cleared.
+     */
+    void deselect();
+
+    /**
+     * Provides the selected mailbox for this session, or <code>null</code> if
+     * this session is not in {@link ImapSessionState#SELECTED} state.
+     * 
+     * @return the currently selected mailbox.
+     */
+    SelectedMailbox getSelected();
+
+    /**
+     * Return true if compression is active
+     * 
+     * @return compActive
+     */
+    public boolean isCompressionActive();
+
+    /**
+     * Return true if compression is supported. This is related to COMPRESS extension.
+     * See http://www.ietf.org/rfc/rfc4978.txt
+     * 
+     * @return compressSupport
+     */
+    public boolean isCompressionSupported();
+
+    /**
+     * Start the compression
+     * 
+     * @return success
+     */
+    public boolean startCompression();
+
+    /**
+     * Return true if multiple namespaces are supported
+     * 
+     * @return multipleNamespaces
+     */
+    public boolean supportMultipleNamespaces();
+    
+    /**
+     * Return true if the login / authentication via plain username / password is
+     * disallowed
+     * 
+     * @return plainDisallowed
+     */
+    public boolean isPlainAuthDisallowed();
 }

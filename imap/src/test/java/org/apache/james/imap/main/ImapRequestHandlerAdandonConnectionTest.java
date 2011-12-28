@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import org.apache.james.imap.api.process.ImapProcessor;
 import org.apache.james.imap.api.process.ImapSession;
 import org.apache.james.imap.decode.ImapDecoder;
+import org.apache.james.imap.decode.main.ImapRequestStreamHandler;
 import org.apache.james.imap.encode.ImapEncoder;
 import org.jmock.Expectations;
 import org.jmock.Mockery;

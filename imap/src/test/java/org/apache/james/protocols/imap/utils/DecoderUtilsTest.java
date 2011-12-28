@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.imap.decode;
+package org.apache.james.protocols.imap.utils;
 
 import static org.junit.Assert.*;
 
@@ -30,6 +30,8 @@ import java.util.TimeZone;
 
 import javax.mail.Flags;
 
+import org.apache.james.protocols.imap.DecodingException;
+import org.apache.james.protocols.imap.utils.DecoderUtils;
 import org.junit.Test;
 
 public class DecoderUtilsTest {

@@ -23,9 +23,9 @@ import org.apache.james.imap.api.ImapConstants;
 import org.apache.james.imap.api.ImapMessage;
 import org.apache.james.imap.api.process.ImapSession;
 import org.apache.james.imap.decode.ImapRequestLineReader;
-import org.apache.james.imap.decode.DecodingException;
 import org.apache.james.imap.decode.ImapRequestLineReader.ATOM_CHARValidator;
 import org.apache.james.imap.message.request.ListRequest;
+import org.apache.james.protocols.imap.DecodingException;
 
 /**
  * Parse LIST commands

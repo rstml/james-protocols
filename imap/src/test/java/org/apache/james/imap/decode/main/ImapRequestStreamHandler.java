@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.imap.main;
+package org.apache.james.imap.decode.main;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,13 +26,16 @@ import java.io.OutputStream;
 import org.apache.james.imap.api.ImapSessionState;
 import org.apache.james.imap.api.process.ImapProcessor;
 import org.apache.james.imap.api.process.ImapSession;
-import org.apache.james.imap.decode.DecodingException;
 import org.apache.james.imap.decode.ImapDecoder;
 import org.apache.james.imap.decode.ImapRequestLineReader;
 import org.apache.james.imap.decode.ImapRequestStreamLineReader;
 import org.apache.james.imap.encode.ImapEncoder;
 import org.apache.james.imap.encode.base.ImapResponseComposerImpl;
+import org.apache.james.imap.main.AbstractImapRequestHandler;
+import org.apache.james.imap.main.OutputStreamImapResponseWriter;
+import org.apache.james.imap.main.AbstractImapRequestHandler.SilentResponder;
 import org.apache.james.imap.message.request.SystemMessage;
+import org.apache.james.protocols.imap.DecodingException;
 import org.slf4j.Logger;
 
 /**

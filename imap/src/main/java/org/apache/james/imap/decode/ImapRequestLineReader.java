@@ -43,6 +43,8 @@ import org.apache.james.imap.api.message.IdRange;
 import org.apache.james.imap.api.message.request.DayMonthYear;
 import org.apache.james.imap.api.process.ImapSession;
 import org.apache.james.imap.api.process.SearchResUtil;
+import org.apache.james.protocols.imap.DecodingException;
+import org.apache.james.protocols.imap.utils.DecoderUtils;
 import org.apache.james.protocols.imap.utils.FastByteArrayOutputStream;
 
 /**

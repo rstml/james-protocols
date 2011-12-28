@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.james.imap.api.display.HumanReadableText;
+import org.apache.james.protocols.imap.DecodingException;
 
 public class FetchPartPathDecoder {
 

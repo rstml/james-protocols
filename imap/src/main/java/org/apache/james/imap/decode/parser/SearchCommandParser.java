@@ -40,9 +40,9 @@ import org.apache.james.imap.api.message.response.StatusResponseFactory;
 import org.apache.james.imap.api.message.response.StatusResponse.ResponseCode;
 import org.apache.james.imap.api.process.ImapSession;
 import org.apache.james.imap.decode.ImapRequestLineReader;
-import org.apache.james.imap.decode.DecodingException;
 import org.apache.james.imap.decode.ImapRequestLineReader.CharacterValidator;
 import org.apache.james.imap.message.request.SearchRequest;
+import org.apache.james.protocols.imap.DecodingException;
 
 /**
  * Parse SEARCH commands

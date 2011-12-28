@@ -17,11 +17,12 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.imap.decode;
+package org.apache.james.protocols.imap.utils;
 
 import java.util.Locale;
 import static org.junit.Assert.*;
 
+import org.apache.james.protocols.imap.utils.DecoderUtils;
 import org.junit.After;
 import org.junit.Test;
 

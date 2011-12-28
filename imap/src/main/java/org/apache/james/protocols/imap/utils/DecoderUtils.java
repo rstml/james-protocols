@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.imap.decode;
+package org.apache.james.protocols.imap.utils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +29,7 @@ import javax.mail.Flags;
 
 import org.apache.james.imap.api.display.HumanReadableText;
 import org.apache.james.imap.api.message.MessageFlags;
+import org.apache.james.protocols.imap.DecodingException;
 
 /**
  * Utility procedures.

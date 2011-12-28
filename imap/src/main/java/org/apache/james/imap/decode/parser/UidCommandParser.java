@@ -27,8 +27,8 @@ import org.apache.james.imap.decode.DelegatingImapCommandParser;
 import org.apache.james.imap.decode.ImapCommandParser;
 import org.apache.james.imap.decode.ImapCommandParserFactory;
 import org.apache.james.imap.decode.ImapRequestLineReader;
-import org.apache.james.imap.decode.DecodingException;
 import org.apache.james.imap.decode.base.AbstractImapCommandParser;
+import org.apache.james.protocols.imap.DecodingException;
 
 /**
  * Parse UID commands

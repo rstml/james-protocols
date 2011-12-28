@@ -23,6 +23,7 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 
+import org.apache.james.imap.decode.main.OutputStreamImapResponseWriter;
 import org.junit.Before;
 
 public abstract class AbstractTestOutputStreamImapResponseWriter {

@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.imap.main;
+package org.apache.james.imap.decode.main;
 
 import java.io.IOException;
 import java.io.InputStream;

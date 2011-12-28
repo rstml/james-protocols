@@ -32,8 +32,6 @@ import org.apache.james.imap.decode.ImapRequestStreamLineReader;
 import org.apache.james.imap.encode.ImapEncoder;
 import org.apache.james.imap.encode.base.ImapResponseComposerImpl;
 import org.apache.james.imap.main.AbstractImapRequestHandler;
-import org.apache.james.imap.main.OutputStreamImapResponseWriter;
-import org.apache.james.imap.main.AbstractImapRequestHandler.SilentResponder;
 import org.apache.james.imap.message.request.SystemMessage;
 import org.apache.james.protocols.imap.DecodingException;
 import org.slf4j.Logger;

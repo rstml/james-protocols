@@ -37,6 +37,11 @@ import org.apache.james.protocols.smtp.SMTPSession;
  */
 public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
     
+    private static final String EHLO ="EHLO";
+    private static final String SMTP = "SMTP";
+    private static final String ESMTPA = "ESMTPA";
+    private static final String ESMTP = "ESMTP";
+    
     private static final ThreadLocal<DateFormat> DATEFORMAT = new ThreadLocal<DateFormat>() {
 
         @Override
@@ -58,10 +63,10 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
      */
     protected String getServiceType(SMTPSession session, String heloMode) {
      // Check if EHLO was used
-        if ("EHLO".equals(heloMode)) {
+        if (EHLO.equals(heloMode)) {
             // Not successful auth
             if (session.getUser() == null) {
-                return "ESMTP";
+                return ESMTP;
             } else {
                 // See RFC3848
                 // The new keyword "ESMTPA" indicates the use of ESMTP when
@@ -70,10 +75,10 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
                 // AUTH [3] extension is also used and authentication is
                 // successfully
                 // achieved.
-                return "ESMTPA";
+                return ESMTPA;
             }
         } else {
-            return "SMTP";
+            return SMTP;
         }
     }
 
@@ -105,7 +110,7 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
         headerLineBuffer.append(" ([").append(session.getRemoteAddress().getAddress().getHostAddress()).append("])").append("\r\n");
         headerLineBuffer.delete(0, headerLineBuffer.length());
 
-        headerLineBuffer.append("          by ").append(session.getConfiguration().getHelloName()).append(" (").append(session.getConfiguration().getSoftwareName()).append(") with ").append(getServiceType(session, heloMode));
+        headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append("by ").append(session.getConfiguration().getHelloName()).append(" (").append(session.getConfiguration().getSoftwareName()).append(") with ").append(getServiceType(session, heloMode));
         headerLineBuffer.append(" ID ").append(session.getSessionID());
 
         if (((Collection<?>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).size() == 1) {
@@ -113,12 +118,12 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
             // (prevents email address harvesting and large headers in
             // bulk email)
             headerLineBuffer.append("\r\n");
-            headerLineBuffer.append("          for <").append(((List<MailAddress>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).get(0).toString()).append(">;");
+            headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append("for <").append(((List<MailAddress>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).get(0).toString()).append(">;");
         } else {
             // Put the ; on the end of the 'by' line
             headerLineBuffer.append(";");
         }
-        headerLineBuffer.append("          " + DATEFORMAT.get().format(new Date()));
+        headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append(DATEFORMAT.get().format(new Date()));
 
         return Arrays.asList(new Header("Received", headerLineBuffer.toString()));
     }

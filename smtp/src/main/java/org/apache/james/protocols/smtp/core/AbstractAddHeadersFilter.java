@@ -96,12 +96,17 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
     protected abstract Collection<Header> headers(SMTPSession session);
     
     public final static class Header {
+        public static final String MULTI_LINE_PREFIX = "          ";
+        
         public final String name;
         public final String value;
-
+        
+        private final String[] lines;
+        
         public Header(String name, String value) {
             this.name = name;
             this.value = value;
+            this.lines = toString().split("\r\n");
         }
         
         public String toString() {
@@ -120,7 +125,6 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
          */
         public Response transferTo(SMTPSession session, LineHandler<SMTPSession> handler) {
             try {
-                String[] lines = toString().split("\r\n");
                 Response response = null;
                 for (int i = 0; i < lines.length; i++) {
                      response = handler.onLine(session, ByteBuffer.wrap((lines[i] + "\r\n").getBytes("US-ASCII")));

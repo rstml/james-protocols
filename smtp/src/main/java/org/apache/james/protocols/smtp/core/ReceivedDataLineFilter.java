@@ -30,6 +30,11 @@ import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPSession;
 
+/**
+ * {@link AbstractAddHeadersFilter} which adds the Received header for the message.
+ * 
+ *
+ */
 public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
     
     private static final ThreadLocal<DateFormat> DATEFORMAT = new ThreadLocal<DateFormat>() {
@@ -72,11 +77,17 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
         }
     }
 
+    /**
+     * The Received header is added in front of the received headers. So returns {@link Location#Suffix}
+     */
     @Override
     protected Location getLocation() {
         return Location.Prefix;
     }
 
+    /**
+     * Return the Received header for the message
+     */
     @SuppressWarnings("unchecked")
     @Override
     protected Collection<Header> headers(SMTPSession session) {

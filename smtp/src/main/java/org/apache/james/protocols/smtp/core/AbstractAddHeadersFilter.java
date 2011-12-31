@@ -28,6 +28,11 @@ import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.smtp.SMTPSession;
 
+/**
+ * Abstract base class for {@link SeparatingDataLineFilter} implementations that add headers to a message
+ * 
+ *
+ */
 public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
 
     private static final AtomicInteger COUNTER = new AtomicInteger(0);
@@ -63,7 +68,15 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
         }
         return super.onHeadersLine(session, line, next);
     }
-    
+   
+    /**
+     * Add headers to the message
+     * 
+     * @param session
+     * @param line
+     * @param next
+     * @return response
+     */
     private Response addHeaders(SMTPSession session, ByteBuffer line, LineHandler<SMTPSession> next) {
         Response response;
         for (Header header: headers(session)) {

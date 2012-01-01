@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.james.protocols.api.handler.CommandDispatcher;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChainImpl;
+import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.pop3.core.CapaCmdHandler;
 import org.apache.james.protocols.pop3.core.DeleCmdHandler;
 import org.apache.james.protocols.pop3.core.ListCmdHandler;
@@ -45,7 +46,7 @@ import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
 public class POP3ProtocolHandlerChain extends ProtocolHandlerChainImpl{
 
     public POP3ProtocolHandlerChain() {
-        this(null);
+        super();
     }
 
         
@@ -54,10 +55,12 @@ public class POP3ProtocolHandlerChain extends ProtocolHandlerChainImpl{
      * will add all default handlers
      * 
      * @param mailboxFactory
+     * @throws WiringException 
      */
-    public POP3ProtocolHandlerChain(MailboxFactory mailboxFactory) {
+    public POP3ProtocolHandlerChain(MailboxFactory mailboxFactory) throws WiringException {
         if (mailboxFactory != null) {
             addAll(initDefaultHandlers(mailboxFactory));      
+            wireExtensibleHandlers();
         }
     }
     

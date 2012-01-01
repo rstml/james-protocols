@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 import org.apache.commons.net.pop3.POP3Client;
-import org.apache.james.protocols.api.logger.Logger;
+import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.netty.NettyServer;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
 import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
@@ -34,68 +34,8 @@ import org.junit.Test;
 
 public class POP3ServerTest {
 
-    private POP3Protocol createProtocol(MailboxFactory factory) {
-        return new POP3Protocol(new POP3ProtocolHandlerChain(factory), new POP3Configuration(), new Logger() {
-            
-            public void warn(String message, Throwable t) {
-                
-            }
-            
-            public void warn(String message) {
-                
-            }
-            
-            public void trace(String message, Throwable t) {
-                
-            }
-            
-            public void trace(String message) {
-                
-            }
-            
-            public boolean isWarnEnabled() {
-                return false;
-            }
-            
-            public boolean isTraceEnabled() {
-                return false;
-            }
-            
-            public boolean isInfoEnabled() {
-                return false;
-            }
-            
-            public boolean isErrorEnabled() {
-                return false;
-            }
-            
-            public boolean isDebugEnabled() {
-                return false;
-            }
-            
-            public void info(String message, Throwable t) {
-                
-            }
-            
-            public void info(String message) {                
-            }
-            
-            public void error(String message, Throwable t) {
-                
-            }
-            
-            public void error(String message) {
-                
-            }
-            
-            public void debug(String message, Throwable t) {
-                
-            }
-            
-            public void debug(String message) {
-                
-            }
-        });
+    private POP3Protocol createProtocol(MailboxFactory factory) throws WiringException {
+        return new POP3Protocol(new POP3ProtocolHandlerChain(factory), new POP3Configuration(), new MockLogger());
     }
     @Test
     public void testInvalidAuth() throws Exception {
@@ -112,7 +52,7 @@ public class POP3ServerTest {
             
             assertFalse(client.login("invalid", "invalid"));
            
-            //assertTrue(client.logout());
+            assertTrue(client.logout());
            
         } finally {
             if (server != null) {

@@ -31,9 +31,8 @@ import org.apache.james.protocols.api.Response;
  */
 public interface LineHandler<Session extends ProtocolSession> extends ProtocolHandler{
      
-    public static final String CRLF = "\r\n";
     /**
-     * Processing the give line. The line includes the {@link #CRLF} delimiter.
+     * Processing the give line. The line includes the {@link ProtocolSession#getLineDelimiter()} delimiter.
      * If true is returned the connection is closed
      * 
      * @param session not null

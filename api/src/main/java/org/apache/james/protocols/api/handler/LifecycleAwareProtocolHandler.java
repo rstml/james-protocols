@@ -25,15 +25,6 @@ package org.apache.james.protocols.api.handler;
  */
 public interface LifecycleAwareProtocolHandler extends ProtocolHandler{
 
-    
-    /**
-     * Init with the given {@link ProtocolHandlerConfiguration}
-     * 
-     * @param config
-     * @throws ProtocolHandlerConfigurationException
-     */
-    public void init(ProtocolHandlerConfiguration config) throws ProtocolHandlerConfigurationException;
-    
     /**
      * Destroy object
      */

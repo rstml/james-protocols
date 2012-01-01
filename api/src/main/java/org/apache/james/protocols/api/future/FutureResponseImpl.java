@@ -17,11 +17,13 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.future;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.james.protocols.api.AbstractResponse;
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.logger.Logger;
 
 /**

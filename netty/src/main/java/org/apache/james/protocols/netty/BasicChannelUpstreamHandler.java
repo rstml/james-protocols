@@ -24,12 +24,12 @@ import java.util.List;
 import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.ProtocolSessionImpl;
-import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.Encryption;
+import org.apache.james.protocols.api.future.FutureResponse;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
 import org.apache.james.protocols.api.handler.LineHandler;

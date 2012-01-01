@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.james.protocols.api.BaseRequest;
-import org.apache.james.protocols.api.FutureResponse;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.future.FutureResponse;
 
 
 

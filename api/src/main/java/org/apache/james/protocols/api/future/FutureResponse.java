@@ -17,7 +17,9 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.future;
+
+import org.apache.james.protocols.api.Response;
 
 /**
  * An special {@link Response} which allows to populate it in an async fashion. It also allows to register listeners which will get notified once the 

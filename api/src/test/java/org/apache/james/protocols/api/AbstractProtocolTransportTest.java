@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.james.protocols.api.future.FutureResponseImpl;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.junit.Test;
 

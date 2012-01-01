@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.james.protocols.api.FutureResponse.ResponseListener;
+import org.apache.james.protocols.api.future.FutureResponse;
+import org.apache.james.protocols.api.future.FutureResponse.ResponseListener;
 
 
 /**

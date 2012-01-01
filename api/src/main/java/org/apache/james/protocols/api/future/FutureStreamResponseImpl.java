@@ -17,22 +17,35 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.future;
 
-public class StartTlsFutureResponse extends FutureResponseImpl implements StartTlsResponse{
+import java.io.InputStream;
 
+import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.StreamResponse;
+
+public class FutureStreamResponseImpl extends FutureResponseImpl implements StreamResponse{
 
     /**
-     * Set the {@link StartTlsResponse} to wrap. If a non {@link StartTlsResponse} is set this implementation will throw an {@link IllegalArgumentException}
+     * Set the {@link StreamResponse} to wrap. If a non {@link StreamResponse} is set this implementation will throw an {@link IllegalArgumentException}
      * 
      */
     @Override
     public void setResponse(Response response) {
-        if (response instanceof StartTlsResponse) {
+        if (response instanceof StreamResponse) {
             super.setResponse(response);
         } else {
-            throw new IllegalArgumentException("Response MUST be of type " + StartTlsResponse.class.getName());
+            throw new IllegalArgumentException("Response MUST be of type " + StreamResponse.class.getName());
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.StreamResponse#getStream()
+     */
+    public InputStream getStream() {
+        checkReady();
+        return ((StreamResponse) response).getStream();
+        
+    }
 }

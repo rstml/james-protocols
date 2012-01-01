@@ -21,11 +21,13 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
-import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
@@ -44,9 +46,7 @@ public class DNSRBLHandler implements  RcptHook{
      */
     private String[] whitelist;
     private String[] blacklist;
-    
-    private DNSService dnsService = null;
-    
+        
     private boolean getDetail = false;
     
     private String blocklistedDetail = null;
@@ -54,16 +54,6 @@ public class DNSRBLHandler implements  RcptHook{
     public static final String RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME = "org.apache.james.smtpserver.rbl.blocklisted";
     
     public static final String RBL_DETAIL_MAIL_ATTRIBUTE_NAME = "org.apache.james.smtpserver.rbl.detail";
-
-
-    /**
-     * Sets the DNS service.
-     * @param dnsService the dnsService to set
-     */
-    public final void setDNSService(DNSService dnsService) {
-        this.dnsService = dnsService;
-    }
-
    
     
     /**
@@ -137,51 +127,83 @@ public class DNSRBLHandler implements  RcptHook{
 
             if (whitelist != null) {
                 String[] rblList = whitelist;
-                for (int i = 0 ; i < rblList.length ; i++) try {
-                    dnsService.getByName(reversedOctets + rblList[i]);
-                    if (session.getLogger().isInfoEnabled()) {
-                        session.getLogger().info("Connection from " + ipAddress + " whitelisted by " + rblList[i]);
-                    }
+                for (int i = 0 ; i < rblList.length ; i++) {
+                    if (resolve(reversedOctets + rblList[i])) {
+                        if (session.getLogger().isInfoEnabled()) {
+                            session.getLogger().info("Connection from " + ipAddress + " whitelisted by " + rblList[i]);
+                        }
                     
-                    return;
-                } catch (java.net.UnknownHostException uhe) {
-                    if (session.getLogger().isDebugEnabled()) {
-                        session.getLogger().debug("IpAddress " + session.getRemoteAddress().getAddress()  + " not listed on " + rblList[i]);
+                        return;
+                    } else {
+                        if (session.getLogger().isDebugEnabled()) {
+                            session.getLogger().debug("IpAddress " + session.getRemoteAddress().getAddress()  + " not listed on " + rblList[i]);
+                        }
                     }
                 }
             }
 
             if (blacklist != null) {
                 String[] rblList = blacklist;
-                for (int i = 0 ; i < rblList.length ; i++) try {
-                    dnsService.getByName(reversedOctets + rblList[i]);
-                    if (session.getLogger().isInfoEnabled()) {
-                        session.getLogger().info("Connection from " + ipAddress + " restricted by " + rblList[i] + " to SMTP AUTH/postmaster/abuse.");
-                    }
-                    
-                    // we should try to retrieve details
-                    if (getDetail) {
-                        Collection<String> txt = dnsService.findTXTRecords(reversedOctets + rblList[i]);
+                for (int i = 0 ; i < rblList.length ; i++) {
+                    if (resolve(reversedOctets + rblList[i])) {
+                        if (session.getLogger().isInfoEnabled()) {
+                            session.getLogger().info("Connection from " + ipAddress + " restricted by " + rblList[i] + " to SMTP AUTH/postmaster/abuse.");
+                        }
                         
-                        // Check if we found a txt record
-                        if (!txt.isEmpty()) {
-                            // Set the detail
-                            String blocklistedDetail = txt.iterator().next().toString();
+                        // we should try to retrieve details
+                        if (getDetail) {
+                            Collection<String> txt = resolveTXTRecords(reversedOctets + rblList[i]);
                             
-                            session.setAttachment(RBL_DETAIL_MAIL_ATTRIBUTE_NAME, blocklistedDetail, State.Connection);
+                            // Check if we found a txt record
+                            if (!txt.isEmpty()) {
+                                // Set the detail
+                                String blocklistedDetail = txt.iterator().next().toString();
+                                
+                                session.setAttachment(RBL_DETAIL_MAIL_ATTRIBUTE_NAME, blocklistedDetail, State.Connection);
+                            }
+                        }
+                        
+                        session.setAttachment(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME, "true", State.Connection);
+                        return;
+                    } else {
+                        // if it is unknown, it isn't blocked
+                        if (session.getLogger().isDebugEnabled()) {
+                            session.getLogger().debug("unknown host exception thrown:" + rblList[i]);
                         }
                     }
-                    
-                    session.setAttachment(RBL_BLOCKLISTED_MAIL_ATTRIBUTE_NAME, "true", State.Connection);
-                    return;
-                } catch (java.net.UnknownHostException uhe) {
-                    // if it is unknown, it isn't blocked
-                    if (session.getLogger().isDebugEnabled()) {
-                        session.getLogger().debug("unknown host exception thrown:" + rblList[i]);
-                    }
+                   
                 }
             }
         }
+    }
+    
+    /**
+     * Check if the given ipaddress is resolvable. 
+     * 
+     * This implementation use {@link InetAddress#getByName(String)}. Sub-classes may override this with a more performant solution
+     * 
+     * @param ip
+     * @return canResolve
+     */
+    protected boolean resolve(String ip) {
+        try {
+            InetAddress.getByName(ip);
+            return true;
+        } catch (UnknownHostException e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Return a {@link Collection} which holds all TXT records for the ip. This is most times used to add details for a RBL entry.
+     * 
+     * This implementation always returns an empty {@link Collection}. Sub-classes may override this.
+     * 
+     * @param ip
+     * @return txtRecords
+     */
+    protected Collection<String> resolveTXTRecords(String ip) {
+        return Collections.<String>emptyList();
     }
 
     /**

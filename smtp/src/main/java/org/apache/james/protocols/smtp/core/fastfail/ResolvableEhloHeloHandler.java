@@ -19,11 +19,11 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
 import org.apache.james.protocols.api.ProtocolSession.State;
-import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -41,25 +41,6 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
 
     public final static String BAD_EHLO_HELO = "BAD_EHLO_HELO";
 
-    protected DNSService dnsService = null;
-
-    /**
-     * Gets the DNS service.
-     * @return the dnsService
-     */
-    public final DNSService getDNSService() {
-        return dnsService;
-    }
-
-    /**
-     * Sets the DNS service.
-     * @param dnsService the dnsService to set
-     */
-    public final void setDNSService(DNSService dnsService) {
-        this.dnsService = dnsService;
-    }
-
-
     /**
      * Check if EHLO/HELO is resolvable
      * 
@@ -75,6 +56,9 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
         }
     }
     
+    protected String resolve(String host) throws UnknownHostException {
+        return InetAddress.getByName(host).getHostName();
+    }
     /**
      * @param session the SMTPSession
      * @param argument the argument
@@ -84,7 +68,7 @@ public class ResolvableEhloHeloHandler implements RcptHook, HeloHook {
         // try to resolv the provided helo. If it can not resolved do not
         // accept it.
         try {
-            dnsService.getByName(argument);
+            resolve(argument);
         } catch (UnknownHostException e) {
             return true;
         }

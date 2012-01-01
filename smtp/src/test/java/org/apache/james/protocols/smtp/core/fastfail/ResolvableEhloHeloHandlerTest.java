@@ -30,9 +30,7 @@ import java.util.Map;
 import static junit.framework.Assert.*;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
-import org.apache.james.protocols.smtp.BaseFakeDNSService;
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
-import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -112,24 +110,24 @@ public class ResolvableEhloHeloHandlerTest {
         return session;
     }
     
-    private DNSService setupMockDNSServer() {
-    	DNSService dns = new BaseFakeDNSService(){
-            public InetAddress getByName(String host) throws UnknownHostException {
+    private ResolvableEhloHeloHandler createHandler() {
+        return new ResolvableEhloHeloHandler() {
+
+            @Override
+            protected String resolve(String host) throws UnknownHostException {
                 if (host.equals(INVALID_HOST)) 
                     throw new UnknownHostException();
-                return InetAddress.getLocalHost();
+                return InetAddress.getLocalHost().getHostName();
             }
+            
         };
-        
-        return dns;
     }
     
     @Test
     public void testRejectInvalidHelo() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,false,false,null,mailAddress);
-        ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();
-        handler.setDNSService(setupMockDNSServer());
+        ResolvableEhloHeloHandler handler = createHandler();
         
         handler.doHelo(session, INVALID_HOST);
         assertNotNull("Invalid HELO",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));
@@ -142,9 +140,8 @@ public class ResolvableEhloHeloHandlerTest {
     public void testNotRejectValidHelo() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(VALID_HOST,false,false,null,mailAddress);
-        ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();
-                
-        handler.setDNSService(setupMockDNSServer());
+        ResolvableEhloHeloHandler handler = createHandler();
+
   
         handler.doHelo(session, VALID_HOST);
         assertNull("Valid HELO",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));
@@ -157,9 +154,8 @@ public class ResolvableEhloHeloHandlerTest {
     public void testRejectInvalidHeloAuthUser() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,false,true,"valid@user",mailAddress);
-        ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();
-                
-        handler.setDNSService(setupMockDNSServer());
+        ResolvableEhloHeloHandler handler = createHandler();
+
 
         handler.doHelo(session, INVALID_HOST);
         assertNotNull("Value stored",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));
@@ -174,10 +170,8 @@ public class ResolvableEhloHeloHandlerTest {
     public void testRejectRelay() throws MailAddressException {
         MailAddress mailAddress = new MailAddress("test@localhost");
         SMTPSession session = setupMockSession(INVALID_HOST,true,false,null,mailAddress);
-        ResolvableEhloHeloHandler handler = new ResolvableEhloHeloHandler();
-        
-        
-        handler.setDNSService(setupMockDNSServer());
+        ResolvableEhloHeloHandler handler = createHandler();
+
 
         handler.doHelo(session, INVALID_HOST);
         assertNotNull("Value stored",session.getAttachment(ResolvableEhloHeloHandler.BAD_EHLO_HELO, State.Transaction));

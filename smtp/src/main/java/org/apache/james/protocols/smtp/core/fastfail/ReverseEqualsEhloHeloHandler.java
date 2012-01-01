@@ -19,11 +19,9 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
-import org.apache.james.protocols.smtp.SMTPSession;
-
-
 import java.net.UnknownHostException;
 
+import org.apache.james.protocols.smtp.SMTPSession;
 
 public class ReverseEqualsEhloHeloHandler extends ResolvableEhloHeloHandler {
 
@@ -33,16 +31,16 @@ public class ReverseEqualsEhloHeloHandler extends ResolvableEhloHeloHandler {
     @Override
     protected boolean isBadHelo(SMTPSession session, String argument) {
         try {
-            // get reverse entry
-            String reverse = dnsService.getHostName(dnsService.getByName(
-                    session.getRemoteAddress().getAddress().getHostAddress()));
+            String reverse = resolve(session.getRemoteAddress().getAddress().getHostAddress());
             if (!argument.equals(reverse)) {
                 return true;
             }
         } catch (UnknownHostException e) {
-            return true;
+            // ignore
         }
+
         return false;
     }
+    
     
 }

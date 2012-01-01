@@ -19,40 +19,32 @@
 
 package org.apache.james.protocols.smtp.core.fastfail;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import static junit.framework.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
-
-import static junit.framework.Assert.*;
-
 import org.apache.james.protocols.api.ProtocolSession.State;
-import org.apache.james.protocols.smtp.BaseFakeDNSService;
 import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
-import org.apache.james.protocols.smtp.DNSService;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.apache.james.protocols.smtp.core.fastfail.ValidSenderDomainHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.junit.Test;
 
 public class ValidSenderDomainHandlerTest {
     
-    private DNSService setupDNSServer() {
-    	DNSService dns = new BaseFakeDNSService(){
-
-            public Collection<String> findMXRecords(String hostname) {
-                Collection<String> mx = new ArrayList<String>();
-                if (hostname.equals("test.james.apache.org")) {
-                    mx.add("mail.james.apache.org");
-                }
-                return mx;
-            }
+    private ValidSenderDomainHandler createHandler() {
+        return new ValidSenderDomainHandler() {
             
+            @Override
+            protected boolean hasMXRecord(SMTPSession session, String domain) {
+                if (domain.equals("test.james.apache.org")) {
+                    return true;
+                }
+                return false;
+            }
         };
-        return dns;
     }
     
     private SMTPSession setupMockedSession(final MailAddress sender) {
@@ -106,8 +98,7 @@ public class ValidSenderDomainHandlerTest {
     // Test for JAMES-580
     @Test
     public void testNullSenderNotReject() {
-        ValidSenderDomainHandler handler = new ValidSenderDomainHandler();
-        handler.setDNSService(setupDNSServer());
+        ValidSenderDomainHandler handler = createHandler();
         int response = handler.doMail(setupMockedSession(null),null).getResult();
         
         assertEquals("Not blocked cause its a nullsender",response,HookReturnCode.DECLINED);
@@ -115,9 +106,8 @@ public class ValidSenderDomainHandlerTest {
 
     @Test
     public void testInvalidSenderDomainReject() throws MailAddressException {
-        ValidSenderDomainHandler handler = new ValidSenderDomainHandler();
+        ValidSenderDomainHandler handler = createHandler();
         SMTPSession session = setupMockedSession(new MailAddress("invalid@invalid"));
-        handler.setDNSService(setupDNSServer());
         int response = handler.doMail(session,(MailAddress) session.getAttachment(SMTPSession.SENDER, State.Transaction)).getResult();
         
         assertEquals("Blocked cause we use reject action", response,HookReturnCode.DENY);

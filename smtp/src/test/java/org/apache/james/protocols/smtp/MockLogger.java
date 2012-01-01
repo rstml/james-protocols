@@ -105,6 +105,7 @@ public class MockLogger implements Logger {
                     }
                 }
             }
+            s.append("]");
             System.out.println(s.toString());
             if (t != null) {
                 t.printStackTrace();

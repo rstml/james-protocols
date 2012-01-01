@@ -63,7 +63,6 @@ public class AuthCmdHandler
     private static final String[] MAIL_PARAMS = { "AUTH" };
     private static final List<String> ESMTP_FEATURES = Collections.unmodifiableList(Arrays.asList("AUTH LOGIN PLAIN", "AUTH=LOGIN PLAIN"));
     
-    private final static String CHARSET = "US-ASCII";
     private static final Response AUTH_ABORTED = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_ARGUMENTS, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.SECURITY_AUTH) + " Authentication aborted").immutable();
     private static final Response ALREADY_AUTH = new SMTPResponse(SMTPRetCode.BAD_SEQUENCE, DSNStatus.getStatus(DSNStatus.PERMANENT,DSNStatus.DELIVERY_OTHER)+" User has previously authenticated. "
             + " Further authentication is not required!").immutable();
@@ -77,6 +76,7 @@ public class AuthCmdHandler
     private abstract class AbstractSMTPLineHandler implements LineHandler<SMTPSession> {
 
         public Response onLine(SMTPSession session, ByteBuffer line) {
+            String charset = session.getCharset().name();
             try {
                 byte[] l;
                 if (line.hasArray()) {
@@ -85,9 +85,9 @@ public class AuthCmdHandler
                     l = new byte[line.remaining()];
                     line.get(l);
                 }
-                return handleCommand(session, new String(l, CHARSET));
+                return handleCommand(session, new String(l, charset));
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("No " + CHARSET + " support!");
+                throw new RuntimeException("No " + charset + " support!");
             }
            
         }

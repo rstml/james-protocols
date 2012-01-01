@@ -23,6 +23,7 @@ package org.apache.james.protocols.smtp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.apache.james.protocols.api.Response;
@@ -204,6 +205,14 @@ public class BaseFakeSMTPSession implements SMTPSession {
     }
 
     public Object getAttachment(String key, State state) {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
+    public Charset getCharset() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
+    public String getLineDelimiter() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 

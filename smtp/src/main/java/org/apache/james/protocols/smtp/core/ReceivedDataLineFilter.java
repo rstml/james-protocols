@@ -107,7 +107,7 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
         if (heloName != null) {
             headerLineBuffer.append(" (").append(heloMode).append(" ").append(heloName).append(") ");
         }
-        headerLineBuffer.append(" ([").append(session.getRemoteAddress().getAddress().getHostAddress()).append("])").append("\r\n");
+        headerLineBuffer.append(" ([").append(session.getRemoteAddress().getAddress().getHostAddress()).append("])").append(session.getLineDelimiter());
         headerLineBuffer.delete(0, headerLineBuffer.length());
 
         headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append("by ").append(session.getConfiguration().getHelloName()).append(" (").append(session.getConfiguration().getSoftwareName()).append(") with ").append(getServiceType(session, heloMode));
@@ -117,7 +117,7 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
             // Only indicate a recipient if they're the only recipient
             // (prevents email address harvesting and large headers in
             // bulk email)
-            headerLineBuffer.append("\r\n");
+            headerLineBuffer.append(session.getLineDelimiter());
             headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append("for <").append(((List<MailAddress>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).get(0).toString()).append(">;");
         } else {
             // Put the ; on the end of the 'by' line
@@ -125,6 +125,6 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
         }
         headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append(DATEFORMAT.get().format(new Date()));
 
-        return Arrays.asList(new Header("Received", headerLineBuffer.toString()));
+        return Arrays.asList(new Header("Received", headerLineBuffer.toString(), session.getLineDelimiter()));
     }
 }

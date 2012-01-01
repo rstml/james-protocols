@@ -102,15 +102,17 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
         public final String value;
         
         private final String[] lines;
+        private final String lineDelimiter;
         
-        public Header(String name, String value) {
+        public Header(String name, String value, String lineDelimiter) {
             this.name = name;
             this.value = value;
-            this.lines = toString().split("\r\n");
+            this.lines = toString().split(lineDelimiter);
+            this.lineDelimiter = lineDelimiter;
         }
         
         public String toString() {
-             return name + ": " + value + "\r\n";
+             return name + ": " + value + lineDelimiter;
         }
         
         /**
@@ -124,17 +126,19 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
          * @return response
          */
         public Response transferTo(SMTPSession session, LineHandler<SMTPSession> handler) {
+            String charset = session.getCharset().name();
+
             try {
                 Response response = null;
                 for (int i = 0; i < lines.length; i++) {
-                     response = handler.onLine(session, ByteBuffer.wrap((lines[i] + "\r\n").getBytes("US-ASCII")));
+                     response = handler.onLine(session, ByteBuffer.wrap((lines[i] + session.getLineDelimiter()).getBytes(charset)));
                      if (response != null) {
                          break;
                      }
                 }
                 return response;
             } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException("NO US-ASCII ?", e);
+                throw new RuntimeException("NO " + charset + " support ?", e);
             }
         }
     }

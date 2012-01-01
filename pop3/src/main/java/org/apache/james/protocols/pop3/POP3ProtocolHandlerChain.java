@@ -65,9 +65,7 @@ public class POP3ProtocolHandlerChain extends ProtocolHandlerChainImpl{
         List<ProtocolHandler> handlers = new ArrayList<ProtocolHandler>();
         handlers.add(new CapaCmdHandler());
         handlers.add(new UserCmdHandler());
-        PassCmdHandler handler = new PassCmdHandler();
-        handler.setMailboxFactory(mailboxFactory);
-        handlers.add(handler);
+        handlers.add(new PassCmdHandler(mailboxFactory));
         handlers.add(new ListCmdHandler());
         handlers.add(new UidlCmdHandler());
         handlers.add(new RsetCmdHandler());

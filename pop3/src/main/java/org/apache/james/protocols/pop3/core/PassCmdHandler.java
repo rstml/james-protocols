@@ -40,12 +40,11 @@ public class PassCmdHandler extends RsetCmdHandler {
     private static final Response UNEXPECTED_ERROR = new POP3Response(POP3Response.ERR_RESPONSE, "Unexpected error accessing mailbox").immutable();
     private static final Response AUTH_FAILED = new POP3Response(POP3Response.ERR_RESPONSE, "Authentication failed.").immutable();
 
-    private MailboxFactory mailboxManager;
+    private final MailboxFactory factory;
 
-    public void setMailboxFactory(MailboxFactory manager) {
-        this.mailboxManager = manager;
+    public PassCmdHandler(MailboxFactory factory) {
+        this.factory = factory;
     }
-
     /**
      * Handler method called upon receipt of a PASS command. Reads in and
      * validates the password.
@@ -56,7 +55,7 @@ public class PassCmdHandler extends RsetCmdHandler {
         if (session.getHandlerState() == POP3Session.AUTHENTICATION_USERSET && parameters != null) {
             String passArg = parameters;
             try {
-                Mailbox mailbox = mailboxManager.getMailbox(session, passArg);
+                Mailbox mailbox = factory.getMailbox(session, passArg);
                 if (mailbox != null) {
                     session.setUserMailbox(mailbox);
                     stat(session);

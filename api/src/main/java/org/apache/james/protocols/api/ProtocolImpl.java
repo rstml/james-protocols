@@ -20,6 +20,7 @@
 package org.apache.james.protocols.api;
 
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
+import org.apache.james.protocols.api.logger.Logger;
 
 /**
  * Basic {@link Protocol} implementation 

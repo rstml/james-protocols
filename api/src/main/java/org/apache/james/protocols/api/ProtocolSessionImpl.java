@@ -25,6 +25,8 @@ import java.util.Map;
 
 
 import org.apache.james.protocols.api.ProtocolTransport;
+import org.apache.james.protocols.api.logger.Logger;
+import org.apache.james.protocols.api.logger.ProtocolSessionLogger;
 
 /**
  * Basic implementation of {@link ProtocolSession}

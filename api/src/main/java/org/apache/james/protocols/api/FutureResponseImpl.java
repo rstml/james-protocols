@@ -22,6 +22,8 @@ package org.apache.james.protocols.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.james.protocols.api.logger.Logger;
+
 /**
  * {@link FutureResponse} implementation which wraps a {@link AbstractResponse} implementation
  * 

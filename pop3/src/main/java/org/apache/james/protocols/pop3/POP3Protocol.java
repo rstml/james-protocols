@@ -19,12 +19,12 @@
 
 package org.apache.james.protocols.pop3;
 
-import org.apache.james.protocols.api.Logger;
 import org.apache.james.protocols.api.ProtocolConfiguration;
 import org.apache.james.protocols.api.ProtocolImpl;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
+import org.apache.james.protocols.api.logger.Logger;
 
 public class POP3Protocol extends ProtocolImpl{
     

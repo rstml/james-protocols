@@ -19,7 +19,7 @@
 
 package org.apache.james.protocols.smtp;
 
-import org.apache.james.protocols.api.Logger;
+import org.apache.james.protocols.api.logger.Logger;
 
 public class MockLogger implements Logger {
 

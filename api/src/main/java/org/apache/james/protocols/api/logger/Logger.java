@@ -18,7 +18,7 @@
  ****************************************************************/
 
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.logger;
 
 public interface Logger {
 
@@ -44,19 +44,6 @@ public interface Logger {
      * @return true if error is enabled in the underlying logger.
      */
     boolean isErrorEnabled();
-
-
-    /**
-     * <p> Is fatal logging currently enabled? </p>
-     *
-     * <p> Call this method to prevent having to perform expensive operations
-     * (for example, <code>String</code> concatenation)
-     * when the log level is more than fatal. </p>
-     *
-     * @return true if fatal is enabled in the underlying logger.
-     */
-    boolean isFatalEnabled();
-
 
     /**
      * <p> Is info logging currently enabled? </p>
@@ -177,21 +164,4 @@ public interface Logger {
      * @param t log this cause
      */
     void error(String message, Throwable t);
-
-
-    /**
-     * <p> Log a message with fatal log level. </p>
-     *
-     * @param message log this message
-     */
-    void fatal(String message);
-
-
-    /**
-     * <p> Log an error with fatal log level. </p>
-     *
-     * @param message log this message
-     * @param t log this cause
-     */
-    void fatal(String message, Throwable t);
 }

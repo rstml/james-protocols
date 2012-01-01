@@ -25,9 +25,9 @@ import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.Map;
 
-import org.apache.james.protocols.api.Logger;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
+import org.apache.james.protocols.api.logger.Logger;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
 

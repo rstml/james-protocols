@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.api;
+package org.apache.james.protocols.api.logger;
 
 
 /**
@@ -44,7 +44,7 @@ public class ProtocolSessionLogger implements Logger {
     }
 
     /**
-     * @see org.slf4j.Logger#debug(String, Throwable)
+     * @see org.apache.james.protocols.api.logger.slf4j.Logger#debug(String, Throwable)
      */
     public void debug(String arg0, Throwable arg1) {
         logger.debug(getText(arg0), arg1);
@@ -52,14 +52,14 @@ public class ProtocolSessionLogger implements Logger {
     }
 
     /**
-     * @see org.slf4j.Logger#error(java.lang.String)
+     * @see org.apache.james.protocols.api.logger.slf4j.Logger#error(java.lang.String)
      */
     public void error(String arg0) {
         logger.error(getText(arg0));
     }
 
     /**
-     * @see org.slf4j.Logger#error(java.lang.String, java.lang.Throwable)
+     * @see org.apache.james.protocols.api.logger.slf4j.Logger#error(java.lang.String, java.lang.Throwable)
      */
     public void error(String arg0, Throwable arg1) {
         logger.error(getText(arg0), arg1);
@@ -114,19 +114,6 @@ public class ProtocolSessionLogger implements Logger {
     public void warn(String arg0, Throwable arg1) {
         logger.warn(getText(arg0), arg1);
 
-    }
-
-    public boolean isFatalEnabled() {
-        return logger.isFatalEnabled();
-    }
-
-    public void fatal(String message) {
-        logger.fatal(getText(message));
-        
-    }
-
-    public void fatal(String message, Throwable t) {
-        logger.fatal(getText(message), t);        
     }
 
 }

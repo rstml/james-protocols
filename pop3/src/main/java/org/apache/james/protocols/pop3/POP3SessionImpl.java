@@ -18,11 +18,11 @@
  ****************************************************************/
 package org.apache.james.protocols.pop3;
 
-import org.apache.james.protocols.api.Logger;
 import org.apache.james.protocols.api.ProtocolConfiguration;
 import org.apache.james.protocols.api.ProtocolSessionImpl;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
+import org.apache.james.protocols.api.logger.Logger;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
 
 /**

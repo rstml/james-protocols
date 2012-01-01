@@ -20,6 +20,7 @@
 package org.apache.james.protocols.api;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.apache.james.protocols.api.logger.Logger;
@@ -158,5 +159,19 @@ public interface ProtocolSession {
      * @return config
      */
     ProtocolConfiguration getConfiguration();
+    
+    /**
+     * Return the {@link Charset} which is used by the {@link ProtocolSession}
+     * 
+     * @return charset
+     */
+    Charset getCharset();
+    
+    /**
+     * Return the line delimiter which is used
+     * 
+     * @return delimiter
+     */
+    String getLineDelimiter();
 
 }

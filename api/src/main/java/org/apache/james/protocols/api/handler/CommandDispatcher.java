@@ -211,7 +211,8 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
             line = new byte[buffer.remaining()];
             buffer.get(line);
         }
-        String cmdString = new String(line, getLineDecodingCharset()).trim();
+        // This should be changed once we move to java6
+        String cmdString = new String(line, session.getCharset().name()).trim();
         int spaceIndex = cmdString.indexOf(" ");
         if (spaceIndex > 0) {
             curCommandName = cmdString.substring(0, spaceIndex);
@@ -229,12 +230,7 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
         return request;
 
     }
-    
-    
-    protected String getLineDecodingCharset() {
-        return "US-ASCII";
-    }
-
+   
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#getMarkerInterfaces()
      */

@@ -20,6 +20,7 @@
 package org.apache.james.protocols.api;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +42,9 @@ public class ProtocolSessionImpl implements ProtocolSession {
     private final Map<String, Object> sessionState;
     private String user;
     protected final ProtocolConfiguration config;
-
+    private final static Charset CHARSET = Charset.forName("US-ASCII");
+    private final static String DELIMITER = "\r\n";
+    
     public ProtocolSessionImpl(Logger logger, ProtocolTransport transport, ProtocolConfiguration config) {
         this.transport = transport;
         this.pLog = new ProtocolSessionLogger(transport.getId(), logger);
@@ -196,6 +199,20 @@ public class ProtocolSessionImpl implements ProtocolSession {
         } else {
             return sessionState.get(key);
         }
+    }
+
+    /**
+     * Returns a Charset for US-ASCII
+     */
+    public Charset getCharset() {
+        return CHARSET;
+    }
+
+    /**
+     * Returns "\r\n";
+     */
+    public String getLineDelimiter() {
+        return DELIMITER;
     }
 
 }

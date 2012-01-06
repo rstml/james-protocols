@@ -22,11 +22,11 @@ package org.apache.james.protocols.api.logger;
  * Adapter class for SLF4J
  *
  */
-public class Slf4jLogger implements Logger{
+public class ProtocolLoggerAdapter implements Logger{
 
     private final org.slf4j.Logger logger;
 
-    public Slf4jLogger(org.slf4j.Logger logger) {
+    public ProtocolLoggerAdapter(org.slf4j.Logger logger) {
         this.logger = logger;
     }
     

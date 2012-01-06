@@ -71,7 +71,7 @@ public class POP3Response extends AbstractResponse {
      * 
      */
     public POP3Response(String code) {
-        this(code, null);
+        setRetCode(code);
     }
     
     protected POP3Response() {
@@ -85,11 +85,15 @@ public class POP3Response extends AbstractResponse {
      */
     public List<CharSequence> getLines() {
         List<CharSequence> responseList = new ArrayList<CharSequence>();
-        for (int i = 0; i < lines.size(); i++) {
-            if (i == 0) {
-                responseList.add(getRetCode() + WS +lines.get(i));
-            } else {
-                responseList.add(lines.get(i));
+        if (lines.isEmpty()) {
+            responseList.add(getRetCode());
+        } else {
+            for (int i = 0; i < lines.size(); i++) {
+                if (i == 0) {
+                    responseList.add(getRetCode() + WS +lines.get(i));
+                } else {
+                    responseList.add(lines.get(i));
+                }
             }
         }
         return responseList;

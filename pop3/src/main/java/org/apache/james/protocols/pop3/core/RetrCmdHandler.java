@@ -60,10 +60,16 @@ public class RetrCmdHandler implements CommandHandler<POP3Session> {
                 return SYNTAX_ERROR;
             }
             try {
-                List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
+                MessageMetaData data = MessageMetaDataUtils.getMetaData(session, num);
+
+                if (data == null) {
+                    StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
+                    response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
+                    return response;
+                }
                 List<Long> deletedUidList = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
 
-                Long uid = uidList.get(num - 1).getUid();
+                Long uid = data.getUid();
                 if (deletedUidList.contains(uid) == false) {
                     InputStream content = session.getUserMailbox().getMessage(uid);
 

@@ -87,7 +87,13 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
                 int num = 0;
                 try {
                     num = Integer.parseInt(parameters);
-                    MessageMetaData data = uidList.get(num - 1);
+                    
+                    MessageMetaData data = MessageMetaDataUtils.getMetaData(session, num);
+                    if (data == null) {
+                        StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
+                        return  new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
+                    }
+                    
                     if (deletedUidList.contains(data.getUid()) == false) {
 
                         StringBuilder responseBuffer = new StringBuilder(64).append(num).append(" ").append(data.getSize());

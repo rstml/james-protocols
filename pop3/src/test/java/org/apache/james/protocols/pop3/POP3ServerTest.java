@@ -20,11 +20,15 @@ package org.apache.james.protocols.pop3;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.SequenceInputStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -44,6 +48,9 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 import org.junit.Test;
 
 public class POP3ServerTest {
+
+    private static final Message MESSAGE1 = new Message("Subject: test\r\nX-Header: value\r\n", "My Body\r\n");
+    private static final Message MESSAGE2 = new Message("Subject: test2\r\nX-Header: value2\r\n", "My Body with a DOT.\r\n.\r\n");
 
     private POP3Protocol createProtocol(MailboxFactory factory) throws WiringException {
         return new POP3Protocol(new POP3ProtocolHandlerChain(factory), new POP3Configuration(), new MockLogger());
@@ -105,6 +112,391 @@ public class POP3ServerTest {
         }
         
     }
+    
+    @Test
+    public void testInboxWithMessages() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            assertTrue(client.login("valid", "valid"));
+            POP3MessageInfo[] info = client.listMessages();
+            assertEquals(2, info.length);
+            assertEquals((int) MESSAGE1.meta.getSize(), info[0].size);
+            assertEquals((int) MESSAGE2.meta.getSize(), info[1].size);
+            assertEquals(1, info[0].number);
+            assertEquals(2, info[1].number);
+
+            POP3MessageInfo mInfo = client.listMessage(1);
+            assertEquals((int) MESSAGE1.meta.getSize(), mInfo.size);
+            assertEquals(1, mInfo.number);
+
+            // try to retrieve message that not exist
+            mInfo = client.listMessage(10);
+            assertNull(mInfo);
+
+            info = client.listUniqueIdentifiers();
+            assertEquals(2, info.length);
+            assertEquals(identifier + "-" + MESSAGE1.meta.getUid(), info[0].identifier);
+            assertEquals(identifier + "-" + MESSAGE2.meta.getUid(), info[1].identifier);
+            assertEquals(1, info[0].number);
+            assertEquals(2, info[1].number);
+
+            mInfo = client.listUniqueIdentifier(1);
+            assertEquals(identifier + "-" + MESSAGE1.meta.getUid(), mInfo.identifier);
+            assertEquals(1, mInfo.number);
+
+            // try to retrieve message that not exist
+            mInfo = client.listUniqueIdentifier(10);
+            assertNull(mInfo);
+            
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
+    public void testRetr() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            assertTrue(client.login("valid", "valid"));
+            Reader reader = client.retrieveMessage(1);
+            assertNotNull(reader);
+            checkMessage(MESSAGE1, reader);
+            reader.close();
+            
+            // does not exist
+            reader = client.retrieveMessage(10);
+            assertNull(reader);
+            
+            
+            // delete and check for the message again, should now be deleted
+            assertTrue(client.deleteMessage(1));
+            reader = client.retrieveMessage(1);
+            assertNull(reader);
+
+            
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
+    public void testTop() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            assertTrue(client.login("valid", "valid"));
+            Reader reader = client.retrieveMessageTop(1, 1000);
+            assertNotNull(reader);
+            checkMessage(MESSAGE1, reader);
+            reader.close();
+            
+            reader = client.retrieveMessageTop(2, 1);
+            assertNotNull(reader);
+            checkMessage(MESSAGE2, reader,1);
+            reader.close();
+            
+            // does not exist
+            reader = client.retrieveMessageTop(10,100);
+            assertNull(reader);
+            
+            // delete and check for the message again, should now be deleted
+            assertTrue(client.deleteMessage(1));
+            reader = client.retrieveMessageTop(1, 1000);
+            assertNull(reader);
+
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
+    public void testDele() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            assertTrue(client.login("valid", "valid"));
+            POP3MessageInfo[] info = client.listMessages();
+            assertEquals(2, info.length);
+            
+            assertTrue(client.deleteMessage(1));
+            info = client.listMessages();
+            assertEquals(1, info.length);
+
+            
+            assertFalse(client.deleteMessage(1));
+            info = client.listMessages();
+            assertEquals(1, info.length);
+            
+            
+            assertTrue(client.deleteMessage(2));
+            info = client.listMessages();
+            assertEquals(0, info.length);
+            
+            // logout so the messages get expunged
+            assertTrue(client.logout());
+
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+  
+            assertTrue(client.login("valid", "valid"));
+            info = client.listMessages();
+            assertEquals(0, info.length);
+
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
+    public void testNoop() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            assertTrue(client.login("valid", "valid"));
+            assertTrue(client.noop());
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
+    public void testRset() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier, MESSAGE1));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            assertTrue(client.login("valid", "valid"));
+            assertEquals(1, client.listMessages().length);
+            assertTrue(client.deleteMessage(1));
+            assertEquals(0, client.listMessages().length);
+            
+            // call RSET. After this the deleted mark should be removed again
+            assertTrue(client.reset());
+            assertEquals(1, client.listMessages().length);
+
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
+    public void testStat() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            assertTrue(client.login("valid", "valid"));
+            POP3MessageInfo info = client.status();
+            assertEquals((int)(MESSAGE1.meta.getSize() + MESSAGE2.meta.getSize()), info.size);
+            assertEquals(2, info.number);
+            
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    @Test
+    public void testDifferentStates() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            String identifier = "id";
+            MockMailboxFactory factory = new MockMailboxFactory();
+            
+            factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
+            server = new NettyServer(createProtocol(factory));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            assertNull(client.listMessages());
+            assertNull(client.listUniqueIdentifiers());
+            assertFalse(client.deleteMessage(1));
+            assertNull(client.retrieveMessage(1));
+            assertNull(client.retrieveMessageTop(1, 10));
+            assertNull(client.status());
+            assertFalse(client.reset());
+            client.logout();
+            
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+
+            assertTrue(client.login("valid", "valid"));
+            assertNotNull(client.listMessages());
+            assertNotNull(client.listUniqueIdentifiers());
+            Reader reader = client.retrieveMessage(1);
+            assertNotNull(reader);
+            reader.close();
+            assertNotNull(client.status());
+            reader = client.retrieveMessageTop(1, 1);
+            assertNotNull(reader);
+            reader.close();
+            assertTrue(client.deleteMessage(1));
+            assertTrue(client.reset());
+
+            assertTrue(client.logout());
+
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    private void checkMessage(Message message, Reader reader) throws IOException {
+        int read = 0;
+        int i = -1;
+        String content = message.toString();
+        while ((i = reader.read()) != -1) {
+            assertEquals(content.charAt(read++), (char)i);
+        }
+        assertEquals(content.length(), read);
+    }
+    
+    private void checkMessage(Message message, Reader reader, int lines) throws IOException {
+        int read = 0;
+        String headers = message.headers + "\r\n";
+        
+        while (read < headers.length()) {
+            assertEquals(headers.charAt(read++), reader.read());
+        }
+        assertEquals(headers.length(), read);
+        
+        BufferedReader bufReader = new BufferedReader(reader);
+        String line = null;
+        int linesRead = 0;
+        String parts[] = message.body.split("\r\n");
+        while ((line = bufReader.readLine()) != null) {
+            assertEquals(parts[linesRead++], line);
+            
+            if (linesRead == lines) {
+                break;
+            }
+        }
+        
+        assertEquals(lines, linesRead);
+        
+    }
+    
     private final class MockMailboxFactory implements MailboxFactory {
         private final Map<String, Mailbox> mailboxes = new HashMap<String, Mailbox>();
        
@@ -191,6 +583,10 @@ public class POP3ServerTest {
             this.headers = headers;
             this.body = body;
             this.meta = new MessageMetaData(UIDS.incrementAndGet(), headers.length() + body.length() + 2);
+        }
+        
+        public String toString() {
+            return headers + "\r\n" + body;
         }
         
     }

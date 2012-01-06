@@ -70,7 +70,14 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
                     int num = 0;
                     try {
                         num = Integer.parseInt(parameters);
-                        Long uid = uidList.get(num - 1).getUid();
+                        
+                        MessageMetaData data = MessageMetaDataUtils.getMetaData(session, num);
+                        if (data == null) {
+                            StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
+                            return  new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
+                        }
+                        long uid = data.getUid();
+                        
                         if (deletedUidList.contains(uid) == false) {
                             // construct unique UIDL. See JAMES-1264
                             StringBuilder responseBuffer = new StringBuilder(64).append(num).append(" ").append(identifier).append("-").append(uid);

@@ -29,8 +29,6 @@ import java.util.Map;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.logger.Logger;
-import org.apache.james.protocols.smtp.SMTPConfiguration;
-import org.apache.james.protocols.smtp.SMTPSession;
 
 /**
  * Abstract class to simplify the mocks
@@ -179,8 +177,7 @@ public class BaseFakeSMTPSession implements SMTPSession {
      * @see org.apache.james.protocols.api.ProtocolSession#getRemoteAddress()
      */
     public InetSocketAddress getRemoteAddress() {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-
+        return new InetSocketAddress("localhost", 22);
     }
 
     /*
@@ -189,7 +186,6 @@ public class BaseFakeSMTPSession implements SMTPSession {
      */
     public InetSocketAddress getLocalAddress() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
-
     }
 
     /*

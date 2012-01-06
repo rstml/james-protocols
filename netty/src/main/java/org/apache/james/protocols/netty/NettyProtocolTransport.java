@@ -19,17 +19,23 @@
 
 package org.apache.james.protocols.netty;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.nio.channels.FileChannel;
+import java.util.Iterator;
 
 import javax.net.ssl.SSLEngine;
 
 import org.apache.james.protocols.api.AbstractProtocolTransport;
+import org.apache.james.protocols.api.CombinedInputStream;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFutureListener;
+import org.jboss.netty.channel.DefaultFileRegion;
 import org.jboss.netty.handler.ssl.SslHandler;
 import org.jboss.netty.handler.stream.ChunkedStream;
 
@@ -135,6 +141,39 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         if (startTLS) {
             prepareStartTLS();
         }
+        if (!isTLSStarted()) {
+            if (in instanceof FileInputStream) {
+                FileChannel fChannel = ((FileInputStream) in).getChannel();
+                try {
+                    channel.write(new DefaultFileRegion(fChannel, 0, fChannel.size(), true));
+
+                } catch (IOException e) {
+                    // We handle this later
+                    channel.write(new ChunkedStream(in));
+                }
+                return;
+
+            } else if (in instanceof CombinedInputStream) {
+                Iterator<InputStream> streams = ((CombinedInputStream) in).iterator();
+                while(streams.hasNext()) {
+                    InputStream pIn = streams.next();
+                    if (pIn instanceof FileInputStream) {
+                        FileChannel fChannel = ((FileInputStream) in).getChannel();
+                        try {
+                            channel.write(new DefaultFileRegion(fChannel, 0, fChannel.size(), true));
+                            return;
+
+                        } catch (IOException e) {
+                            // We handle this later
+                            channel.write(new ChunkedStream(in));
+                        }                    
+                    } else {
+                        channel.write(new ChunkedStream(in));
+                    }
+                }
+                return;
+            }
+        } 
         channel.write(new ChunkedStream(in));
     }
 

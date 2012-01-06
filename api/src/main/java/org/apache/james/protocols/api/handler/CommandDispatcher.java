@@ -222,10 +222,6 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
         }
         curCommandName = curCommandName.toUpperCase(Locale.US);
 
-        if (session.getLogger().isDebugEnabled()) {
-            session.getLogger().debug(getClass().getName() + " received: " + cmdString);
-        }
-
         BaseRequest request = new BaseRequest(curCommandName, curCommandArgument);
         return request;
 

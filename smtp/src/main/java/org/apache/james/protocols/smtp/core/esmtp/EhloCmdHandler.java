@@ -96,11 +96,11 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class,
      *      java.util.List)
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void wireExtensions(Class interfaceName, List extension) {
+    @SuppressWarnings("unchecked")
+	public void wireExtensions(Class<?> interfaceName, List<?> extension) {
         super.wireExtensions(interfaceName, extension);
         if (EhloExtension.class.equals(interfaceName)) {
-            this.ehloExtensions = extension;
+            this.ehloExtensions = (List<EhloExtension>) extension;
         }
     }
 

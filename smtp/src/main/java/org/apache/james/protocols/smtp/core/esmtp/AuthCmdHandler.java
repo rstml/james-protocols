@@ -496,16 +496,16 @@ public class AuthCmdHandler
     /**
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class, java.util.List)
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void wireExtensions(Class interfaceName, List extension) throws WiringException {
+    @SuppressWarnings("unchecked")
+	public void wireExtensions(Class<?> interfaceName, List<?> extension) throws WiringException {
         if (AuthHook.class.equals(interfaceName)) {
-            this.hooks = extension;
+            this.hooks = (List<AuthHook>) extension;
             // If no AuthHook is configured then we revert to the default LocalUsersRespository check
             if (hooks == null || hooks.size() == 0) {
                 throw new WiringException("AuthCmdHandler used without AuthHooks");
             }
         } else if (HookResultHook.class.equals(interfaceName)) {
-            this.rHooks = extension;
+            this.rHooks = (List<HookResultHook>) extension;
         }
     }
     

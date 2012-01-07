@@ -256,12 +256,12 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class,
      *      java.util.List)
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void wireExtensions(Class interfaceName, List extension) {
+    @SuppressWarnings("unchecked")
+	public void wireExtensions(Class<?> interfaceName, List<?> extension) {
         if (getHookInterface().equals(interfaceName)) {
-            this.hooks = extension;
+            this.hooks = (List<Hook>) extension;
         } else if (HookResultHook.class.equals(interfaceName)) {
-            this.rHooks = extension;
+            this.rHooks = (List<HookResultHook>) extension;
         }
 
     }

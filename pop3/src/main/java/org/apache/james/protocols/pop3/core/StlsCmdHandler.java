@@ -22,7 +22,8 @@ package org.apache.james.protocols.pop3.core;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
@@ -37,7 +38,7 @@ import org.apache.james.protocols.pop3.StartTlsPop3Response;
  */
 public class StlsCmdHandler implements CommandHandler<POP3Session>, CapaCapability {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("STLS"));
-    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("STLS"));
+    private static final Set<String> CAPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("STLS")));
 
     private static final Response BEGIN_TLS = new StartTlsPop3Response(POP3Response.OK_RESPONSE, "Begin TLS negotiation").immutable();
     /**
@@ -57,11 +58,11 @@ public class StlsCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
     @SuppressWarnings("unchecked")
-	public List<String> getImplementedCapabilities(POP3Session session) {
+    public Set<String> getImplementedCapabilities(POP3Session session) {
         if (session.isStartTLSSupported() && session.getHandlerState() == POP3Session.AUTHENTICATION_READY) {
             return CAPS;
         } else {
-        	return Collections.EMPTY_LIST;
+            return Collections.EMPTY_SET;
         }
     }
 

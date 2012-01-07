@@ -22,7 +22,8 @@ package org.apache.james.protocols.pop3.core;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
@@ -36,7 +37,7 @@ import org.apache.james.protocols.pop3.POP3Session;
 public class UserCmdHandler implements CommandHandler<POP3Session>, CapaCapability {
 
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("USER"));
-    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("USER"));
+    private static final Set<String> CAPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("USER")));
 
 
     /**
@@ -57,7 +58,7 @@ public class UserCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
     /**
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
-    public List<String> getImplementedCapabilities(POP3Session session) {
+    public Set<String> getImplementedCapabilities(POP3Session session) {
         return CAPS;
     }
 

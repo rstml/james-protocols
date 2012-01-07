@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 import org.apache.james.protocols.api.Request;
@@ -39,7 +41,7 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
  */
 public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapability {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("UIDL"));
-    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("UIDL"));
+    private static final Set<String> CAPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("UIDL")));
 
     /**
      * Handler method called upon receipt of a UIDL command. Returns a listing
@@ -109,11 +111,11 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
     @SuppressWarnings("unchecked")
-    public List<String> getImplementedCapabilities(POP3Session session) {
+    public Set<String> getImplementedCapabilities(POP3Session session) {
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
             return CAPS;
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.EMPTY_SET;
         }
     }
 

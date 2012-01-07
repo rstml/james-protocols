@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 import org.apache.james.protocols.api.Request;
@@ -40,7 +42,7 @@ import org.apache.james.protocols.pop3.POP3Session;
 public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHandler, CapaCapability {    
     private List<CapaCapability> caps;
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("CAPA"));
-    private static final List<String> CAPS = Collections.unmodifiableList(Arrays.asList("PIPELINING"));
+    private static final Set<String> CAPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("PIPELINING")));
 
     /**
      * @see
@@ -51,9 +53,8 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
         POP3Response response = new POP3Response(POP3Response.OK_RESPONSE, "Capability list follows");
 
         for (int i = 0; i < caps.size(); i++) {
-            List<String> cList = caps.get(i).getImplementedCapabilities(session);
-            for (int a = 0; a < cList.size(); a++) {
-                response.appendLine(cList.get(a));
+            for (String cap: caps.get(i).getImplementedCapabilities(session)) {
+                response.appendLine(cap);
             }
         }
         response.appendLine(".");
@@ -74,10 +75,10 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
      * @see org.apache.james.protocols.api.handler.ExtensibleHandler#wireExtensions(java.lang.Class,
      *      java.util.List)
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void wireExtensions(Class interfaceName, List extension) throws WiringException {
+    @SuppressWarnings("unchecked")
+	public void wireExtensions(Class<?> interfaceName, List<?> extension) throws WiringException {
         if (interfaceName.equals(CapaCapability.class)) {
-            caps = extension;
+            caps = (List<CapaCapability>) extension;
         }
     }
 
@@ -91,7 +92,7 @@ public class CapaCmdHandler implements CommandHandler<POP3Session>, ExtensibleHa
     /**
      * @see org.apache.james.pop3server.core.CapaCapability#getImplementedCapabilities(org.apache.james.pop3server.POP3Session)
      */
-    public List<String> getImplementedCapabilities(POP3Session session) {
+    public Set<String> getImplementedCapabilities(POP3Session session) {
         return CAPS;
     }
 

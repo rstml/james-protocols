@@ -19,7 +19,7 @@
 
 package org.apache.james.protocols.pop3.core;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apache.james.protocols.pop3.POP3Session;
 
@@ -37,5 +37,5 @@ public interface CapaCapability {
      * @param session
      * @return list
      */
-    List<String> getImplementedCapabilities(POP3Session session);
+    Set<String> getImplementedCapabilities(POP3Session session);
 }

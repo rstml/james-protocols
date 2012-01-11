@@ -23,6 +23,11 @@ package org.apache.james.protocols.smtp;
 import org.apache.james.protocols.api.ProtocolConfigurationImpl;
 
 
+/**
+ * {@link SMTPConfiguration} implementation which allows to set and get various configuration params. The set and get methods
+ * are not thread-safe
+ *
+ */
 public class SMTPConfigurationImpl extends ProtocolConfigurationImpl implements SMTPConfiguration{
 
     public String helloName = "localhost";
@@ -34,14 +39,24 @@ public class SMTPConfigurationImpl extends ProtocolConfigurationImpl implements 
         setSoftwareName("JAMES SMTP Protocols Server");
     }
     
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#getMaxMessageSize()
+     */
     public long getMaxMessageSize() {
         return maxMessageSize;
     }
 
+    /**
+     * Return <code>false</code>
+     */
     public boolean isRelayingAllowed(String remoteIP) {
         return false;
     }
 
+    /**
+     * Return <code>false</code>
+     */
     public boolean isAuthRequired(String remoteIP) {
         return false;
     }
@@ -51,15 +66,24 @@ public class SMTPConfigurationImpl extends ProtocolConfigurationImpl implements 
     }
     
     
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#useHeloEhloEnforcement()
+     */
     public boolean useHeloEhloEnforcement() {
         return enforceHeloEhlo;
     }
     
     
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.smtp.SMTPConfiguration#useAddressBracketsEnforcement()
+     */
     public boolean useAddressBracketsEnforcement() {
         return bracketsEnforcement;
     }
 
+    
     public void setUseAddressBracketsEnforcement(boolean bracketsEnforcement) {
         this.bracketsEnforcement = bracketsEnforcement;
     }

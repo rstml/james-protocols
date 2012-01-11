@@ -136,7 +136,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
 
                 } catch (IOException e) {
                     // We handle this later
-                    channel.write(new ChunkedStream(in));
+                    channel.write(new ChunkedStream(new ExceptionInputStream(e)));
                 }
                 return;
 
@@ -152,7 +152,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
 
                         } catch (IOException e) {
                             // We handle this later
-                            channel.write(new ChunkedStream(in));
+                            channel.write(new ChunkedStream(new ExceptionInputStream(e)));
                         }                    
                     } else {
                         channel.write(new ChunkedStream(in));
@@ -196,6 +196,26 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         // 
         // See JAMES-1277
         channel.getPipeline().addBefore(HandlerConstants.CORE_HANDLER, "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler(session, overrideCommandHandler));
+    }
+    
+   
+    /**
+     * {@link InputStream} which just re-throw the {@link IOException} on the next {@link #read()} operation.
+     * 
+     *
+     */
+    private static final class ExceptionInputStream extends InputStream {
+        private final IOException e;
+
+        public ExceptionInputStream(IOException e) {
+            this.e = e;
+        }
+        
+        @Override
+        public int read() throws IOException {
+            throw e;
+        }
+        
     }
 
 }

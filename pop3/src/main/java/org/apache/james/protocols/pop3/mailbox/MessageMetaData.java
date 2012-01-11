@@ -23,8 +23,8 @@ package org.apache.james.protocols.pop3.mailbox;
  */
 public final class MessageMetaData {
 
-    private long uid;
-    private long size;
+    private final long uid;
+    private final long size;
 
     public MessageMetaData(long uid, long size) {
         this.uid = uid;

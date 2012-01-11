@@ -25,6 +25,11 @@ import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.Hook;
 import org.apache.james.protocols.smtp.hook.HookResult;
 
+/**
+ * {@link Hook} which can be implemented to handle the delivery of a {@link MailEnvelope} to a recipient. This {@link Hook} will get called for each
+ * valid recipient during a transaction
+ *
+ */
 public interface DeliverToRecipientHook extends Hook {
 
     /**

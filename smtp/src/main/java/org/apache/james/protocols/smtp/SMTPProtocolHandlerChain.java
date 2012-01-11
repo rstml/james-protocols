@@ -55,11 +55,6 @@ import org.apache.james.protocols.smtp.hook.Hook;
  * the chain to act as full blown SMTPServer. By default messages will just get
  * rejected after the DATA command.
  * 
- * 
- * 
- * 
- * 
- * 
  */
 public class SMTPProtocolHandlerChain extends ProtocolHandlerChainImpl {
     

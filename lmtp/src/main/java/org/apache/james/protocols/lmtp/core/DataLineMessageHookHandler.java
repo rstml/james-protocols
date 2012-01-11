@@ -35,6 +35,11 @@ import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.AbstractHookableCmdHandler;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 
+/**
+ * {@link DataLineMessageHookHandler} which will use the wired {@link DeliverToRecipientHook}'s to deliver the message to all the valid recipients.
+ * 
+ *
+ */
 public class DataLineMessageHookHandler extends org.apache.james.protocols.smtp.core.DataLineMessageHookHandler{
 
     private final List<DeliverToRecipientHook> handlers = new ArrayList<DeliverToRecipientHook>();

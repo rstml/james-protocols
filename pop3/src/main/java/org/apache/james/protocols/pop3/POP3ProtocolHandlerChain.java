@@ -43,13 +43,17 @@ import org.apache.james.protocols.pop3.core.UserCmdHandler;
 import org.apache.james.protocols.pop3.core.WelcomeMessageHandler;
 import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
 
+/**
+ * {@link ProtocolHandlerChainImpl} which allows to add the default handlers which are needed to server POP3.
+ * 
+ *
+ */
 public class POP3ProtocolHandlerChain extends ProtocolHandlerChainImpl{
 
     public POP3ProtocolHandlerChain() {
         super();
     }
 
-        
     /**
      * The {@link MailboxFactory} to use. If a <code>not null</code> {@link MailboxFactory} is given, the {@link POP3ProtocolHandlerChain}
      * will add all default handlers

@@ -26,6 +26,10 @@ import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.api.logger.Logger;
 
+/**
+ * {@link ProtocolImpl} which implements the POP3 Protocol
+ *
+ */
 public class POP3Protocol extends ProtocolImpl{
     
     public POP3Protocol(ProtocolHandlerChain chain, ProtocolConfiguration config, Logger logger) {

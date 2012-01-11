@@ -38,6 +38,6 @@ public interface MailboxFactory {
      * @return mailbox or null if not valid user or password was given
      * @throws IOException
      */
-    public Mailbox getMailbox(POP3Session session, String password) throws IOException;
+    Mailbox getMailbox(POP3Session session, String password) throws IOException;
 
 }

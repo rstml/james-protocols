@@ -207,7 +207,7 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
         }
 
         @Override
-        public synchronized void reset() throws IOException {
+        public void reset() throws IOException {
             // do nothing as mark is not supported
         }
 

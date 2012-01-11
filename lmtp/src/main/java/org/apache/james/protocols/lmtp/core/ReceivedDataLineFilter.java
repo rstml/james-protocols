@@ -20,6 +20,11 @@ package org.apache.james.protocols.lmtp.core;
 
 import org.apache.james.protocols.smtp.SMTPSession;
 
+/**
+ * {@link ReceivedDataLineFilter} which will add the Received header to the message
+ * 
+ *
+ */
 public class ReceivedDataLineFilter extends org.apache.james.protocols.smtp.core.ReceivedDataLineFilter {
 
     private static final String SERVICE_TYPE = "LMTP";

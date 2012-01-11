@@ -25,15 +25,23 @@ import java.io.SequenceInputStream;
 
 import org.apache.james.protocols.api.StreamResponse;
 
+/**
+ * {@link StreamResponse} implementation which allows to write back big-data to the client for POP3
+ *
+ */
 public class POP3StreamResponse extends POP3Response implements StreamResponse {
 
-    private InputStream stream;
+    private final InputStream stream;
 
     public POP3StreamResponse(String code, CharSequence description, InputStream stream) {
         super(code, description);
         this.stream = stream;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.StreamResponse#getStream()
+     */
     public InputStream getStream() {
         return new SequenceInputStream(stream, new ByteArrayInputStream(".\r\n".getBytes()));
     }

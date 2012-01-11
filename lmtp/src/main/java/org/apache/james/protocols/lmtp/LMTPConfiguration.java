@@ -21,38 +21,38 @@ package org.apache.james.protocols.lmtp;
 import org.apache.james.protocols.api.ProtocolConfigurationImpl;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 
+
+/**
+ * A {@link ProtocolConfigurationImpl} which is used in the context of LMTP
+ *
+ */
 public abstract class LMTPConfiguration extends ProtocolConfigurationImpl implements SMTPConfiguration{
 
-    public LMTPConfiguration() {
-        setSoftwareName("JAMES Protocols LMTP Server");
-    }
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.smtp.SMTPConfiguration#isRelayingAllowed(java.lang.String)
+
+    
+    /**
+     * Return <code>false</code>
      */
     public boolean isRelayingAllowed(String remoteIP) {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.smtp.SMTPConfiguration#isAuthRequired(java.lang.String)
+    /**
+     * Return <code>false</code>
      */
     public boolean isAuthRequired(String remoteIP) {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.smtp.SMTPConfiguration#useHeloEhloEnforcement()
+    /**
+     * Return <code>false</code>
      */
     public boolean useHeloEhloEnforcement() {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.apache.james.protocols.smtp.SMTPConfiguration#useAddressBracketsEnforcement()
+    /**
+     * Return <code>false</code>
      */
     public boolean useAddressBracketsEnforcement() {
         return false;

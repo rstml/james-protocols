@@ -57,6 +57,8 @@ public interface MailEnvelope {
     /**
      * Return the OutputStream of the message
      * 
+     * TODO: Think about how to remove this!
+     * 
      * @return out
      * @throws IOException
      */

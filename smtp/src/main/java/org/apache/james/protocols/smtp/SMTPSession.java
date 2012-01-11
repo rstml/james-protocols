@@ -75,6 +75,5 @@ public interface SMTPSession extends ProtocolSession{
     int getRcptCount();
     
 
-    
 }
 

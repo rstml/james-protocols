@@ -20,7 +20,6 @@
 package org.apache.james.protocols.smtp;
 
 import org.apache.james.protocols.api.ProtocolSession;
-import org.apache.james.protocols.api.handler.LineHandler;
 
 /**
  * All the handlers access this interface to communicate with
@@ -75,22 +74,7 @@ public interface SMTPSession extends ProtocolSession{
      */
     int getRcptCount();
     
-    /**
-     * Put a new line handler in the chain
-     * @param overrideCommandHandler
-     */
-    void pushLineHandler(LineHandler<SMTPSession> overrideCommandHandler);
-    
-    /**
-     * Pop the last command handler 
-     */
-    void popLineHandler();
-    
-    /**
-     * Return the size of the pushed {@link LineHandler}
-     * @return size of the pushed line handler
-     */
-    int getPushedLineHandlerCount();
+
     
 }
 

@@ -88,7 +88,7 @@ public interface ProtocolTransport {
      * @param overrideCommandHandler
      * @param session
      */
-    <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler, T session);
+    void pushLineHandler(LineHandler<? extends ProtocolSession> overrideCommandHandler, ProtocolSession session);
 
     /**
      * Return the count of pushed {@link LineHandler}'s

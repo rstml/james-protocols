@@ -26,6 +26,7 @@ import java.util.Map;
 
 
 import org.apache.james.protocols.api.ProtocolTransport;
+import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.logger.Logger;
 import org.apache.james.protocols.api.logger.ProtocolSessionLogger;
 
@@ -213,6 +214,30 @@ public class ProtocolSessionImpl implements ProtocolSession {
      */
     public String getLineDelimiter() {
         return DELIMITER;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#popLineHandler()
+     */
+    public void popLineHandler() {
+        transport.popLineHandler();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#getPushedLineHandlerCount()
+     */
+    public int getPushedLineHandlerCount() {
+        return transport.getPushedLineHandlerCount();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.ProtocolSession#pushLineHandler(org.apache.james.protocols.api.handler.LineHandler)
+     */
+    public <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler) {
+        transport.pushLineHandler(overrideCommandHandler, this);
     }
 
 }

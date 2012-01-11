@@ -26,6 +26,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.logger.Logger;
@@ -129,12 +130,7 @@ public class BaseFakeSMTPSession implements SMTPSession {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
-    /**
-     * @see org.apache.james.smtpserver.protocol.SMTPSession#pushLineHandler(org.apache.james.api.protocol.LineHandler)
-     */
-    public void pushLineHandler(LineHandler<SMTPSession> overrideCommandHandler) {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-    }
+
 
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getLogger()
@@ -209,6 +205,10 @@ public class BaseFakeSMTPSession implements SMTPSession {
     }
 
     public String getLineDelimiter() {
+        throw new UnsupportedOperationException("Unimplemented Stub Method");
+    }
+
+    public <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler) {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 

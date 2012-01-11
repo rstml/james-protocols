@@ -93,19 +93,6 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
     }
 
     /**
-     * @see org.apache.james.protocols.api.ProtocolTransport#pushLineHandler(org.apache.james.protocols.api.handler.LineHandler, org.apache.james.protocols.api.ProtocolSession)
-     */
-    public <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler,
-            T session) {
-        lineHandlerCount++;
-        // Add the linehandler in front of the coreHandler so we can be sure 
-        // it is executed with the same ExecutorHandler as the coreHandler (if one exist)
-        // 
-        // See JAMES-1277
-        channel.getPipeline().addBefore("coreHandler", "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler<T>(session, overrideCommandHandler));
-    }
-
-    /**
      * @see org.apache.james.protocols.api.ProtocolTransport#getPushedLineHandlerCount()
      */
     public int getPushedLineHandlerCount() {
@@ -199,6 +186,16 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
      */
     public InetSocketAddress getLocalAddress() {
         return (InetSocketAddress) channel.getLocalAddress();
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void pushLineHandler(LineHandler<? extends ProtocolSession> overrideCommandHandler, ProtocolSession session) {
+        lineHandlerCount++;
+        // Add the linehandler in front of the coreHandler so we can be sure 
+        // it is executed with the same ExecutorHandler as the coreHandler (if one exist)
+        // 
+        // See JAMES-1277
+        channel.getPipeline().addBefore("coreHandler", "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler(session, overrideCommandHandler));        
     }
 
 }

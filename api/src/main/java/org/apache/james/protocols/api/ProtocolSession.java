@@ -23,6 +23,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.logger.Logger;
 
 /**
@@ -173,5 +174,22 @@ public interface ProtocolSession {
      * @return delimiter
      */
     String getLineDelimiter();
+    
+    /**
+     * Put a new line handler in the chain
+     * @param overrideCommandHandler
+     */
+    <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler);
+    
+    /**
+     * Pop the last command handler 
+     */
+    void popLineHandler();
+    
+    /**
+     * Return the size of the pushed {@link LineHandler}
+     * @return size of the pushed line handler
+     */
+    int getPushedLineHandlerCount();
 
 }

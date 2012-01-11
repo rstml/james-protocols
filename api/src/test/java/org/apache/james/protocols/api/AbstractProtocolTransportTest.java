@@ -139,10 +139,7 @@ public class AbstractProtocolTransportTest {
             public void setReadable(boolean readable) {
                 throw new UnsupportedOperationException();
             }
-            
-            public <T extends ProtocolSession> void pushLineHandler(LineHandler<T> overrideCommandHandler, T session) {
-                throw new UnsupportedOperationException();
-            }
+
             
             public void popLineHandler() {
                 throw new UnsupportedOperationException();
@@ -185,9 +182,12 @@ public class AbstractProtocolTransportTest {
                 latch.countDown();
             }
             
-            @Override
             protected void close() {
                 throw new UnsupportedOperationException();
+            }
+
+            public void pushLineHandler(LineHandler<? extends ProtocolSession> overrideCommandHandler, ProtocolSession session) {
+                throw new UnsupportedOperationException();                
             }
         };
         for (Response message: messages) {

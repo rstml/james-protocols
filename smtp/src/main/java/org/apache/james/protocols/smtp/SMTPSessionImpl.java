@@ -23,7 +23,6 @@ import java.util.Collection;
 import org.apache.james.protocols.api.ProtocolSessionImpl;
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.logger.Logger;
 import org.apache.james.protocols.smtp.SMTPConfiguration;
 import org.apache.james.protocols.smtp.SMTPSession;
@@ -67,19 +66,6 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
     }
 
     /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#popLineHandler()
-     */
-    public void popLineHandler() {
-        getProtocolTransport().popLineHandler();
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#pushLineHandler(LineHandler)
-     */
-    public void pushLineHandler(LineHandler<SMTPSession> overrideCommandHandler) {
-        getProtocolTransport().pushLineHandler(overrideCommandHandler, this);
-    }
-
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getRcptCount()
      */
@@ -109,13 +95,6 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
         this.relayingAllowed = relayingAllowed;
     }
 
-    /**
-     * @see
-     * org.apache.james.protocols.smtp.SMTPSession#getPushedLineHandlerCount()
-     */
-    public int getPushedLineHandlerCount() {
-        return getProtocolTransport().getPushedLineHandlerCount();
-    }
 
     public Response newLineTooLongResponse() {
         return LINE_LENGTH_EXCEEDED;

@@ -30,7 +30,7 @@ import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
-import org.apache.james.protocols.pop3.StartTlsPop3Response;
+import org.apache.james.protocols.pop3.POP3StartTlsResponse;
 
 /**
  * Handler which offer STARTTLS implementation for POP3. STARTTLS is started
@@ -40,7 +40,7 @@ public class StlsCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("STLS"));
     private static final Set<String> CAPS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("STLS")));
 
-    private static final Response BEGIN_TLS = new StartTlsPop3Response(POP3Response.OK_RESPONSE, "Begin TLS negotiation").immutable();
+    private static final Response BEGIN_TLS = new POP3StartTlsResponse(POP3Response.OK_RESPONSE, "Begin TLS negotiation").immutable();
     /**
      * @see CommandHandler#onCommand(org.apache.james.protocols.api.ProtocolSession, Request)
      */

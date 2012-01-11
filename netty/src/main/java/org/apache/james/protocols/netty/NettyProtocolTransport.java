@@ -195,7 +195,7 @@ public class NettyProtocolTransport extends AbstractProtocolTransport {
         // it is executed with the same ExecutorHandler as the coreHandler (if one exist)
         // 
         // See JAMES-1277
-        channel.getPipeline().addBefore("coreHandler", "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler(session, overrideCommandHandler));        
+        channel.getPipeline().addBefore(HandlerConstants.CORE_HANDLER, "lineHandler" + lineHandlerCount, new LineHandlerUpstreamHandler(session, overrideCommandHandler));
     }
 
 }

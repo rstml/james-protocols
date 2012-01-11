@@ -17,27 +17,23 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.pop3.mailbox;
+package org.apache.james.protocols.pop3;
 
-import java.io.IOException;
-
-import org.apache.james.protocols.pop3.POP3Session;
+import org.apache.james.protocols.api.StartTlsResponse;
 
 /**
+ * Special sub-type of {@link POP3Response} which will trigger the start of TLS after the response was written to the client
  * 
  *
  */
-public interface MailboxFactory {
+public class POP3StartTlsResponse extends POP3Response implements StartTlsResponse{
 
-    /**
-     * Returns the {@link Mailbox} for the {@link POP3Session}. If the user does
-     * not exist or the password is not valid it will return <code>null</code>
-     * 
-     * @param user
-     * @param password
-     * @return mailbox or null if not valid user or password was given
-     * @throws IOException
-     */
-    Mailbox getMailbox(POP3Session session, String password) throws IOException;
+    public POP3StartTlsResponse(String code, CharSequence description) {
+        super(code, description);
+    }
+
+    public POP3StartTlsResponse(String code) {
+        super(code);
+    }
 
 }

@@ -21,8 +21,14 @@ package org.apache.james.protocols.pop3.mailbox;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.SequenceInputStream;
 
+import org.apache.james.protocols.api.CombinedInputStream;
+
+/**
+ * A {@link Mailbox} implementation which use a {@link CombinedInputStream} over {@link #getMessageHeaders(long)}  and {@link #getMessageBody(long)} to return the full message.
+ * 
+ *
+ */
 public abstract class AbstractMailbox implements Mailbox {
 
     /*
@@ -31,13 +37,12 @@ public abstract class AbstractMailbox implements Mailbox {
      * @see org.apache.james.protocols.pop3.mailbox.Mailbox#getMessage(long)
      */
     public InputStream getMessage(long uid) throws IOException {
-        return new SequenceInputStream(getMessageHeaders(uid), getMessageBody(uid));
+        return new CombinedInputStream(getMessageHeaders(uid), getMessageBody(uid));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.james.protocols.pop3.mailbox.Mailbox#close()
+
+    /**
+     * Does nothing
      */
     public void close() throws IOException {
         // do nothing

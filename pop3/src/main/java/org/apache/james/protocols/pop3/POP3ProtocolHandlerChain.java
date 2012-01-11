@@ -30,7 +30,7 @@ import org.apache.james.protocols.pop3.core.CapaCmdHandler;
 import org.apache.james.protocols.pop3.core.DeleCmdHandler;
 import org.apache.james.protocols.pop3.core.ListCmdHandler;
 import org.apache.james.protocols.pop3.core.NoopCmdHandler;
-import org.apache.james.protocols.pop3.core.PassCmdHandler;
+import org.apache.james.protocols.pop3.core.AbstractPassCmdHandler;
 import org.apache.james.protocols.pop3.core.QuitCmdHandler;
 import org.apache.james.protocols.pop3.core.RetrCmdHandler;
 import org.apache.james.protocols.pop3.core.RsetCmdHandler;
@@ -41,7 +41,6 @@ import org.apache.james.protocols.pop3.core.UidlCmdHandler;
 import org.apache.james.protocols.pop3.core.UnknownCmdHandler;
 import org.apache.james.protocols.pop3.core.UserCmdHandler;
 import org.apache.james.protocols.pop3.core.WelcomeMessageHandler;
-import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
 
 /**
  * {@link ProtocolHandlerChainImpl} which allows to add the default handlers which are needed to server POP3.
@@ -55,24 +54,24 @@ public class POP3ProtocolHandlerChain extends ProtocolHandlerChainImpl{
     }
 
     /**
-     * The {@link MailboxFactory} to use. If a <code>not null</code> {@link MailboxFactory} is given, the {@link POP3ProtocolHandlerChain}
+     * The {@link AbstractPassCmdHandler} to use. If a <code>not null</code> {@link AbstractPassCmdHandler} is given, the {@link POP3ProtocolHandlerChain}
      * will add all default handlers
      * 
-     * @param mailboxFactory
+     * @param passHandler
      * @throws WiringException 
      */
-    public POP3ProtocolHandlerChain(MailboxFactory mailboxFactory) throws WiringException {
-        if (mailboxFactory != null) {
-            addAll(initDefaultHandlers(mailboxFactory));      
+    public POP3ProtocolHandlerChain(AbstractPassCmdHandler passHandler) throws WiringException {
+        if (passHandler != null) {
+            addAll(initDefaultHandlers(passHandler));      
             wireExtensibleHandlers();
         }
     }
     
-    protected List<ProtocolHandler> initDefaultHandlers(MailboxFactory mailboxFactory) {
+    protected List<ProtocolHandler> initDefaultHandlers(AbstractPassCmdHandler passHandler) {
         List<ProtocolHandler> handlers = new ArrayList<ProtocolHandler>();
         handlers.add(new CapaCmdHandler());
         handlers.add(new UserCmdHandler());
-        handlers.add(new PassCmdHandler(mailboxFactory));
+        handlers.add(passHandler);
         handlers.add(new ListCmdHandler());
         handlers.add(new UidlCmdHandler());
         handlers.add(new RsetCmdHandler());

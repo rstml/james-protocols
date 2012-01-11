@@ -19,7 +19,6 @@
 
 package org.apache.james.protocols.pop3.core;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,21 +29,15 @@ import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.pop3.POP3Response;
 import org.apache.james.protocols.pop3.POP3Session;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
-import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
 
 /**
- * Handles PASS command
+ * Handles PASS commands.
  */
-public class PassCmdHandler extends RsetCmdHandler {
+public abstract class AbstractPassCmdHandler extends RsetCmdHandler {
     private static final Collection<String> COMMANDS = Collections.unmodifiableCollection(Arrays.asList("PASS"));
     private static final Response UNEXPECTED_ERROR = new POP3Response(POP3Response.ERR_RESPONSE, "Unexpected error accessing mailbox").immutable();
     private static final Response AUTH_FAILED = new POP3Response(POP3Response.ERR_RESPONSE, "Authentication failed.").immutable();
 
-    private final MailboxFactory factory;
-
-    public PassCmdHandler(MailboxFactory factory) {
-        this.factory = factory;
-    }
     /**
      * Handler method called upon receipt of a PASS command. Reads in and
      * validates the password.
@@ -55,7 +48,7 @@ public class PassCmdHandler extends RsetCmdHandler {
         if (session.getHandlerState() == POP3Session.AUTHENTICATION_USERSET && parameters != null) {
             String passArg = parameters;
             try {
-                Mailbox mailbox = factory.getMailbox(session, passArg);
+                Mailbox mailbox = auth(session, passArg);
                 if (mailbox != null) {
                     session.setUserMailbox(mailbox);
                     stat(session);
@@ -67,7 +60,7 @@ public class PassCmdHandler extends RsetCmdHandler {
                     session.setHandlerState(POP3Session.AUTHENTICATION_READY);
                     return AUTH_FAILED;
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 session.getLogger().error("Unexpected error accessing mailbox for " + session.getUser(), e);
                 session.setHandlerState(POP3Session.AUTHENTICATION_READY);
                 return UNEXPECTED_ERROR;
@@ -87,4 +80,13 @@ public class PassCmdHandler extends RsetCmdHandler {
         return COMMANDS;
     }
 
+    /**
+     * Authenticate a {@link POP3Session} and returns the {@link Mailbox} for it. If it can not get authenticated it will return <code>null</code>.
+     * 
+     * @param session
+     * @param password
+     * @return mailbox
+     * 
+     */
+    protected abstract Mailbox auth(POP3Session session, String password) throws Exception;
 }

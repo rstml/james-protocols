@@ -41,8 +41,8 @@ import org.apache.commons.net.pop3.POP3Client;
 import org.apache.commons.net.pop3.POP3MessageInfo;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.netty.NettyServer;
+import org.apache.james.protocols.pop3.core.AbstractPassCmdHandler;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
-import org.apache.james.protocols.pop3.mailbox.MailboxFactory;
 import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 
 import org.junit.Test;
@@ -52,8 +52,8 @@ public class POP3ServerTest {
     private static final Message MESSAGE1 = new Message("Subject: test\r\nX-Header: value\r\n", "My Body\r\n");
     private static final Message MESSAGE2 = new Message("Subject: test2\r\nX-Header: value2\r\n", "My Body with a DOT.\r\n.\r\n");
 
-    private POP3Protocol createProtocol(MailboxFactory factory) throws WiringException {
-        return new POP3Protocol(new POP3ProtocolHandlerChain(factory), new POP3Configuration(), new MockLogger());
+    private POP3Protocol createProtocol(AbstractPassCmdHandler handler) throws WiringException {
+        return new POP3Protocol(new POP3ProtocolHandlerChain(handler), new POP3Configuration(), new MockLogger());
     }
     @Test
     public void testInvalidAuth() throws Exception {
@@ -61,7 +61,7 @@ public class POP3ServerTest {
         
         NettyServer server = null;
         try {
-            server = new NettyServer(createProtocol(new MockMailboxFactory()));
+            server = new NettyServer(createProtocol(new TestPassCmdHandler()));
             server.setListenAddresses(address);
             server.bind();
             
@@ -87,10 +87,10 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler handler = new TestPassCmdHandler();
             
-            factory.add("valid", new MockMailbox(identifier));
-            server = new NettyServer(createProtocol(factory));
+            handler.add("valid", new MockMailbox(identifier));
+            server = new NettyServer(createProtocol(handler));
             server.setListenAddresses(address);
             server.bind();
             
@@ -120,10 +120,10 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler handler = new TestPassCmdHandler();
             
-            factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
-            server = new NettyServer(createProtocol(factory));
+            handler.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
+            server = new NettyServer(createProtocol(handler));
             server.setListenAddresses(address);
             server.bind();
             
@@ -178,7 +178,7 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
             server = new NettyServer(createProtocol(factory));
@@ -222,7 +222,7 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
             server = new NettyServer(createProtocol(factory));
@@ -269,7 +269,7 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
             server = new NettyServer(createProtocol(factory));
@@ -323,7 +323,7 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier));
             server = new NettyServer(createProtocol(factory));
@@ -352,7 +352,7 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1));
             server = new NettyServer(createProtocol(factory));
@@ -388,7 +388,7 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
             server = new NettyServer(createProtocol(factory));
@@ -419,7 +419,7 @@ public class POP3ServerTest {
         NettyServer server = null;
         try {
             String identifier = "id";
-            MockMailboxFactory factory = new MockMailboxFactory();
+            TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
             server = new NettyServer(createProtocol(factory));
@@ -497,15 +497,18 @@ public class POP3ServerTest {
         
     }
     
-    private final class MockMailboxFactory implements MailboxFactory {
+    private final class TestPassCmdHandler extends AbstractPassCmdHandler {
         private final Map<String, Mailbox> mailboxes = new HashMap<String, Mailbox>();
        
         public void add(String username, Mailbox mailbox) {
             mailboxes.put(username, mailbox);
         }
-        public Mailbox getMailbox(POP3Session session, String password) throws IOException {
+
+        @Override
+        protected Mailbox auth(POP3Session session, String password) {
             return mailboxes.get(session.getUser());
         }
+
         
     }
     

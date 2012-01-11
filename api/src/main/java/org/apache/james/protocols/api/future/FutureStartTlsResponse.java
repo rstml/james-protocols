@@ -22,6 +22,11 @@ package org.apache.james.protocols.api.future;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StartTlsResponse;
 
+/**
+ * Special {@link FutureResponse} which will get notified once a {@link StartTlsResponse} is ready
+ * 
+ *
+ */
 public class FutureStartTlsResponse extends FutureResponseImpl implements StartTlsResponse{
 
 

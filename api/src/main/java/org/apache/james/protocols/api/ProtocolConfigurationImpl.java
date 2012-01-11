@@ -20,7 +20,15 @@
 package org.apache.james.protocols.api;
 
 
+/**
+ * Default implementation of a {@link ProtocolConfiguration} which allows to easily set the different configurations. 
+ * 
+ * Be aware that set and get operations are not thread-safe
+ * 
+ *
+ */
 public class ProtocolConfigurationImpl implements ProtocolConfiguration {
+    
     private String greeting;
     private String softwareName = "JAMES Protocols Server";
     private String helloName = "localhost";

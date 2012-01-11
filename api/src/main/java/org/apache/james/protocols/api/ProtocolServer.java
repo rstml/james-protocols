@@ -21,6 +21,10 @@ package org.apache.james.protocols.api;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+/**
+ * A {@link ProtocolServer} accept inbound traffic and handle it. Basically the protocols API can be used to handle every "line based" protocol in an easy fashion
+ *
+ */
 public interface ProtocolServer {
 
     /**

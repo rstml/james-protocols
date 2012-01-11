@@ -22,6 +22,15 @@ package org.apache.james.protocols.api.handler;
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 
+/**
+ * An special {@link ProtocolHandler} which allows to <strong>intercept</code> returned {@link Response}'s and act on them.
+ * 
+ * This could be to gather statistics or even replace them. 
+ * @author Maurer
+ *
+ * @param <R>
+ * @param <S>
+ */
 public interface ProtocolHandlerResultHandler<R extends Response, S extends ProtocolSession> extends ProtocolHandler{
 
     /**

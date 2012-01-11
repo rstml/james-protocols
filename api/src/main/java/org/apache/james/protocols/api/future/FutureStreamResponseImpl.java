@@ -24,6 +24,11 @@ import java.io.InputStream;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StreamResponse;
 
+/**
+ * Special {@link FutureResponse} which wraps a {@link StreamResponse} and so provide an async way to get notified about ready responses
+ * 
+ *
+ */
 public class FutureStreamResponseImpl extends FutureResponseImpl implements StreamResponse{
 
     /**

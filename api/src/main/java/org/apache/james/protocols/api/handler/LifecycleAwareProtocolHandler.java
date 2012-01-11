@@ -28,7 +28,7 @@ public interface LifecycleAwareProtocolHandler extends ProtocolHandler{
     /**
      * Destroy object
      */
-    public void destroy();
+    void destroy();
 
 
 }

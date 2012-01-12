@@ -19,6 +19,9 @@
 
 package org.apache.james.protocols.api;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 
 /**
  * Default implementation of a {@link ProtocolConfiguration} which allows to easily set the different configurations. 
@@ -31,14 +34,29 @@ public class ProtocolConfigurationImpl implements ProtocolConfiguration {
     
     private String greeting;
     private String softwareName = "JAMES Protocols Server";
-    private String helloName = "localhost";
+    private String helloName = null;
+    private static final String DEFAULT_HELLO_NAME;
+    
+    static {
+        String hName;
+        try {
+            hName = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            hName = "localhost";
+        }
+        DEFAULT_HELLO_NAME = hName;
+    }
     
     /*
+     * 
      * (non-Javadoc)
      * 
      * @see org.apache.james.protocols.pop3.POP3Configuration#getHelloName()
      */
     public String getHelloName() {
+        if (helloName == null) {
+            return DEFAULT_HELLO_NAME;
+        }
         return helloName;
     }
     

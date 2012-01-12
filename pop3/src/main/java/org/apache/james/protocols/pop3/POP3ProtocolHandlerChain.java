@@ -54,24 +54,28 @@ public class POP3ProtocolHandlerChain extends ProtocolHandlerChainImpl{
     }
 
     /**
-     * The {@link AbstractPassCmdHandler} to use. If a <code>not null</code> {@link AbstractPassCmdHandler} is given, the {@link POP3ProtocolHandlerChain}
+     * The {@link AbstractPassCmdHandler}'s to use. If at least one {@link AbstractPassCmdHandler} is given, the {@link POP3ProtocolHandlerChain}
      * will add all default handlers
      * 
-     * @param passHandler
+     * @param authHandlers
      * @throws WiringException 
      */
-    public POP3ProtocolHandlerChain(AbstractPassCmdHandler passHandler) throws WiringException {
-        if (passHandler != null) {
-            addAll(initDefaultHandlers(passHandler));      
+    public POP3ProtocolHandlerChain(AbstractPassCmdHandler... authHandlers) throws WiringException {
+        if (authHandlers != null && authHandlers.length > 0) {
+            addAll(initDefaultHandlers(authHandlers));      
             wireExtensibleHandlers();
         }
     }
     
-    protected List<ProtocolHandler> initDefaultHandlers(AbstractPassCmdHandler passHandler) {
+    protected List<ProtocolHandler> initDefaultHandlers(AbstractPassCmdHandler... authHandlers) {
         List<ProtocolHandler> handlers = new ArrayList<ProtocolHandler>();
+        // add all pass handlers
+        for (AbstractPassCmdHandler handler: authHandlers) {
+            handlers.add(handler);
+        }
+        
         handlers.add(new CapaCmdHandler());
         handlers.add(new UserCmdHandler());
-        handlers.add(passHandler);
         handlers.add(new ListCmdHandler());
         handlers.add(new UidlCmdHandler());
         handlers.add(new RsetCmdHandler());

@@ -39,8 +39,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.net.pop3.POP3Client;
 import org.apache.commons.net.pop3.POP3MessageInfo;
+import org.apache.commons.net.pop3.POP3Reply;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.netty.NettyServer;
+import org.apache.james.protocols.pop3.core.AbstractApopCmdHandler;
 import org.apache.james.protocols.pop3.core.AbstractPassCmdHandler;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
 import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
@@ -462,6 +464,42 @@ public class POP3ServerTest {
         }
         
     }
+    
+    
+    @Test
+    public void testAPop() throws Exception {
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        NettyServer server = null;
+        try {
+            TestApopCmdHandler handler = new TestApopCmdHandler();
+            server = new NettyServer(createProtocol(handler));
+            server.setListenAddresses(address);
+            server.bind();
+            
+            POP3Client client =  new POP3Client();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            String welcomeMessage = client.getReplyString();
+            
+            // check for valid syntax that include all info needed for APOP
+            assertTrue(welcomeMessage.trim().matches("\\+OK \\<\\d+\\.\\d+@.+\\> .+"));
+            
+            int reply = client.sendCommand("APOP invalid invalid");
+            assertEquals(POP3Reply.ERROR, reply);
+            
+            handler.add("valid", new MockMailbox("id"));
+            reply = client.sendCommand("APOP valid valid");
+            assertEquals(POP3Reply.OK, reply);
+            
+            assertTrue(client.logout());
+           
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
     private void checkMessage(Message message, Reader reader) throws IOException {
         int read = 0;
         int i = -1;
@@ -503,12 +541,26 @@ public class POP3ServerTest {
         public void add(String username, Mailbox mailbox) {
             mailboxes.put(username, mailbox);
         }
-
-        @Override
-        protected Mailbox auth(POP3Session session, String password) {
-            return mailboxes.get(session.getUser());
+        
+        protected Mailbox auth(POP3Session session, String username, String password) throws Exception{
+            return mailboxes.get(username);
         }
 
+        
+    }
+    
+    private final class TestApopCmdHandler extends AbstractApopCmdHandler {
+        private final Map<String, Mailbox> mailboxes = new HashMap<String, Mailbox>();
+       
+        public void add(String username, Mailbox mailbox) {
+            mailboxes.put(username, mailbox);
+        }
+
+        @Override
+        protected Mailbox auth(POP3Session session, String apopTimestamp, String user, String digest) throws Exception {
+            return mailboxes.get(user);
+        }
+        
         
     }
     

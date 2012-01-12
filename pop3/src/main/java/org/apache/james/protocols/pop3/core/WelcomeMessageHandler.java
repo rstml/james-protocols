@@ -19,7 +19,7 @@
 
 package org.apache.james.protocols.pop3.core;
 
-
+import org.apache.james.protocols.api.ProtocolSession.State;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.pop3.POP3Response;
@@ -33,11 +33,19 @@ public class WelcomeMessageHandler implements ConnectHandler<POP3Session> {
      */
     public Response onConnect(POP3Session session) {
         StringBuilder responseBuffer = new StringBuilder();
-        // Initially greet the connector
-        // Format is: Sat, 24 Jan 1998 13:16:09 -0500
-        responseBuffer.append(session.getConfiguration().getHelloName()).append(" POP3 server (").append(session.getConfiguration().getSoftwareName()).append(") ready ");
+        
+        // Generate the timestamp which can be also used with APOP. See RFC1939 APOP
+        responseBuffer.append("<").append(session.getSessionID()).append(".").append(System.currentTimeMillis()).append("@").append(session.getConfiguration().getHelloName()).append("> ");
+        
+        // store the timestamp for later usage
+        session.setAttachment(POP3Session.APOP_TIMESTAMP, responseBuffer.toString(), State.Connection);
+        
+        // complete the response banner and send it back to the client
+        responseBuffer.append("POP3 server (").append(session.getConfiguration().getSoftwareName()).append(") ready ");
         POP3Response response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
         return response;
     }
+    
+   
     
 }

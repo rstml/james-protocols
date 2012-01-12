@@ -30,6 +30,7 @@ public interface POP3Session extends ProtocolSession {
 
     final static String UID_LIST = "UID_LIST";
     final static String DELETED_UID_LIST = "DELETED_UID_LIST";
+    final static String APOP_TIMESTAMP = "APOP_TIMESTAMP";
 
     // Authentication states for the POP3 interaction
     /** Waiting for user id */

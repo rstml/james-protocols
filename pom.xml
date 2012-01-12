@@ -42,7 +42,6 @@
         <module>lmtp</module>
         <module>netty</module>
         <module>pop3</module>
-        <module>imap</module>
     </modules>
 
     <scm>
@@ -115,67 +114,6 @@
                 <groupId>org.jboss.netty</groupId>
                 <artifactId>netty</artifactId>
                 <version>3.2.7.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>apache-james-mailbox-api</artifactId>
-                <version>${version.mailbox}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>apache-james-mailbox-api</artifactId>
-                <version>${version.mailbox}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-            
-            <!--
-                START Mail
-            -->
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>apache-mime4j-core</artifactId>
-                <version>${version.apache-mime4j}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>apache-mime4j-dom</artifactId>
-                <version>${version.apache-mime4j}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-activation_1.1_spec</artifactId>
-                <version>1.0.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.geronimo.javamail</groupId>
-                <artifactId>geronimo-javamail_1.4_mail</artifactId>
-                <version>1.6</version>
-            </dependency>
-            <!--
-                END Mail
-            -->
-            <dependency>
-                <groupId>com.beetstra.jutf7</groupId>
-                <artifactId>jutf7</artifactId>
-                <version>1.0.0</version>
-            </dependency>
-
-            <!--
-                START Testing
-            -->
-
-            <dependency>
-                <groupId>org.jmock</groupId>
-                <artifactId>jmock</artifactId>
-                <version>${version.jmock}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.jmock</groupId>
-                <artifactId>jmock-junit4</artifactId>
-                <version>${version.jmock}</version>
-                <scope>test</scope>
             </dependency>
             
             <dependency>

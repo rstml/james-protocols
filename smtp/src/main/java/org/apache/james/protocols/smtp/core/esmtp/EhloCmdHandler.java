@@ -146,7 +146,7 @@ public class EhloCmdHandler extends AbstractHookableCmdHandler<HeloHook> impleme
             return DOMAIN_ADDRESS_REQUIRED;
         } else {
             // store provided name
-            session.setAttachment(SMTPSession.CURRENT_HELO_NAME, parameters, State.Transaction);
+            session.setAttachment(SMTPSession.CURRENT_HELO_NAME, parameters, State.Connection);
             return null;
         }
     }

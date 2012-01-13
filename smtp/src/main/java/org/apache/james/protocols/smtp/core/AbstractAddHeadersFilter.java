@@ -20,7 +20,9 @@ package org.apache.james.protocols.smtp.core;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
@@ -99,21 +101,23 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
         public static final String MULTI_LINE_PREFIX = "          ";
         
         public final String name;
-        public final String value;
-        
-        private final String[] lines;
-        private final String lineDelimiter;
-        
-        public Header(String name, String value, String lineDelimiter) {
+        public final List<String> values = new ArrayList<String>();
+                
+        public Header(String name, String value) {
             this.name = name;
-            this.value = value;
-            this.lines = toString().split(lineDelimiter);
-            this.lineDelimiter = lineDelimiter;
+            this.values.add(value);
         }
         
-        public String toString() {
-             return name + ": " + value + lineDelimiter;
+        /**
+         * Add the value to the header
+         * @param value
+         * @return
+         */
+        public Header add(String value) {
+            values.add(value);
+            return this;
         }
+        
         
         /**
          * Transfer the content of the {@link Header} to the given {@link LineHandler}.
@@ -130,11 +134,17 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
 
             try {
                 Response response = null;
-                for (int i = 0; i < lines.length; i++) {
-                     response = handler.onLine(session, ByteBuffer.wrap((lines[i] + session.getLineDelimiter()).getBytes(charset)));
-                     if (response != null) {
-                         break;
-                     }
+                for (int i = 0; i < values.size(); i++) {
+                    String line;
+                    if (i == 0) {
+                        line = name + ": " + values.get(i);
+                    } else {
+                        line = MULTI_LINE_PREFIX + values.get(i);
+                    }
+                    response = handler.onLine(session, ByteBuffer.wrap((line + session.getLineDelimiter()).getBytes(charset)));
+                    if (response != null) {
+                        break;
+                    }
                 }
                 return response;
             } catch (UnsupportedEncodingException e) {

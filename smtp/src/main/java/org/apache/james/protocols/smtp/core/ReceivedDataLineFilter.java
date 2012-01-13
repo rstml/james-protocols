@@ -105,26 +105,33 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
         headerLineBuffer.append("from ").append(session.getRemoteAddress().getHostName());
 
         if (heloName != null) {
-            headerLineBuffer.append(" (").append(heloMode).append(" ").append(heloName).append(") ");
+            headerLineBuffer.append(" (").append(heloMode).append(" ").append(heloName).append(")");
         }
-        headerLineBuffer.append(" ([").append(session.getRemoteAddress().getAddress().getHostAddress()).append("])").append(session.getLineDelimiter());
-        headerLineBuffer.delete(0, headerLineBuffer.length());
-
-        headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append("by ").append(session.getConfiguration().getHelloName()).append(" (").append(session.getConfiguration().getSoftwareName()).append(") with ").append(getServiceType(session, heloMode));
+        headerLineBuffer.append(" ([").append(session.getRemoteAddress().getAddress().getHostAddress()).append("])");
+        Header header = new Header("Received", headerLineBuffer.toString());
+        
+        headerLineBuffer = new StringBuilder();
+        headerLineBuffer.append("by ").append(session.getConfiguration().getHelloName()).append(" (").append(session.getConfiguration().getSoftwareName()).append(") with ").append(getServiceType(session, heloMode));
         headerLineBuffer.append(" ID ").append(session.getSessionID());
 
         if (((Collection<?>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).size() == 1) {
             // Only indicate a recipient if they're the only recipient
             // (prevents email address harvesting and large headers in
             // bulk email)
-            headerLineBuffer.append(session.getLineDelimiter());
-            headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append("for <").append(((List<MailAddress>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).get(0).toString()).append(">;");
+            header.add(headerLineBuffer.toString());
+            
+            headerLineBuffer = new StringBuilder();
+            headerLineBuffer.append("for <").append(((List<MailAddress>) session.getAttachment(SMTPSession.RCPT_LIST, State.Transaction)).get(0).toString()).append(">;");
         } else {
             // Put the ; on the end of the 'by' line
             headerLineBuffer.append(";");
         }
-        headerLineBuffer.append(Header.MULTI_LINE_PREFIX).append(DATEFORMAT.get().format(new Date()));
+        header.add(headerLineBuffer.toString());
+        headerLineBuffer = new StringBuilder();
 
-        return Arrays.asList(new Header("Received", headerLineBuffer.toString(), session.getLineDelimiter()));
+        headerLineBuffer.append(DATEFORMAT.get().format(new Date()));
+
+        header.add(headerLineBuffer.toString());
+        return Arrays.asList(header);
     }
 }

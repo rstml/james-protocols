@@ -40,7 +40,8 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
     private static final AtomicInteger COUNTER = new AtomicInteger(0);
     
     private final String headersPrefixAdded = "HEADERS_PREFIX_ADDED" + COUNTER.incrementAndGet();
-    
+    private final String headersSuffixAdded = "HEADERS_SUFFIX_ADDED" + COUNTER.incrementAndGet();
+
     enum Location{
         Prefix,
         Suffix
@@ -56,8 +57,8 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
     
     @Override
     protected Response onSeparatorLine(SMTPSession session, ByteBuffer line, LineHandler<SMTPSession> next) {
-        if (getLocation() == Location.Suffix && session.getAttachment(headersPrefixAdded, State.Transaction) == null) { 
-            session.setAttachment(headersPrefixAdded, Boolean.TRUE, State.Transaction);
+        if (getLocation() == Location.Suffix && session.getAttachment(headersSuffixAdded, State.Transaction) == null) { 
+            session.setAttachment(headersSuffixAdded, Boolean.TRUE, State.Transaction);
             return addHeaders(session, line, next);
         }
         return super.onSeparatorLine(session, line, next);
@@ -65,7 +66,8 @@ public abstract class AbstractAddHeadersFilter extends SeparatingDataLineFilter{
 
     @Override
     protected Response onHeadersLine(SMTPSession session, ByteBuffer line, LineHandler<SMTPSession> next) {
-        if (getLocation() == Location.Prefix) {
+        if (getLocation() == Location.Prefix && session.getAttachment(headersPrefixAdded, State.Transaction) == null) {
+            session.setAttachment(headersPrefixAdded, Boolean.TRUE, State.Transaction);
             return addHeaders(session, line, next);
         }
         return super.onHeadersLine(session, line, next);

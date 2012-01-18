@@ -20,8 +20,6 @@
 
 package org.apache.james.protocols.smtp;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -49,20 +47,6 @@ public class BaseFakeSMTPSession implements SMTPSession {
      * @see org.apache.james.protocols.smtp.SMTPSession#getRcptCount()
      */
     public int getRcptCount() {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getRemoteHost()
-     */
-    public String getRemoteHost() {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-    }
-
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#getRemoteIPAddress()
-     */
-    public String getRemoteIPAddress() {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
@@ -130,8 +114,6 @@ public class BaseFakeSMTPSession implements SMTPSession {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 
-
-
     /**
      * @see org.apache.james.protocols.smtp.SMTPSession#getLogger()
      */
@@ -144,15 +126,6 @@ public class BaseFakeSMTPSession implements SMTPSession {
     }
 
     public boolean isTLSStarted() {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-    }
-
-    public void startTLS() throws IOException {
-        throw new UnsupportedOperationException("Unimplemented Stub Method");
-
-    }
-
-    public void writeStream(InputStream stream) {
         throw new UnsupportedOperationException("Unimplemented Stub Method");
     }
 

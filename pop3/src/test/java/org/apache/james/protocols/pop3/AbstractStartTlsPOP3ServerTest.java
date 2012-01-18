@@ -68,6 +68,9 @@ public abstract class AbstractStartTlsPOP3ServerTest {
             
             POP3SClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
+            
+            // TODO: Make use of client.capa() once possible
+            //       See NET-438
             assertEquals(POP3Reply.OK, client.sendCommand("CAPA"));
             client.getAdditionalReply();
 

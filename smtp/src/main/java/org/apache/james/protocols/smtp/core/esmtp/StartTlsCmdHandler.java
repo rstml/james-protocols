@@ -30,7 +30,7 @@ import org.apache.james.protocols.api.handler.CommandHandler;
 import org.apache.james.protocols.smtp.SMTPResponse;
 import org.apache.james.protocols.smtp.SMTPRetCode;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.apache.james.protocols.smtp.SMTPStartTLSResponse;
+import org.apache.james.protocols.smtp.SMTPStartTlsResponse;
 import org.apache.james.protocols.smtp.dsn.DSNStatus;
 
 /**
@@ -45,7 +45,7 @@ public class StartTlsCmdHandler implements CommandHandler<SMTPSession>, EhloExte
     private final static List<String> FEATURES = Collections.unmodifiableList(Arrays.asList(COMMAND_NAME));
 
     private static final Response TLS_ALREADY_ACTIVE = new SMTPResponse("500", DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) + " TLS already active RFC2487 5.2").immutable();
-    private static final Response READY_FOR_STARTTLS = new SMTPStartTLSResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS").immutable();
+    private static final Response READY_FOR_STARTTLS = new SMTPStartTlsResponse("220", DSNStatus.getStatus(DSNStatus.SUCCESS, DSNStatus.UNDEFINED_STATUS) + " Ready to start TLS").immutable();
     private static final Response SYNTAX_ERROR = new SMTPResponse("501 " + DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_ARG) + " Syntax error (no parameters allowed) with STARTTLS command").immutable();
     private static final Response NOT_SUPPORTED = new SMTPResponse(SMTPRetCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, DSNStatus.getStatus(DSNStatus.PERMANENT, DSNStatus.DELIVERY_INVALID_CMD) +" Command " + COMMAND_NAME +" unrecognized.").immutable();
     /**

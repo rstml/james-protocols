@@ -19,20 +19,47 @@
 
 package org.apache.james.protocols.smtp;
 
+import java.util.List;
+
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StartTlsResponse;
-import org.junit.Test;
 
-import static junit.framework.Assert.*;
 
-public class SMTPStartTlsResponseTest {
+/**
+ * This {@link SMTPResponse} should only be used once you want to start tls after the {@link SMTPResponse} was written to the client
+ * 
+ *
+ */
+public class SMTPStartTlsResponse extends SMTPResponse implements StartTlsResponse{
+
+    public SMTPStartTlsResponse(String code, CharSequence description) {
+        super(code, description);
+    }
+
+    public SMTPStartTlsResponse(String rawLine) {
+        super(rawLine);
+    }
 
     /**
-     * Test for PROTOCOLS-89
+     * Returns an immutable {@link StartTlsResponse}
      */
-    @Test
-    public void testImmutable() {
-        SMTPStartTlsResponse response = new SMTPStartTlsResponse("554", "Reject");
-        assertTrue(response instanceof StartTlsResponse);
-        assertTrue(response.immutable() instanceof StartTlsResponse);
+    @Override
+    public Response immutable() {
+        // We need to override this and return a StartTlsResponse. See ROTOCOLS-89
+        return new StartTlsResponse() {
+            
+            public boolean isEndSession() {
+                return SMTPStartTlsResponse.this.isEndSession();
+            }
+            
+            public String getRetCode() {
+                return SMTPStartTlsResponse.this.getRetCode();
+            }
+            
+            public List<CharSequence> getLines() {
+                return SMTPStartTlsResponse.this.getLines();
+            }
+        };
     }
+
 }

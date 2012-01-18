@@ -19,6 +19,9 @@
 
 package org.apache.james.protocols.smtp;
 
+import java.util.List;
+
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StartTlsResponse;
 
 
@@ -35,6 +38,28 @@ public class SMTPStartTLSResponse extends SMTPResponse implements StartTlsRespon
 
     public SMTPStartTLSResponse(String rawLine) {
         super(rawLine);
+    }
+
+    /**
+     * Returns an immutable {@link StartTlsResponse}
+     */
+    @Override
+    public Response immutable() {
+        // We need to override this and return a StartTlsResponse. See ROTOCOLS-89
+        return new StartTlsResponse() {
+            
+            public boolean isEndSession() {
+                return SMTPStartTLSResponse.this.isEndSession();
+            }
+            
+            public String getRetCode() {
+                return SMTPStartTLSResponse.this.getRetCode();
+            }
+            
+            public List<CharSequence> getLines() {
+                return SMTPStartTLSResponse.this.getLines();
+            }
+        };
     }
 
 }

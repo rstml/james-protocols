@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 
+import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StreamResponse;
 
 /**
@@ -45,4 +46,13 @@ public class POP3StreamResponse extends POP3Response implements StreamResponse {
     public InputStream getStream() {
         return new SequenceInputStream(stream, new ByteArrayInputStream(".\r\n".getBytes()));
     }
+
+    /**
+     * Throws {@link UnsupportedOperationException}
+     */
+    @Override
+    public Response immutable() {
+        throw new UnsupportedOperationException("POP3StreamResponse can only be used once, so its not supported to reuse it");
+    }
+
 }

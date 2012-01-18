@@ -17,48 +17,22 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.pop3;
+package org.apache.james.protocols.smtp;
 
-import java.util.List;
-
-import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.StartTlsResponse;
+import org.junit.Test;
 
-/**
- * Special sub-type of {@link POP3Response} which will trigger the start of TLS after the response was written to the client
- * 
- *
- */
-public class POP3StartTlsResponse extends POP3Response implements StartTlsResponse{
+import static junit.framework.Assert.*;
 
-    public POP3StartTlsResponse(String code, CharSequence description) {
-        super(code, description);
-    }
-
-    public POP3StartTlsResponse(String code) {
-        super(code);
-    }
+public class SMTPStartTlsResponseTest {
 
     /**
-     * Return an immutable {@link StartTlsResponse}.
+     * Test for PROTOCOLS-89
      */
-    @Override
-    public Response immutable() {
-        // We need to override this and return a StartTlsResponse. See ROTOCOLS-89
-        return new StartTlsResponse() {
-            
-            public boolean isEndSession() {
-                return POP3StartTlsResponse.this.isEndSession();
-            }
-            
-            public String getRetCode() {
-                return POP3StartTlsResponse.this.getRetCode();
-            }
-            
-            public List<CharSequence> getLines() {
-                return POP3StartTlsResponse.this.getLines();
-            }
-        };
+    @Test
+    public void testImmutable() {
+        SMTPStartTLSResponse response = new SMTPStartTLSResponse("554", "Reject");
+        assertTrue(response instanceof StartTlsResponse);
+        assertTrue(response.immutable() instanceof StartTlsResponse);
     }
-
 }

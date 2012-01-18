@@ -31,12 +31,12 @@ import org.apache.commons.net.smtp.RelayPath;
 import org.apache.commons.net.smtp.SMTPClient;
 import org.apache.commons.net.smtp.SMTPReply;
 import org.apache.james.protocols.api.Protocol;
+import org.apache.james.protocols.api.ProtocolServer;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.api.utils.MockLogger;
 import org.apache.james.protocols.api.utils.TestUtils;
 import org.apache.james.protocols.lmtp.hook.DeliverToRecipientHook;
-import org.apache.james.protocols.netty.NettyServer;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailEnvelope;
 import org.apache.james.protocols.smtp.SMTPProtocol;
@@ -91,10 +91,9 @@ public abstract class AbstractLMTPServerTest extends AbstractSMTPServerTest{
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -128,10 +127,9 @@ public abstract class AbstractLMTPServerTest extends AbstractSMTPServerTest{
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -166,10 +164,9 @@ public abstract class AbstractLMTPServerTest extends AbstractSMTPServerTest{
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -199,10 +196,9 @@ public abstract class AbstractLMTPServerTest extends AbstractSMTPServerTest{
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(deliverHook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(deliverHook), address);
             server.bind();
             
             SMTPClient client = createClient();

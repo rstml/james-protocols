@@ -35,7 +35,7 @@ public abstract class AbstractLMTPSServerTest extends AbstractLMTPServerTest{
 
     @Override
     protected SMTPClient createClient() {
-        LMTPSClient client = new LMTPSClient(false, BogusSslContextFactory.getClientContext());
+        LMTPSClient client = new LMTPSClient(true, BogusSslContextFactory.getClientContext());
         client.setTrustManager(BogusTrustManagerFactory.getTrustManagers()[0]);
         
         return client;

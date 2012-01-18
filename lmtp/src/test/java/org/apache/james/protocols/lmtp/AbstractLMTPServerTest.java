@@ -33,21 +33,21 @@ import org.apache.commons.net.smtp.SMTPReply;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
+import org.apache.james.protocols.api.utils.MockLogger;
+import org.apache.james.protocols.api.utils.TestUtils;
 import org.apache.james.protocols.lmtp.hook.DeliverToRecipientHook;
 import org.apache.james.protocols.netty.NettyServer;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailEnvelope;
-import org.apache.james.protocols.smtp.MockLogger;
 import org.apache.james.protocols.smtp.SMTPProtocol;
-import org.apache.james.protocols.smtp.SMTPServerTest;
+import org.apache.james.protocols.smtp.AbstractSMTPServerTest;
 import org.apache.james.protocols.smtp.SMTPSession;
-import org.apache.james.protocols.smtp.TestUtils;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.MessageHook;
 import org.junit.Test;
 
-public class LMTPServerTest extends SMTPServerTest{
+public abstract class AbstractLMTPServerTest extends AbstractSMTPServerTest{
 
     @Override
     protected Protocol createProtocol(ProtocolHandler... handlers) throws WiringException {
@@ -172,7 +172,7 @@ public class LMTPServerTest extends SMTPServerTest{
             server.setListenAddresses(address);
             server.bind();
             
-            LMTPClient client = (LMTPClient) createClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -205,7 +205,7 @@ public class LMTPServerTest extends SMTPServerTest{
             server.setListenAddresses(address);
             server.bind();
             
-            LMTPClient client = (LMTPClient) createClient();
+            SMTPClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
             
@@ -223,7 +223,7 @@ public class LMTPServerTest extends SMTPServerTest{
 
             assertTrue(client.sendShortMessageData(MSG1));
 
-            int[] replies = client.getReplies();
+            int[] replies = ((LMTPClient)client).getReplies();
             
             assertEquals("Expected two replies",2, replies.length);
             
@@ -250,10 +250,10 @@ public class LMTPServerTest extends SMTPServerTest{
     }
     
     protected SMTPClient createClient() {
-        return new LMTPClient();
+        return new LMTPClientImpl();
     }
     
-    private final class LMTPClient extends SMTPClient {
+    private final class LMTPClientImpl extends SMTPClient implements LMTPClient {
 
         private final List<Integer> replies = new ArrayList<Integer>();
         private int rcptCount = 0;

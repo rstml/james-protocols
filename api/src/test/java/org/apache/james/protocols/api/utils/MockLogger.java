@@ -17,7 +17,7 @@
  * under the License.                                           *
  ****************************************************************/
 
-package org.apache.james.protocols.pop3;
+package org.apache.james.protocols.api.utils;
 
 import org.apache.james.protocols.api.logger.Logger;
 

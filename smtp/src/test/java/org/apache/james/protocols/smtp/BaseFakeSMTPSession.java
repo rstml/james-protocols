@@ -28,6 +28,7 @@ import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.logger.Logger;
+import org.apache.james.protocols.api.utils.MockLogger;
 
 /**
  * Abstract class to simplify the mocks

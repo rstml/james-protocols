@@ -58,6 +58,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.james.protocols</groupId>
+            <artifactId>protocols-api</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.james.protocols</groupId>
             <artifactId>protocols-smtp</artifactId>
             <type>test-jar</type>
             <scope>test</scope>

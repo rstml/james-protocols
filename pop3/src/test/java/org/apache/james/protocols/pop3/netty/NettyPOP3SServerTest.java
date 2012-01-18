@@ -16,33 +16,25 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.pop3;
+package org.apache.james.protocols.pop3.netty;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.InetSocketAddress;
 
-public class TestUtils {
+import org.apache.james.protocols.api.Encryption;
+import org.apache.james.protocols.api.Protocol;
+import org.apache.james.protocols.api.ProtocolServer;
+import org.apache.james.protocols.netty.NettyServer;
+import org.apache.james.protocols.pop3.AbstractPOP3SServerTest;
 
-    private final static int START_PORT = 20000;
-    private final static int END_PORT = 30000;
-    
-    /**
-     * Return a free port which can be used to bind to
-     * 
-     * @return port
-     */
-    public synchronized static int getFreePort() {
-        for(int start = START_PORT; start <= END_PORT; start++) {
-            try {
-                ServerSocket socket = new ServerSocket(start);
-                socket.setReuseAddress(true);
-                socket.close();
-                return start;
-            } catch (IOException e) {
-                // ignore 
-            }
-            
-        }
-        throw new RuntimeException("Unable to find a free port....");
+public class NettyPOP3SServerTest extends AbstractPOP3SServerTest {
+
+    @Override
+    protected ProtocolServer createEncryptedServer(Protocol protocol, InetSocketAddress address, Encryption enc) {
+        NettyServer server = new NettyServer(protocol, enc);
+        server.setListenAddresses(address);
+        return server;
     }
+
+
+
 }

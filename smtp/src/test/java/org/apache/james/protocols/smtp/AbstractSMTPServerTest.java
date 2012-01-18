@@ -31,12 +31,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.net.smtp.SMTPClient;
 import org.apache.commons.net.smtp.SMTPReply;
 import org.apache.james.protocols.api.Protocol;
+import org.apache.james.protocols.api.ProtocolServer;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.ConnectHandler;
 import org.apache.james.protocols.api.handler.DisconnectHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
-import org.apache.james.protocols.netty.NettyServer;
+import org.apache.james.protocols.api.utils.MockLogger;
+import org.apache.james.protocols.api.utils.TestUtils;
 import org.apache.james.protocols.smtp.hook.HeloHook;
 import org.apache.james.protocols.smtp.hook.HookResult;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
@@ -46,22 +48,22 @@ import org.apache.james.protocols.smtp.hook.RcptHook;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class SMTPServerTest {
+public abstract class AbstractSMTPServerTest {
     
     protected final static String MSG1 = "Subject: Testmessage\r\n\r\nThis is a message";
     protected final static String SENDER = "me@sender";
     protected final static String RCPT1 ="rpct1@domain";
     protected final static String RCPT2 ="rpct2@domain";
 
+    
     @Test
     public void testSimpleDelivery() throws Exception {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -103,14 +105,47 @@ public class SMTPServerTest {
     }
     
     @Test
+    public void testStartTlsNotSupported() throws Exception {
+        TestMessageHook hook = new TestMessageHook();
+        InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+        
+        
+        ProtocolServer server = null;
+        try {
+            server = createServer(createProtocol(hook), address);  
+            server.bind();
+            
+            SMTPClient client = createClient();
+            client.connect(address.getAddress().getHostAddress(), address.getPort());
+            assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
+            
+            client.sendCommand("STARTTLS");
+            assertTrue(SMTPReply.isNegativePermanent(client.getReplyCode()));
+
+            
+            client.quit();
+            assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
+            client.disconnect();
+            Iterator<MailEnvelope> queued = hook.getQueued().iterator();
+            assertFalse(queued.hasNext());
+
+        } finally {
+            if (server != null) {
+                server.unbind();
+            }
+        }
+        
+    }
+    
+    @Test
     public void testUnknownCommand() throws Exception {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -140,10 +175,10 @@ public class SMTPServerTest {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -173,11 +208,11 @@ public class SMTPServerTest {
     public void testMailWithoutBrackets() throws Exception {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
+
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -217,10 +252,10 @@ public class SMTPServerTest {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -251,10 +286,10 @@ public class SMTPServerTest {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -293,12 +328,11 @@ public class SMTPServerTest {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             Protocol protocol = createProtocol(hook);
             ((SMTPConfigurationImpl) protocol.getConfiguration()).setUseAddressBracketsEnforcement(false);
-            server = new NettyServer(protocol);
-            server.setListenAddresses(address);
+            server = createServer(protocol, address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -337,10 +371,10 @@ public class SMTPServerTest {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -372,12 +406,11 @@ public class SMTPServerTest {
         TestMessageHook hook = new TestMessageHook();
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             Protocol protocol = createProtocol(hook);
             ((SMTPConfigurationImpl) protocol.getConfiguration()).setHeloEhloEnforcement(false);
-            server = new NettyServer(protocol);
-            server.setListenAddresses(address);
+            server = createServer(protocol, address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -416,10 +449,10 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -455,10 +488,10 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -493,10 +526,10 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -534,10 +567,10 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -581,10 +614,10 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -636,10 +669,10 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -678,10 +711,9 @@ public class SMTPServerTest {
 
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(new ProtocolHandler[0]));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(new ProtocolHandler[0]), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -726,10 +758,9 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook, testHook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook, testHook), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -782,10 +813,9 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(hook, testHook));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(hook, testHook), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -836,11 +866,10 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             
-            server = new NettyServer(createProtocol(connectHandler));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(connectHandler), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -872,10 +901,9 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(connectHandler));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(connectHandler), address);
             server.bind();
             
             SMTPClient client = createClient();
@@ -908,10 +936,9 @@ public class SMTPServerTest {
         
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(handler));  
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(handler), address);  
             server.bind();
             
             SMTPClient client = createClient();
@@ -935,6 +962,9 @@ public class SMTPServerTest {
     protected SMTPClient createClient() {
         return new SMTPClient();
     }
+
+    protected abstract ProtocolServer createServer(Protocol protocol, InetSocketAddress address);
+
     
     protected Protocol createProtocol(ProtocolHandler... handlers) throws WiringException {
         SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain();

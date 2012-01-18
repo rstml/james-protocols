@@ -18,31 +18,33 @@
  ****************************************************************/
 package org.apache.james.protocols.smtp;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+import java.net.InetSocketAddress;
 
-public class TestUtils {
+import org.apache.commons.net.smtp.SMTPClient;
+import org.apache.commons.net.smtp.SMTPSClient;
+import org.apache.james.protocols.api.Encryption;
+import org.apache.james.protocols.api.Protocol;
+import org.apache.james.protocols.api.ProtocolServer;
+import org.apache.james.protocols.api.utils.BogusSslContextFactory;
+import org.apache.james.protocols.api.utils.BogusTrustManagerFactory;
+import org.apache.james.protocols.smtp.AbstractSMTPServerTest;
 
-    private final static int START_PORT = 20000;
-    private final static int END_PORT = 30000;
+
+public abstract class AbstractSMTPSServerTest extends AbstractSMTPServerTest{
     
-    /**
-     * Return a free port which can be used to bind to
-     * 
-     * @return port
-     */
-    public synchronized static int getFreePort() {
-        for(int start = START_PORT; start <= END_PORT; start++) {
-            try {
-                ServerSocket socket = new ServerSocket(start);
-                socket.setReuseAddress(true);
-                socket.close();
-                return start;
-            } catch (IOException e) {
-                // ignore 
-            }
-            
-        }
-        throw new RuntimeException("Unable to find a free port....");
+    
+    @Override
+    protected SMTPClient createClient() {
+        SMTPSClient client = new SMTPSClient(true,BogusSslContextFactory.getClientContext());
+        client.setTrustManager(BogusTrustManagerFactory.getTrustManagers()[0]);
+        return client;
     }
+
+    
+    @Override
+    protected ProtocolServer createServer(Protocol protocol, InetSocketAddress address) {
+        return createEncryptedServer(protocol, address,Encryption.createTls(BogusSslContextFactory.getServerContext()));
+    }
+    
+    protected abstract ProtocolServer createEncryptedServer(Protocol protocol, InetSocketAddress address, Encryption enc);
 }

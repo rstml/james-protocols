@@ -40,8 +40,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.net.pop3.POP3Client;
 import org.apache.commons.net.pop3.POP3MessageInfo;
 import org.apache.commons.net.pop3.POP3Reply;
+import org.apache.james.protocols.api.Protocol;
+import org.apache.james.protocols.api.ProtocolServer;
 import org.apache.james.protocols.api.handler.WiringException;
-import org.apache.james.protocols.netty.NettyServer;
+import org.apache.james.protocols.api.utils.MockLogger;
+import org.apache.james.protocols.api.utils.TestUtils;
 import org.apache.james.protocols.pop3.core.AbstractApopCmdHandler;
 import org.apache.james.protocols.pop3.core.AbstractPassCmdHandler;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
@@ -49,7 +52,7 @@ import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 
 import org.junit.Test;
 
-public class POP3ServerTest {
+public abstract class AbstractPOP3ServerTest {
 
     private static final Message MESSAGE1 = new Message("Subject: test\r\nX-Header: value\r\n", "My Body\r\n");
     private static final Message MESSAGE2 = new Message("Subject: test2\r\nX-Header: value2\r\n", "My Body with a DOT.\r\n.\r\n");
@@ -57,17 +60,23 @@ public class POP3ServerTest {
     private POP3Protocol createProtocol(AbstractPassCmdHandler handler) throws WiringException {
         return new POP3Protocol(new POP3ProtocolHandlerChain(handler), new POP3Configuration(), new MockLogger());
     }
+    
+    protected abstract ProtocolServer createServer(Protocol protocol, InetSocketAddress address);
+    
+    protected POP3Client createClient() {
+        return new POP3Client();
+    }
+    
     @Test
     public void testInvalidAuth() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
-            server = new NettyServer(createProtocol(new TestPassCmdHandler()));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(new TestPassCmdHandler()), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertFalse(client.login("invalid", "invalid"));
@@ -86,17 +95,16 @@ public class POP3ServerTest {
     public void testEmptyInbox() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler handler = new TestPassCmdHandler();
             
             handler.add("valid", new MockMailbox(identifier));
-            server = new NettyServer(createProtocol(handler));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(handler), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -119,17 +127,16 @@ public class POP3ServerTest {
     public void testInboxWithMessages() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler handler = new TestPassCmdHandler();
             
             handler.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
-            server = new NettyServer(createProtocol(handler));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(handler), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -177,17 +184,16 @@ public class POP3ServerTest {
     public void testRetr() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
-            server = new NettyServer(createProtocol(factory));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(factory), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -221,17 +227,16 @@ public class POP3ServerTest {
     public void testTop() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
-            server = new NettyServer(createProtocol(factory));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(factory), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -268,17 +273,16 @@ public class POP3ServerTest {
     public void testDele() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
-            server = new NettyServer(createProtocol(factory));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(factory), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -322,17 +326,16 @@ public class POP3ServerTest {
     public void testNoop() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier));
-            server = new NettyServer(createProtocol(factory));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(factory), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -351,17 +354,16 @@ public class POP3ServerTest {
     public void testRset() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1));
-            server = new NettyServer(createProtocol(factory));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(factory), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -387,17 +389,16 @@ public class POP3ServerTest {
     public void testStat() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
-            server = new NettyServer(createProtocol(factory));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(factory), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             
             assertTrue(client.login("valid", "valid"));
@@ -418,17 +419,16 @@ public class POP3ServerTest {
     public void testDifferentStates() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             String identifier = "id";
             TestPassCmdHandler factory = new TestPassCmdHandler();
             
             factory.add("valid", new MockMailbox(identifier, MESSAGE1, MESSAGE2));
-            server = new NettyServer(createProtocol(factory));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(factory), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             assertNull(client.listMessages());
@@ -470,14 +470,13 @@ public class POP3ServerTest {
     public void testAPop() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
         
-        NettyServer server = null;
+        ProtocolServer server = null;
         try {
             TestApopCmdHandler handler = new TestApopCmdHandler();
-            server = new NettyServer(createProtocol(handler));
-            server.setListenAddresses(address);
+            server = createServer(createProtocol(handler), address);
             server.bind();
             
-            POP3Client client =  new POP3Client();
+            POP3Client client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
             String welcomeMessage = client.getReplyString();
             
@@ -566,7 +565,7 @@ public class POP3ServerTest {
     
     private final class MockMailbox implements Mailbox {
 
-        private final Map<Long, Message> messages = new HashMap<Long, POP3ServerTest.Message>();
+        private final Map<Long, Message> messages = new HashMap<Long, AbstractPOP3ServerTest.Message>();
         private final String identifier;
 
         public MockMailbox(String identifier, Message... messages) {

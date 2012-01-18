@@ -16,84 +16,74 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.smtp;
+package org.apache.james.protocols.pop3;
 
 import static org.junit.Assert.assertTrue;
 
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.Locale;
 
-
-import org.apache.commons.net.smtp.SMTPReply;
-import org.apache.commons.net.smtp.SMTPSClient;
 import org.apache.james.protocols.api.Encryption;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolServer;
-import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.api.utils.BogusSslContextFactory;
 import org.apache.james.protocols.api.utils.BogusTrustManagerFactory;
 import org.apache.james.protocols.api.utils.MockLogger;
 import org.apache.james.protocols.api.utils.TestUtils;
+import org.apache.james.protocols.pop3.core.AbstractPassCmdHandler;
+import org.apache.james.protocols.pop3.utils.AdvancedPOP3SClient;
+import org.apache.james.protocols.pop3.utils.MockMailbox;
+import org.apache.james.protocols.pop3.utils.TestPassCmdHandler;
 import org.junit.Test;
 
-public abstract class AbstractStartTlsSMTPServerTest {
+public abstract class AbstractStartTlsPOP3ServerTest {
+
+    private POP3Protocol createProtocol(AbstractPassCmdHandler handler) throws WiringException {
+        return new POP3Protocol(new POP3ProtocolHandlerChain(handler), new POP3Configuration(), new MockLogger());
+    }
     
-    protected SMTPSClient createClient() {
-        SMTPSClient client = new SMTPSClient(false, BogusSslContextFactory.getClientContext());
+    protected AdvancedPOP3SClient createClient() {
+        AdvancedPOP3SClient client = new AdvancedPOP3SClient(false, BogusSslContextFactory.getClientContext());
         client.setTrustManager(BogusTrustManagerFactory.getTrustManagers()[0]);
         return client;
     }
-
-    protected abstract ProtocolServer createServer(Protocol protocol, InetSocketAddress address, Encryption enc);
-
     
-    protected Protocol createProtocol(ProtocolHandler... handlers) throws WiringException {
-        SMTPProtocolHandlerChain chain = new SMTPProtocolHandlerChain();
-        chain.addAll(0, Arrays.asList(handlers));
-        chain.wireExtensibleHandlers();
-        return new SMTPProtocol(chain, new SMTPConfigurationImpl(), new MockLogger());
-    }
-
-
+    protected abstract ProtocolServer createServer(Protocol protocol, InetSocketAddress address, Encryption enc);
+    
+    
     @Test
-    public void testStartTLS() throws Exception {
+    public void testStartTls() throws Exception {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", TestUtils.getFreePort());
-        
         
         ProtocolServer server = null;
         try {
-            server = createServer(createProtocol(new ProtocolHandler[0]), address, Encryption.createStartTls(BogusSslContextFactory.getServerContext()));  
+            String identifier = "id";
+            TestPassCmdHandler handler = new TestPassCmdHandler();
+            
+            handler.add("valid", new MockMailbox(identifier));
+            server = createServer(createProtocol(handler), address, Encryption.createStartTls(BogusSslContextFactory.getServerContext()));
             server.bind();
             
-            SMTPSClient client = createClient();
+            AdvancedPOP3SClient client =  createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
-            assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
+            assertTrue(client.capa());
             
-            client.sendCommand("EHLO localhost");
-            assertTrue(SMTPReply.isPositiveCompletion(client.getReplyCode()));
-            
-            boolean startTLSAnnounced = false;
-            for (String reply: client.getReplyStrings()) {
-                if (reply.toUpperCase(Locale.UK).endsWith("STARTTLS")) {
-                    startTLSAnnounced = true;
+            boolean startTlsCapa = false;
+            for (String cap: client.getReplyStrings()) {
+                if (cap.equalsIgnoreCase("STLS")) {
+                    startTlsCapa = true;
                     break;
                 }
             }
-            assertTrue(startTLSAnnounced);
+            assertTrue(startTlsCapa);
             
             assertTrue(client.execTLS());
-            
-            // TODO: Add back once commons-net 3.1.0 was released.
-            // See: NET-421
+            // TODO: Reenable when commons-net 3.1.0 was released
+            //       See NET-430
             //
-            //client.quit();
-            //assertTrue("Reply="+ client.getReplyString(), SMTPReply.isPositiveCompletion(client.getReplyCode()));
-            
+            //assertTrue(client.logout());
             client.disconnect();
-
-
+           
         } finally {
             if (server != null) {
                 server.unbind();
@@ -101,6 +91,5 @@ public abstract class AbstractStartTlsSMTPServerTest {
         }
         
     }
-    
-    
+
 }

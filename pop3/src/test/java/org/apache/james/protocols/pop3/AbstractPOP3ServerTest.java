@@ -25,17 +25,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
-import java.io.SequenceInputStream;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.net.pop3.POP3Client;
 import org.apache.commons.net.pop3.POP3MessageInfo;
@@ -48,8 +42,9 @@ import org.apache.james.protocols.api.utils.TestUtils;
 import org.apache.james.protocols.pop3.core.AbstractApopCmdHandler;
 import org.apache.james.protocols.pop3.core.AbstractPassCmdHandler;
 import org.apache.james.protocols.pop3.mailbox.Mailbox;
-import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
-
+import org.apache.james.protocols.pop3.utils.MockMailbox;
+import org.apache.james.protocols.pop3.utils.MockMailbox.Message;
+import org.apache.james.protocols.pop3.utils.TestPassCmdHandler;
 import org.junit.Test;
 
 public abstract class AbstractPOP3ServerTest {
@@ -533,21 +528,7 @@ public abstract class AbstractPOP3ServerTest {
         assertEquals(lines, linesRead);
         
     }
-    
-    private final class TestPassCmdHandler extends AbstractPassCmdHandler {
-        private final Map<String, Mailbox> mailboxes = new HashMap<String, Mailbox>();
-       
-        public void add(String username, Mailbox mailbox) {
-            mailboxes.put(username, mailbox);
-        }
-        
-        protected Mailbox auth(POP3Session session, String username, String password) throws Exception{
-            return mailboxes.get(username);
-        }
 
-        
-    }
-    
     private final class TestApopCmdHandler extends AbstractApopCmdHandler {
         private final Map<String, Mailbox> mailboxes = new HashMap<String, Mailbox>();
        
@@ -563,85 +544,5 @@ public abstract class AbstractPOP3ServerTest {
         
     }
     
-    private final class MockMailbox implements Mailbox {
-
-        private final Map<Long, Message> messages = new HashMap<Long, AbstractPOP3ServerTest.Message>();
-        private final String identifier;
-
-        public MockMailbox(String identifier, Message... messages) {
-            this.identifier = identifier;
-            for (Message m: messages) {
-                this.messages.put(m.meta.getUid(), m);
-            }
-        }
-        
-        public MockMailbox(String identifier) {
-            this(identifier, new Message[0]);
-        }
-        public InputStream getMessageBody(long uid) throws IOException {
-            Message m = messages.get(uid);
-            if (m == null) {
-                return null;
-            }
-            return new ByteArrayInputStream(m.body.getBytes("US-ASCII"));
-        }
-
-        public InputStream getMessageHeaders(long uid) throws IOException {
-            Message m = messages.get(uid);
-            if (m == null) {
-                return null;
-            }
-            return new ByteArrayInputStream((m.headers + "\r\n").getBytes("US-ASCII"));
-        }
-
-        public InputStream getMessage(long uid) throws IOException {
-            InputStream body = getMessageBody(uid);
-            InputStream headers = getMessageHeaders(uid);
-            if (body == null || headers == null) {
-                return null;
-            }
-            return new SequenceInputStream(headers, body);
-        }
-
-        public List<MessageMetaData> getMessages() throws IOException {
-            List<MessageMetaData> meta = new ArrayList<MessageMetaData>();
-            for (Message m: messages.values()) {
-                meta.add(m.meta);
-            }
-            return meta;
-        }
-
-        public void remove(long... uids) throws IOException {
-            for (long uid: uids) {
-                messages.remove(uid);
-            }
-        }
-
-        public String getIdentifier() throws IOException {
-            return identifier;
-        }
-
-        public void close() throws IOException {
-            // nothing
-        }
-        
-    }
-    
-    private static final class Message {
-        private static final AtomicLong UIDS = new AtomicLong(0);
-        public final String headers;
-        public final String body;
-        public final MessageMetaData meta;
-
-        public Message(String headers, String body) {
-            this.headers = headers;
-            this.body = body;
-            this.meta = new MessageMetaData(UIDS.incrementAndGet(), headers.length() + body.length() + 2);
-        }
-        
-        public String toString() {
-            return headers + "\r\n" + body;
-        }
-        
-    }
+   
 }

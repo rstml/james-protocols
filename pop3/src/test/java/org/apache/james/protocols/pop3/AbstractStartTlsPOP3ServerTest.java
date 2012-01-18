@@ -18,10 +18,13 @@
  ****************************************************************/
 package org.apache.james.protocols.pop3;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.net.InetSocketAddress;
 
+import org.apache.commons.net.pop3.POP3Reply;
+import org.apache.commons.net.pop3.POP3SClient;
 import org.apache.james.protocols.api.Encryption;
 import org.apache.james.protocols.api.Protocol;
 import org.apache.james.protocols.api.ProtocolServer;
@@ -31,7 +34,6 @@ import org.apache.james.protocols.api.utils.BogusTrustManagerFactory;
 import org.apache.james.protocols.api.utils.MockLogger;
 import org.apache.james.protocols.api.utils.TestUtils;
 import org.apache.james.protocols.pop3.core.AbstractPassCmdHandler;
-import org.apache.james.protocols.pop3.utils.AdvancedPOP3SClient;
 import org.apache.james.protocols.pop3.utils.MockMailbox;
 import org.apache.james.protocols.pop3.utils.TestPassCmdHandler;
 import org.junit.Test;
@@ -42,8 +44,8 @@ public abstract class AbstractStartTlsPOP3ServerTest {
         return new POP3Protocol(new POP3ProtocolHandlerChain(handler), new POP3Configuration(), new MockLogger());
     }
     
-    protected AdvancedPOP3SClient createClient() {
-        AdvancedPOP3SClient client = new AdvancedPOP3SClient(false, BogusSslContextFactory.getClientContext());
+    protected POP3SClient createClient() {
+        POP3SClient client = new POP3SClient(false, BogusSslContextFactory.getClientContext());
         client.setTrustManager(BogusTrustManagerFactory.getTrustManagers()[0]);
         return client;
     }
@@ -64,10 +66,11 @@ public abstract class AbstractStartTlsPOP3ServerTest {
             server = createServer(createProtocol(handler), address, Encryption.createStartTls(BogusSslContextFactory.getServerContext()));
             server.bind();
             
-            AdvancedPOP3SClient client =  createClient();
+            POP3SClient client = createClient();
             client.connect(address.getAddress().getHostAddress(), address.getPort());
-            assertTrue(client.capa());
-            
+            assertEquals(POP3Reply.OK, client.sendCommand("CAPA"));
+            client.getAdditionalReply();
+
             boolean startTlsCapa = false;
             for (String cap: client.getReplyStrings()) {
                 if (cap.equalsIgnoreCase("STLS")) {

@@ -19,8 +19,7 @@
 package org.apache.james.protocols.api.handler;
 
 /**
- * Indicates an issue prevent the successful wiring of the components
- * composing the SMTP processor.
+ * Indicates an issue prevent the successful wiring of the components in the ProtocolHandlerChain.
  */
 public class WiringException extends Exception {
 

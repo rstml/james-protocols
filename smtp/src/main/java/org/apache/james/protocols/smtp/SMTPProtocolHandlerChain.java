@@ -27,6 +27,7 @@ import org.apache.james.protocols.api.handler.ExtensibleHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChain;
 import org.apache.james.protocols.api.handler.ProtocolHandlerChainImpl;
+import org.apache.james.protocols.api.handler.CommandHandlerResultLogger;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.smtp.core.DataCmdHandler;
 import org.apache.james.protocols.smtp.core.DataLineMessageHookHandler;
@@ -104,6 +105,7 @@ public class SMTPProtocolHandlerChain extends ProtocolHandlerChainImpl {
         defaultHandlers.add(new DataLineMessageHookHandler());
         defaultHandlers.add(new StartTlsCmdHandler());
         defaultHandlers.add(new UnknownCmdHandler());
+        defaultHandlers.add(new CommandHandlerResultLogger());
         return defaultHandlers;
     }
 

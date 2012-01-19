@@ -28,7 +28,7 @@
     </parent>
 
     <artifactId>protocols</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.6.1</version>
     <packaging>pom</packaging>
 
     <name>Apache James Protocols</name>
@@ -45,9 +45,9 @@
     </modules>
 
     <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/james/protocols/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/james/protocols/trunk</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/james/protocols/trunk?root=Apache-SVN</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/james/protocols/tags/protocols-1.6.1</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/james/protocols/tags/protocols-1.6.1</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/james/protocols/trunk/tags/protocols-1.6.1?root=Apache-SVN</url>
     </scm>
 
     <distributionManagement>

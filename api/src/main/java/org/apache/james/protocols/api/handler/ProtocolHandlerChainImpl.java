@@ -54,10 +54,12 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return readyOnly;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.util.List#add(java.lang.Object)
+     */
     public boolean add(ProtocolHandler handler) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
         return handlers.add(handler);
     }
 
@@ -119,9 +121,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#remove(java.lang.Object)
      */
     public boolean remove(Object o) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         return handlers.remove(o);
     }
 
@@ -138,9 +139,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#addAll(java.util.Collection)
      */
     public boolean addAll(Collection<? extends ProtocolHandler> c) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         return handlers.addAll(c);
     }
 
@@ -149,9 +149,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#addAll(int, java.util.Collection)
      */
     public boolean addAll(int index, Collection<? extends ProtocolHandler> c) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         return handlers.addAll(index, c);
     }
 
@@ -160,9 +159,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#removeAll(java.util.Collection)
      */
     public boolean removeAll(Collection<?> c) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         return handlers.removeAll(c);
     }
 
@@ -179,9 +177,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#clear()
      */
     public void clear() {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         handlers.clear();
     }
 
@@ -198,9 +195,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#set(int, java.lang.Object)
      */
     public ProtocolHandler set(int index, ProtocolHandler element) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         return (ProtocolHandler) handlers.set(index, element);
     }
 
@@ -209,9 +205,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#add(int, java.lang.Object)
      */
     public void add(int index, ProtocolHandler element) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         handlers.add(index, element);
     }
 
@@ -220,9 +215,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
      * @see java.util.List#remove(int)
      */
     public ProtocolHandler remove(int index) {
-        if (readyOnly) {
-            throw new UnsupportedOperationException("Ready-only");
-        }
+        checkReadOnly();
+
         return (ProtocolHandler) handlers.remove(index);
     }
 
@@ -275,6 +269,12 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
         return sList;
     }
 
+    private void checkReadOnly() {
+        if (readyOnly) {
+            throw new UnsupportedOperationException("Ready-only");
+        }
+    }
+    
     private final class ProtocolHandlerIterator implements ListIterator<ProtocolHandler> {
         private final ListIterator<ProtocolHandler> handlers;
 
@@ -335,9 +335,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
          * @see java.util.ListIterator#remove()
          */
         public void remove() {
-            if (readyOnly) {
-                throw new UnsupportedOperationException("Ready-only");
-            }
+            checkReadOnly();
+
             handlers.previousIndex();
         }
 
@@ -346,9 +345,8 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
          * @see java.util.ListIterator#set(java.lang.Object)
          */
         public void set(ProtocolHandler e) {
-            if (readyOnly) {
-                throw new UnsupportedOperationException("Ready-only");
-            }
+            checkReadOnly();
+
             handlers.set(e);
         }
 
@@ -357,12 +355,12 @@ public class ProtocolHandlerChainImpl extends AbstractProtocolHandlerChain imple
          * @see java.util.ListIterator#add(java.lang.Object)
          */
         public void add(ProtocolHandler e) {
-            if (readyOnly) {
-                throw new UnsupportedOperationException("Ready-only");
-            }
+            checkReadOnly();
             handlers.add(e);
         }
 
     }
+    
+
 
 }

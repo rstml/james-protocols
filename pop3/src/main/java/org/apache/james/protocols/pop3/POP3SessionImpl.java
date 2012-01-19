@@ -54,9 +54,7 @@ public class POP3SessionImpl extends ProtocolSessionImpl implements POP3Session 
         this.handlerState = handlerState;
     }
 
-    /**
-     * @see org.apache.james.protocols.api.ProtocolSession#resetState()
-     */
+    @Override
     public void resetState() {
         getState().clear();
 

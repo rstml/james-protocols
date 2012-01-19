@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.james.protocols.api.handler.CommandDispatcher;
+import org.apache.james.protocols.api.handler.CommandHandlerResultLogger;
 import org.apache.james.protocols.api.handler.ProtocolHandler;
 import org.apache.james.protocols.api.handler.WiringException;
 import org.apache.james.protocols.lmtp.core.DataLineMessageHookHandler;
@@ -83,6 +84,8 @@ public class LMTPProtocolHandlerChain extends SMTPProtocolHandlerChain{
         defaultHandlers.add(new DataLineMessageHookHandler());
         defaultHandlers.add(new StartTlsCmdHandler());
         defaultHandlers.add(new UnknownCmdHandler());
+        defaultHandlers.add(new CommandHandlerResultLogger());
+
         return defaultHandlers;
     }
 

@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +44,7 @@ import org.apache.james.protocols.smtp.hook.HookReturnCode;
 import org.apache.james.protocols.smtp.hook.MailHook;
 import org.apache.james.protocols.smtp.hook.MessageHook;
 import org.apache.james.protocols.smtp.hook.RcptHook;
+import org.apache.james.protocols.smtp.utils.TestMessageHook;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -1014,18 +1014,4 @@ public abstract class AbstractSMTPServerTest {
 
     }
     
-    public final class TestMessageHook implements MessageHook {
-
-        private final List<MailEnvelope> queued = new ArrayList<MailEnvelope>();
-        
-        public HookResult onMessage(SMTPSession session, MailEnvelope mail) {
-            queued.add(mail);
-            return new HookResult(HookReturnCode.OK);
-        }
-     
-        public List<MailEnvelope> getQueued() {
-            return queued;
-        }
-    }
-
 }

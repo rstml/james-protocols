@@ -50,9 +50,7 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
         return relayingAllowed;
     }
 
-    /**
-     * @see org.apache.james.protocols.smtp.SMTPSession#resetState()
-     */
+    @Override
     public void resetState() {
         // remember the ehlo mode between resets
         Object currentHeloMode = getState().get(CURRENT_HELO_MODE);
@@ -96,10 +94,12 @@ public class SMTPSessionImpl extends ProtocolSessionImpl implements SMTPSession 
     }
 
 
+    @Override
     public Response newLineTooLongResponse() {
         return LINE_LENGTH_EXCEEDED;
     }
 
+    @Override
     public Response newFatalErrorResponse() {
         return FATAL_ERROR;
     }

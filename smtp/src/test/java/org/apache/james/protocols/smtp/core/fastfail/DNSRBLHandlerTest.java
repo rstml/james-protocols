@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
-import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
+import org.apache.james.protocols.smtp.utils.BaseFakeSMTPSession;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -16,39 +16,41 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.protocols.netty.log;
+package org.apache.james.protocols.api.handler;
 
 import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
-import org.apache.james.protocols.api.handler.CommandHandler;
-import org.apache.james.protocols.api.handler.ProtocolHandler;
-import org.apache.james.protocols.api.handler.ProtocolHandlerResultHandler;
+import org.apache.james.protocols.api.logger.Logger;
 
 /**
  * 
+ * {@link ProtocolHandlerResultHandler} which logs the {@link Response} of {@link CommandHandler}'s.
  * 
+ * By default it logs to {@link Logger#debug(String)}, but subclasses can override this by override {@link #log(ProtocolSession, Response, String)} method.
  *
  */
-public abstract class AbstractCommandHandlerResultLogger<R extends Response, S extends ProtocolSession> implements ProtocolHandlerResultHandler<R, S> {
+public class CommandHandlerResultLogger implements ProtocolHandlerResultHandler<Response, ProtocolSession> {
 
-    
-
-
-    public Response onResponse(ProtocolSession session, R response, long executionTime, ProtocolHandler handler) {
+    public Response onResponse(ProtocolSession session, Response response, long executionTime, ProtocolHandler handler) {
         if (handler instanceof CommandHandler) {
-            String code = response.getRetCode();
-            String msg = handler.getClass().getName() + ": " + response.toString();
+            String logmessage = handler.getClass().getName() + ": " + response.toString();
         
-            // check if the response should log with info 
-            if (logWithInfo(code)) {
-                session.getLogger().info(msg);
-            } else {
-                session.getLogger().debug(msg);
-            }
+            log(session, response, logmessage);
         }
         return response;
     }
-    
-    protected abstract boolean logWithInfo(String retCode);
+
+    /**
+     * Log the given logmessage
+     * 
+     * @param session
+     * @param response
+     * @param logmessage
+     */
+    protected void log(ProtocolSession session, Response response, String logmessage) {
+        if (session.getLogger().isDebugEnabled()) {
+            session.getLogger().debug(logmessage);
+        }
+    }
 
 }

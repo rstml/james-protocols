@@ -117,9 +117,9 @@
                 <version>1.5</version>
             </dependency>
             <dependency>
-                <groupId>org.jboss.netty</groupId>
+                <groupId>io.netty</groupId>
                 <artifactId>netty</artifactId>
-                <version>3.2.7.Final</version>
+                <version>3.3.0.Final</version>
             </dependency>
             
             <dependency>
@@ -132,6 +132,12 @@
                 <groupId>commons-net</groupId>
                 <artifactId>commons-net</artifactId>
                 <version>3.0.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.javamail</groupId>
+                <artifactId>geronimo-javamail_1.4_mail</artifactId>
+                <version>1.8.3</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

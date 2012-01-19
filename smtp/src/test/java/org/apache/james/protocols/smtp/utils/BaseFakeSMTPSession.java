@@ -18,7 +18,7 @@
  ****************************************************************/
 
 
-package org.apache.james.protocols.smtp;
+package org.apache.james.protocols.smtp.utils;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
@@ -29,6 +29,8 @@ import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.handler.LineHandler;
 import org.apache.james.protocols.api.logger.Logger;
 import org.apache.james.protocols.api.utils.MockLogger;
+import org.apache.james.protocols.smtp.SMTPConfiguration;
+import org.apache.james.protocols.smtp.SMTPSession;
 
 /**
  * Abstract class to simplify the mocks

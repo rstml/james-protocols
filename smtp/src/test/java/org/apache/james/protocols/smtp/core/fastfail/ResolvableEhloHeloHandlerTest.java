@@ -30,12 +30,12 @@ import java.util.Map;
 import static junit.framework.Assert.*;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
-import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.ResolvableEhloHeloHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
+import org.apache.james.protocols.smtp.utils.BaseFakeSMTPSession;
 import org.junit.Test;
 
 public class ResolvableEhloHeloHandlerTest {

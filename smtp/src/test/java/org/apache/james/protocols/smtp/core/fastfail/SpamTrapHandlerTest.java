@@ -23,12 +23,12 @@ package org.apache.james.protocols.smtp.core.fastfail;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
-import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.core.fastfail.SpamTrapHandler;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
+import org.apache.james.protocols.smtp.utils.BaseFakeSMTPSession;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;

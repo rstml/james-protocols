@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.james.protocols.api.ProtocolSession.State;
-import org.apache.james.protocols.smtp.BaseFakeSMTPSession;
 import org.apache.james.protocols.smtp.MailAddress;
 import org.apache.james.protocols.smtp.MailAddressException;
 import org.apache.james.protocols.smtp.SMTPSession;
 import org.apache.james.protocols.smtp.hook.HookReturnCode;
+import org.apache.james.protocols.smtp.utils.BaseFakeSMTPSession;
 import org.junit.Test;
 
 public class ValidSenderDomainHandlerTest {

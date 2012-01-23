@@ -25,7 +25,7 @@ import java.util.List;
 
 
 /**
- * Handlers extends this interface to be notified of available
+ * Handlers implement this interface to be notified of available
  * extensions of the given type.
  */
 public interface ExtensibleHandler {
@@ -38,7 +38,7 @@ public interface ExtensibleHandler {
     
     /**
      * Method called during initialization after all the handlers have been declared
-     * in the handlerchain.
+     * in the ProtocolHandlerChain.
      * 
      * @param interfaceName
      * @param extension a list of objects implementing the marker interface

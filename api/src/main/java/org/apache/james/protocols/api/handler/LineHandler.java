@@ -25,7 +25,7 @@ import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Response;
 
 /**
- * Implementations of this Interface will get called after a full line (terminated with \r\n) was received.
+ * Implementations of this Interface will get called after a full line (terminated with {@link ProtocolSession#getLineDelimiter()}) was received.
  * 
  * Only one {@link LineHandler} will get called per line
  */
@@ -33,7 +33,6 @@ public interface LineHandler<Session extends ProtocolSession> extends ProtocolHa
      
     /**
      * Processing the give line. The line includes the {@link ProtocolSession#getLineDelimiter()} delimiter.
-     * If true is returned the connection is closed
      * 
      * @param session not null
      * @param line not null 

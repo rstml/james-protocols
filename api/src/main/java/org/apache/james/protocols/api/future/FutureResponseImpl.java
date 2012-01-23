@@ -129,6 +129,13 @@ public class FutureResponseImpl implements FutureResponse{
         return response.toString();
     }
     
+    /**
+     * Set the {@link Response} which will be used to notify the registered
+     * {@link ResponseListener}'. After this method is called all waiting
+     * threads will get notified and {@link #isReady()} will return <code>true<code>. 
+     * 
+     * @param response
+     */
     public void setResponse(Response response) {
         boolean fire = false;
         synchronized (this) {

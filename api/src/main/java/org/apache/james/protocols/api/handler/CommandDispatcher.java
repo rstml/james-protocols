@@ -34,6 +34,8 @@ import org.apache.james.protocols.api.ProtocolSession;
 import org.apache.james.protocols.api.Request;
 import org.apache.james.protocols.api.Response;
 import org.apache.james.protocols.api.future.FutureResponse;
+import org.apache.james.protocols.api.future.FutureResponse.ResponseListener;
+import org.apache.james.protocols.api.future.FutureResponseImpl;
 
 
 
@@ -165,7 +167,6 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
         }
         List<CommandHandler<Session>> commandHandlers = getCommandHandlers(request.getCommand(), session);
         // fetch the command handlers registered to the command
-
         Iterator<CommandHandler<Session>> handlers = commandHandlers.iterator();
         
         while (handlers.hasNext()) {
@@ -176,23 +177,48 @@ public class CommandDispatcher<Session extends ProtocolSession> implements Exten
                 long executionTime = System.currentTimeMillis() - start;
 
                 // now process the result handlers
-                for (int a = 0; a < rHandlers.size(); a++) {
-                    // Disable till PROTOCOLS-37 is implemented
-                    if (response instanceof FutureResponse) {
-                        session.getLogger().debug("ProtocolHandlerResultHandler are not supported for FutureResponse yet");
-                        break;
-                    } 
-                    response = rHandlers.get(a).onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
+                response = executeResultHandlers(session, response, executionTime, cHandler, rHandlers.iterator());
+                if (response != null) {
+                    return response;
                 }
             }
-            if (response != null) {
-                return response;
-            }
+
 
         }
         return null;
     }
 
+    private Response executeResultHandlers(final Session session, Response response, final long executionTime, final CommandHandler<Session> cHandler, final Iterator<ProtocolHandlerResultHandler<Response, Session>> resultHandlers) {
+        // Check if the there is a ResultHandler left to execute if not just return the response
+        if (resultHandlers.hasNext()) {
+            // Special handling of FutureResponse
+            // See PROTOCOLS-37
+            if (response instanceof FutureResponse) {
+                final FutureResponseImpl futureResponse = new FutureResponseImpl();
+                ((FutureResponse) response).addListener(new ResponseListener() {
+
+                    public void onResponse(FutureResponse response) {
+                        Response r = resultHandlers.next().onResponse(session, response, executionTime, cHandler);
+                        
+                        // call the next ResultHandler 
+                        r = executeResultHandlers(session, r, executionTime, cHandler, resultHandlers);
+                        
+                        // notify the FutureResponse that we are ready
+                        futureResponse.setResponse(r);
+                    }
+                });
+                
+                // just return the new FutureResponse which will get notified once its ready
+                return futureResponse;
+            }  else {
+                response = resultHandlers.next().onResponse(session, response, executionTime, (CommandHandler<Session>) cHandler);
+                
+                // call the next ResultHandler 
+                return executeResultHandlers(session, response, executionTime, cHandler, resultHandlers);
+            }
+        }
+        return response;
+    }
     /**
      * Parse the line into a {@link Request}
      * 

@@ -135,6 +135,10 @@ public abstract class AbstractProtocolTransport implements ProtocolTransport{
             if (response instanceof StartTlsResponse) {
                 if (isStartTLSSupported()) {
                     startTLS = true;
+                } else {
+                    
+                    // StartTls is not supported by this transport, so throw a exception
+                    throw new UnsupportedOperationException("StartTls is not supported by this ProtocolTransport implementation");
                 }
             }
             

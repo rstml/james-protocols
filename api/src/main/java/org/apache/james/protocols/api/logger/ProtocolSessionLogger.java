@@ -39,81 +39,128 @@ public class ProtocolSessionLogger implements Logger {
         return "ID=" + id + " " + str;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#debug(java.lang.String)
+     */
     public void debug(String arg0) {
         logger.debug(getText(arg0));
     }
 
-    /**
-     * @see org.apache.james.protocols.api.logger.slf4j.Logger#debug(String, Throwable)
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#debug(java.lang.String, java.lang.Throwable)
      */
     public void debug(String arg0, Throwable arg1) {
         logger.debug(getText(arg0), arg1);
-
     }
 
-    /**
-     * @see org.apache.james.protocols.api.logger.slf4j.Logger#error(java.lang.String)
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#error(java.lang.String)
      */
     public void error(String arg0) {
         logger.error(getText(arg0));
     }
 
-    /**
-     * @see org.apache.james.protocols.api.logger.slf4j.Logger#error(java.lang.String, java.lang.Throwable)
+
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#error(java.lang.String, java.lang.Throwable)
      */
     public void error(String arg0, Throwable arg1) {
         logger.error(getText(arg0), arg1);
-
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#info(java.lang.String)
+     */
     public void info(String arg0) {
         logger.info(getText(arg0));
-
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#info(java.lang.String, java.lang.Throwable)
+     */
     public void info(String arg0, Throwable arg1) {
         logger.info(getText(arg0), arg1);
-
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#isDebugEnabled()
+     */
     public boolean isDebugEnabled() {
         return logger.isDebugEnabled();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#isErrorEnabled()
+     */
     public boolean isErrorEnabled() {
         return logger.isErrorEnabled();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#isInfoEnabled()
+     */
     public boolean isInfoEnabled() {
         return logger.isInfoEnabled();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#isTraceEnabled()
+     */
     public boolean isTraceEnabled() {
         return logger.isTraceEnabled();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#isWarnEnabled()
+     */
     public boolean isWarnEnabled() {
         return logger.isWarnEnabled();
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#trace(java.lang.String)
+     */
     public void trace(String arg0) {
         logger.trace(getText(arg0));
     }
     
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#trace(java.lang.String, java.lang.Throwable)
+     */
     public void trace(String arg0, Throwable arg1) {
         logger.trace(getText(arg0), arg1);
-
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#warn(java.lang.String)
+     */
     public void warn(String arg0) {
         logger.warn(getText(arg0));
-
     }
 
 
+    /*
+     * (non-Javadoc)
+     * @see org.apache.james.protocols.api.logger.Logger#warn(java.lang.String, java.lang.Throwable)
+     */
     public void warn(String arg0, Throwable arg1) {
         logger.warn(getText(arg0), arg1);
-
     }
 
 }

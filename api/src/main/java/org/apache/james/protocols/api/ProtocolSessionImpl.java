@@ -27,8 +27,8 @@ import java.util.Map;
 
 import org.apache.james.protocols.api.ProtocolTransport;
 import org.apache.james.protocols.api.handler.LineHandler;
+import org.apache.james.protocols.api.logger.ContextualLogger;
 import org.apache.james.protocols.api.logger.Logger;
-import org.apache.james.protocols.api.logger.ProtocolSessionLogger;
 
 /**
  * Basic implementation of {@link ProtocolSession}
@@ -37,7 +37,7 @@ import org.apache.james.protocols.api.logger.ProtocolSessionLogger;
  */
 public class ProtocolSessionImpl implements ProtocolSession {
 
-    private final ProtocolSessionLogger pLog;
+    private final Logger pLog;
     private final ProtocolTransport transport;
     private final Map<String, Object> connectionState;
     private final Map<String, Object> sessionState;
@@ -48,7 +48,7 @@ public class ProtocolSessionImpl implements ProtocolSession {
     
     public ProtocolSessionImpl(Logger logger, ProtocolTransport transport, ProtocolConfiguration config) {
         this.transport = transport;
-        this.pLog = new ProtocolSessionLogger(transport.getId(), logger);
+        this.pLog = new ContextualLogger(this, logger);
         this.connectionState = new HashMap<String, Object>();
         this.sessionState = new HashMap<String, Object>();
         this.config = config;

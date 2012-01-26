@@ -19,28 +19,32 @@
 
 package org.apache.james.protocols.api.logger;
 
+import org.apache.james.protocols.api.ProtocolSession;
 
 /**
- * A {@link Logger} implementation which suffix every log message with the
- * session id Id
- * 
- * @deprecated use {@link ContextualLogger}
- * 
+ * {@link Logger} which adds context informations to the logged message.
+ *
  */
-@Deprecated
-public class ProtocolSessionLogger implements Logger {
+public class ContextualLogger implements Logger{
+
+    private final ProtocolSession session;
     private final Logger logger;
-    private final String id;
 
-    public ProtocolSessionLogger(String id, Logger logger) {
+    public ContextualLogger(ProtocolSession session, Logger logger) {
+        this.session = session;
         this.logger = logger;
-        this.id = id;
     }
-
+    
     private String getText(String str) {
-        return "ID=" + id + " " + str;
+        String user = session.getUser();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Id='").append(session.getSessionID());
+        if (user != null) {
+            sb.append("' ").append("User='").append(user).append("'");
+        }
+        sb.append(" ").append(str);
+        return sb.toString();
     }
-
     /*
      * (non-Javadoc)
      * @see org.apache.james.protocols.api.logger.Logger#debug(java.lang.String)

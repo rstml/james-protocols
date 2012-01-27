@@ -39,10 +39,11 @@ public class ContextualLogger implements Logger{
         String user = session.getUser();
         StringBuilder sb = new StringBuilder();
         sb.append("Id='").append(session.getSessionID());
+        sb.append("' User='");
         if (user != null) {
-            sb.append("' ").append("User='").append(user).append("'");
+            sb.append(user);
         }
-        sb.append(" ").append(str);
+        sb.append("' ").append(str);
         return sb.toString();
     }
     /*

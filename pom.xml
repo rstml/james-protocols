@@ -42,6 +42,7 @@
         <module>lmtp</module>
         <module>netty</module>
         <module>pop3</module>
+        <module>imap</module>
     </modules>
 
     <scm>

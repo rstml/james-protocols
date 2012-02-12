@@ -19,15 +19,15 @@
 
 package org.apache.james.imap.processor.fetch;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.james.imap.processor.fetch.MessageResultUtils;
-import org.apache.james.mailbox.MessageResult;
+import org.apache.james.mailbox.model.MessageResult;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -23,8 +23,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.james.mailbox.MessageResult;
-import org.apache.james.mailbox.MessageResult.MimePath;
+import org.apache.james.mailbox.model.MessageResult;
+import org.apache.james.mailbox.model.MessageResult.MimePath;
 
 /**
  * Specifies a fetch group.

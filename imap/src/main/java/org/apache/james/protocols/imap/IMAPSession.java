@@ -29,7 +29,8 @@ public interface IMAPSession extends ProtocolSession{
      * Put a new line handler in the chain
      * @param overrideCommandHandler
      */
-    void pushLineHandler(LineHandler<IMAPSession> overrideCommandHandler);
+    // TODO uncomment? Name clash: The method pushLineHandler(LineHandler<IMAPSession>) of type IMAPSession has the same erasure as pushLineHandler(LineHandler<T>) of type ProtocolSession but does not override it
+//    void pushLineHandler(LineHandler<IMAPSession> overrideCommandHandler);
     
     /**
      * Pop the last command handler 

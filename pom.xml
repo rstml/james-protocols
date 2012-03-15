@@ -227,7 +227,7 @@
         <version.commons-lang>2.4</version.commons-lang>
         <version.commons-collections>3.2.1</version.commons-collections>
         <version.apache-mime4j>0.7</version.apache-mime4j>
-        <version.mailbox>0.4-SNAPSHOT</version.mailbox>
+        <version.mailbox>0.4</version.mailbox>
         <version.jmock>2.5.1</version.jmock>
     </properties>
 </project>

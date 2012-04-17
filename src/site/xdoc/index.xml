@@ -20,7 +20,7 @@
 <document>
 
   <properties>
-     <title>Index</title>
+     <title>Apache James Protocols Index</title>
   </properties>
 
 <body>
@@ -35,8 +35,8 @@
        
   <section name="Apache James Protocols in Server and as Component">
     <p>The framework is currently used by James Server in conjunction with Netty to provide a 
-       high performance and extensible SMTP Server.</p>
-    <p>At the moment only the SMTP protocol is included, but others will follow.</p>
+       high performance and extensible SMTP and POP3 Server.</p>
+    <p>At the moment only the SMTP and POP3 protocols are included, but others will follow such as IMAP.</p>
     <p>You can read more about protocols used for SMTP in James Server 
        on the <a href="http://james.apache.org/server/3/dev-extend-smtp-hook.html">SMTP Hooks</a> page.</p>
   </section>

@@ -19,11 +19,11 @@
 
 package org.apache.james.imap.encode;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import org.apache.commons.lang.time.FastDateFormat;
 
 /**
  * Utility methods for IMAP encoding.
@@ -38,8 +38,7 @@ public class EncoderUtils {
      * @return encoded IMAP <code>date-time</code>, not null
      */
     public static String encodeDateTime(final Date date) {
-        final DateFormat format = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss Z", Locale.US);
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        final FastDateFormat format = FastDateFormat.getInstance("dd-MMM-yyyy HH:mm:ss Z", TimeZone.getTimeZone("GMT"), Locale.US);
         final String result = format.format(date);
         return result;
     }

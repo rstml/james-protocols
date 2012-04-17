@@ -30,6 +30,7 @@ import java.util.TimeZone;
 
 import javax.mail.Flags;
 
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.james.protocols.imap.DecodingException;
 import org.apache.james.protocols.imap.utils.DecoderUtils;
 import org.junit.Test;
@@ -255,9 +256,8 @@ public class DecoderUtilsTest {
 
     private String formatAsImap(Date date, TimeZone zone) {
         assertNotNull(date);
-        DateFormat format = new SimpleDateFormat(
-                "dd-MMM-yyyy hh:mm:ss Z", Locale.US);
-        format.setTimeZone(zone);
+        FastDateFormat format = FastDateFormat.getInstance(
+                "dd-MMM-yyyy hh:mm:ss Z", zone, Locale.US);
         String out = format.format(date);
         if (out.charAt(0) == '0') {
             out = ' ' + out.substring(1, out.length());

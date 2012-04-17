@@ -29,32 +29,32 @@ import org.apache.james.imap.api.display.HumanReadableText;
 import org.apache.james.imap.api.message.response.StatusResponseFactory;
 import org.apache.james.imap.api.process.ImapProcessor;
 import org.apache.james.imap.api.process.ImapSession;
-import org.apache.james.imap.message.request.GetACLRequest;
-import org.apache.james.imap.message.response.ACLResponse;
+import org.apache.james.imap.message.request.MyRightsRequest;
+import org.apache.james.imap.message.response.MyRightsResponse;
 import org.apache.james.mailbox.MailboxManager;
 import org.apache.james.mailbox.MailboxSession;
 import org.apache.james.mailbox.MessageManager;
-import org.apache.james.mailbox.MessageManager.MetaData;
-import org.apache.james.mailbox.MessageManager.MetaData.FetchGroup;
 import org.apache.james.mailbox.exception.MailboxException;
 import org.apache.james.mailbox.exception.MailboxNotFoundException;
+import org.apache.james.mailbox.model.MailboxACL.MailboxACLRights;
 import org.apache.james.mailbox.model.SimpleMailboxACL.Rfc4314Rights;
 import org.slf4j.Logger;
 
 /**
- * GETACL Processor.
+ * MYRIGHTS Processor.
  * 
+ * @author Peter Palaga
  */
-public class GetACLProcessor extends AbstractMailboxProcessor<GetACLRequest> implements CapabilityImplementingProcessor {
+public class MyRightsProcessor extends AbstractMailboxProcessor<MyRightsRequest> implements CapabilityImplementingProcessor {
 
     private static final List<String> CAPABILITIES = Collections.singletonList(ImapConstants.SUPPORTS_ACL);
 
-    public GetACLProcessor(ImapProcessor next, MailboxManager mailboxManager, StatusResponseFactory factory) {
-        super(GetACLRequest.class, next, mailboxManager, factory);
+    public MyRightsProcessor(ImapProcessor next, MailboxManager mailboxManager, StatusResponseFactory factory) {
+        super(MyRightsRequest.class, next, mailboxManager, factory);
     }
 
     @Override
-    protected void doProcess(GetACLRequest message, ImapSession session, String tag, ImapCommand command, Responder responder) {
+    protected void doProcess(MyRightsRequest message, ImapSession session, String tag, ImapCommand command, Responder responder) {
 
         final MailboxManager mailboxManager = getMailboxManager();
         final MailboxSession mailboxSession = ImapSessionUtils.getMailboxSession(session);
@@ -62,34 +62,31 @@ public class GetACLProcessor extends AbstractMailboxProcessor<GetACLRequest> imp
         try {
 
             MessageManager messageManager = mailboxManager.getMailbox(buildFullPath(session, mailboxName), mailboxSession);
+            MailboxACLRights myRights = messageManager.myRights(mailboxSession);
 
             /*
-             * RFC 4314 section 6.
-             * An implementation MUST make sure the ACL commands themselves do
-             * not give information about mailboxes with appropriately
-             * restricted ACLs. For example, when a user agent executes a GETACL
-             * command on a mailbox that the user has no permission to LIST, the
-             * server would respond to that request with the same error that
-             * would be used if the mailbox did not exist, thus revealing no
-             * existence information, much less the mailbox’s ACL.
+             * RFC 4314 section 6. An implementation MUST make sure the ACL
+             * commands themselves do not give information about mailboxes with
+             * appropriately restricted ACLs. For example, when a user agent
+             * executes a GETACL command on a mailbox that the user has no
+             * permission to LIST, the server would respond to that request with
+             * the same error that would be used if the mailbox did not exist,
+             * thus revealing no existence information, much less the mailbox’s
+             * ACL.
+             * 
+             * RFC 4314 section 4. * MYRIGHTS - any of the following rights is
+             * required to perform the operation: "l", "r", "i", "k", "x", "a".
              */
-            if (!messageManager.hasRight(Rfc4314Rights.l_Lookup_RIGHT, mailboxSession)) {
+            if (!myRights.contains(Rfc4314Rights.l_Lookup_RIGHT)
+                    && !myRights.contains(Rfc4314Rights.r_Read_RIGHT)
+                    && !myRights.contains(Rfc4314Rights.i_Insert_RIGHT)
+                    && !myRights.contains(Rfc4314Rights.k_CreateMailbox_RIGHT)
+                    && !myRights.contains(Rfc4314Rights.x_DeleteMailbox_RIGHT)
+                    && !myRights.contains(Rfc4314Rights.a_Administer_RIGHT)) {
                 no(command, tag, responder, HumanReadableText.MAILBOX_NOT_FOUND);
-            }
-            /* RFC 4314 section 4. */
-            else if (!messageManager.hasRight(Rfc4314Rights.a_Administer_RIGHT, mailboxSession)) {
-                Object[] params = new Object[] {
-                        Rfc4314Rights.a_Administer_RIGHT.toString(),
-                        command.getName(),
-                        mailboxName
-                };
-                HumanReadableText text = new HumanReadableText(HumanReadableText.UNSUFFICIENT_RIGHTS_KEY, HumanReadableText.UNSUFFICIENT_RIGHTS_DEFAULT_VALUE, params);
-                no(command, tag, responder, text);
-            }
-            else {
-                MetaData metaData = messageManager.getMetaData(false, mailboxSession, FetchGroup.NO_COUNT);
-                ACLResponse aclResponse = new ACLResponse(mailboxName, metaData.getACL());
-                responder.respond(aclResponse);
+            } else {
+                MyRightsResponse myRightsResponse = new MyRightsResponse(mailboxName, myRights);
+                responder.respond(myRightsResponse);
                 okComplete(command, tag, responder);
                 // FIXME should we send unsolicited responses here?
                 // unsolicitedResponses(session, responder, false);
@@ -99,16 +96,14 @@ public class GetACLProcessor extends AbstractMailboxProcessor<GetACLRequest> imp
         } catch (MailboxException e) {
             Logger log = session.getLog();
             if (log.isInfoEnabled()) {
-                log.info(command.getName() +" failed for mailbox " + mailboxName, e);
+                log.info(command.getName() + " failed for mailbox " + mailboxName, e);
             }
             no(command, tag, responder, HumanReadableText.GENERIC_FAILURE_DURING_PROCESSING);
         }
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /**
      * @see org.apache.james.imap.processor.CapabilityImplementingProcessor#
      * getImplementedCapabilities(org.apache.james.imap.api.process.ImapSession)
      */

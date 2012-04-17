@@ -16,32 +16,38 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.imap.processor.fetch;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+package org.apache.james.imap.message.request;
 
-import org.apache.james.mailbox.model.Content;
+import org.apache.james.imap.api.ImapCommand;
 
 /**
- * Just an Empty {@link Content}
- *
+ * SETACL Request.
+ * 
+ * @author Peter Palaga
  */
-public class EmptyContent implements Content{
+public class SetACLRequest extends AbstractImapRequest {
+    private final String identifier;
+    private final String mailboxName;
+    private final String rights;
 
-    /**
-     * Return 0 as this {@link Content} is empty
-     */
-    public long size() {
-        return 0;
+    public SetACLRequest(String tag, ImapCommand command, String mailboxName, String identifier, String rights) {
+        super(tag, command);
+        this.mailboxName = mailboxName;
+        this.identifier = identifier;
+        this.rights = rights;
     }
 
-    /**
-     * @see org.apache.james.mailbox.Content#getInputStream()
-     */
-    public InputStream getInputStream() throws IOException {
-        return new ByteArrayInputStream("".getBytes());
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public String getMailboxName() {
+        return mailboxName;
+    }
+
+    public String getRights() {
+        return rights;
     }
 
 }

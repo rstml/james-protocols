@@ -29,36 +29,39 @@ import org.apache.james.imap.api.display.HumanReadableText;
 import org.apache.james.imap.api.message.response.StatusResponseFactory;
 import org.apache.james.imap.api.process.ImapProcessor;
 import org.apache.james.imap.api.process.ImapSession;
-import org.apache.james.imap.message.request.GetACLRequest;
-import org.apache.james.imap.message.response.ACLResponse;
+import org.apache.james.imap.message.request.ListRightsRequest;
+import org.apache.james.imap.message.response.ListRightsResponse;
 import org.apache.james.mailbox.MailboxManager;
 import org.apache.james.mailbox.MailboxSession;
 import org.apache.james.mailbox.MessageManager;
-import org.apache.james.mailbox.MessageManager.MetaData;
-import org.apache.james.mailbox.MessageManager.MetaData.FetchGroup;
 import org.apache.james.mailbox.exception.MailboxException;
 import org.apache.james.mailbox.exception.MailboxNotFoundException;
+import org.apache.james.mailbox.model.MailboxACL.MailboxACLEntryKey;
+import org.apache.james.mailbox.model.MailboxACL.MailboxACLRights;
 import org.apache.james.mailbox.model.SimpleMailboxACL.Rfc4314Rights;
+import org.apache.james.mailbox.model.SimpleMailboxACL.SimpleMailboxACLEntryKey;
 import org.slf4j.Logger;
 
 /**
- * GETACL Processor.
+ * LISTRIGHTS Processor.
  * 
+ * @author Peter Palaga
  */
-public class GetACLProcessor extends AbstractMailboxProcessor<GetACLRequest> implements CapabilityImplementingProcessor {
+public class ListRightsProcessor extends AbstractMailboxProcessor<ListRightsRequest> implements CapabilityImplementingProcessor {
 
     private static final List<String> CAPABILITIES = Collections.singletonList(ImapConstants.SUPPORTS_ACL);
 
-    public GetACLProcessor(ImapProcessor next, MailboxManager mailboxManager, StatusResponseFactory factory) {
-        super(GetACLRequest.class, next, mailboxManager, factory);
+    public ListRightsProcessor(ImapProcessor next, MailboxManager mailboxManager, StatusResponseFactory factory) {
+        super(ListRightsRequest.class, next, mailboxManager, factory);
     }
 
     @Override
-    protected void doProcess(GetACLRequest message, ImapSession session, String tag, ImapCommand command, Responder responder) {
+    protected void doProcess(ListRightsRequest message, ImapSession session, String tag, ImapCommand command, Responder responder) {
 
         final MailboxManager mailboxManager = getMailboxManager();
         final MailboxSession mailboxSession = ImapSessionUtils.getMailboxSession(session);
         final String mailboxName = message.getMailboxName();
+        final String identifier = message.getIdentifier();
         try {
 
             MessageManager messageManager = mailboxManager.getMailbox(buildFullPath(session, mailboxName), mailboxSession);
@@ -87,8 +90,21 @@ public class GetACLProcessor extends AbstractMailboxProcessor<GetACLRequest> imp
                 no(command, tag, responder, text);
             }
             else {
-                MetaData metaData = messageManager.getMetaData(false, mailboxSession, FetchGroup.NO_COUNT);
-                ACLResponse aclResponse = new ACLResponse(mailboxName, metaData.getACL());
+                
+                MailboxACLEntryKey key = new SimpleMailboxACLEntryKey(identifier);
+                
+                // FIXME check if identifier is a valid user or group
+                // FIXME Servers, when processing a command that has an identifier as a
+                // parameter (i.e., any of SETACL, DELETEACL, and LISTRIGHTS commands),
+                // SHOULD first prepare the received identifier using "SASLprep" profile
+                // [SASLprep] of the "stringprep" algorithm [Stringprep].  If the
+                // preparation of the identifier fails or results in an empty string,
+                // the server MUST refuse to perform the command with a BAD response.
+                // Note that Section 6 recommends additional identifier’s verification
+                // steps.
+                
+                MailboxACLRights[] rights = messageManager.listRigths(key, mailboxSession);
+                ListRightsResponse aclResponse = new ListRightsResponse(mailboxName, identifier, rights);
                 responder.respond(aclResponse);
                 okComplete(command, tag, responder);
                 // FIXME should we send unsolicited responses here?

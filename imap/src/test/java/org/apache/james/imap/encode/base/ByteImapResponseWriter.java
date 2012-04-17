@@ -70,8 +70,7 @@ public class ByteImapResponseWriter implements ImapConstants, ImapResponseWriter
         }
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.apache.james.imap.encode.ImapResponseWriter#write(byte[])
      */
     public void write(byte[] buffer) throws IOException {

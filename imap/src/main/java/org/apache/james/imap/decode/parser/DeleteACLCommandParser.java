@@ -16,32 +16,35 @@
  * specific language governing permissions and limitations      *
  * under the License.                                           *
  ****************************************************************/
-package org.apache.james.imap.processor.fetch;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+package org.apache.james.imap.decode.parser;
 
-import org.apache.james.mailbox.model.Content;
+import org.apache.james.imap.api.ImapCommand;
+import org.apache.james.imap.api.ImapConstants;
+import org.apache.james.imap.api.ImapMessage;
+import org.apache.james.imap.api.process.ImapSession;
+import org.apache.james.imap.decode.ImapRequestLineReader;
+import org.apache.james.imap.decode.base.AbstractImapCommandParser;
+import org.apache.james.imap.message.request.DeleteACLRequest;
+import org.apache.james.protocols.imap.DecodingException;
 
 /**
- * Just an Empty {@link Content}
- *
+ * DELETEACL Parser
+ * 
+ * @author Peter Palaga
  */
-public class EmptyContent implements Content{
+public class DeleteACLCommandParser extends AbstractImapCommandParser {
 
-    /**
-     * Return 0 as this {@link Content} is empty
-     */
-    public long size() {
-        return 0;
+    public DeleteACLCommandParser() {
+        super(ImapCommand.authenticatedStateCommand(ImapConstants.DELETEACL_COMMAND_NAME));
     }
 
-    /**
-     * @see org.apache.james.mailbox.Content#getInputStream()
-     */
-    public InputStream getInputStream() throws IOException {
-        return new ByteArrayInputStream("".getBytes());
+    @Override
+    protected ImapMessage decode(ImapCommand command, ImapRequestLineReader request, String tag, ImapSession session) throws DecodingException {
+        final String mailboxName = request.mailbox();
+        final String identifier = request.astring();
+        request.eol();
+        return new DeleteACLRequest(tag, command, mailboxName, identifier);
     }
 
 }

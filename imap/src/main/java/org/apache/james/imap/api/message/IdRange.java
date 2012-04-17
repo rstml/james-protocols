@@ -194,18 +194,10 @@ public final class IdRange implements Iterable<Long>, Comparable<IdRange>{
             this.current = from;
         }
         
-        /*
-         * (non-Javadoc)
-         * @see java.util.Iterator#hasNext()
-         */
         public boolean hasNext() {
             return current <= to;
         }
 
-        /*
-         * (non-Javadoc)
-         * @see java.util.Iterator#next()
-         */
         public Long next() {
             if (hasNext()) {
                 return current++;
@@ -214,20 +206,12 @@ public final class IdRange implements Iterable<Long>, Comparable<IdRange>{
             }
         }
 
-        /*
-         * (non-Javadoc)
-         * @see java.util.Iterator#remove()
-         */
         public void remove() {
             throw new UnsupportedOperationException("Read-Only");
         }
         
     }
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
     public int compareTo(IdRange range2) {
         // Correctly sort and respect "*" and "*:*" ranges. See IMAP-289
         if (getLowVal() == Long.MAX_VALUE && getHighVal() == Long.MAX_VALUE && range2.getLowVal() == Long.MAX_VALUE && range2.getHighVal() == Long.MAX_VALUE) {

@@ -37,8 +37,7 @@ public class StatusResponseTypeMatcher extends BaseMatcher<StatusResponse> {
         this.serverResponseType = responseCode;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.hamcrest.Matcher#matches(java.lang.Object)
      */
     public boolean matches(Object o) {
@@ -49,8 +48,7 @@ public class StatusResponseTypeMatcher extends BaseMatcher<StatusResponse> {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      * @see org.hamcrest.SelfDescribing#describeTo(org.hamcrest.Description)
      */
     public void describeTo(Description d) {

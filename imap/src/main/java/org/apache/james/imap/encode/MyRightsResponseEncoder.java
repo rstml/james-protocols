@@ -20,30 +20,26 @@
 package org.apache.james.imap.encode;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.james.imap.api.ImapConstants;
 import org.apache.james.imap.api.ImapMessage;
 import org.apache.james.imap.api.process.ImapSession;
 import org.apache.james.imap.encode.base.AbstractChainedImapEncoder;
-import org.apache.james.imap.message.response.ACLResponse;
-import org.apache.james.mailbox.model.MailboxACL.MailboxACLEntryKey;
+import org.apache.james.imap.message.response.MyRightsResponse;
 import org.apache.james.mailbox.model.MailboxACL.MailboxACLRights;
 
 /**
- * ACL Response Encoder.
+ * MYRIGHTS Response Encoder.
  * 
+ * @author Peter Palaga
  */
-public class ACLResponseEncoder extends AbstractChainedImapEncoder {
+public class MyRightsResponseEncoder extends AbstractChainedImapEncoder {
 
-    public ACLResponseEncoder(ImapEncoder next) {
+    public MyRightsResponseEncoder(ImapEncoder next) {
         super(next);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /** 
      * @see
      * org.apache.james.imap.encode.base.AbstractChainedImapEncoder#doEncode
      * (org.apache.james.imap.api.ImapMessage,
@@ -51,22 +47,14 @@ public class ACLResponseEncoder extends AbstractChainedImapEncoder {
      * org.apache.james.imap.api.process.ImapSession)
      */
     protected void doEncode(ImapMessage acceptableMessage, ImapResponseComposer composer, ImapSession session) throws IOException {
-        final ACLResponse aclResponse = (ACLResponse) acceptableMessage;
-        final Map<MailboxACLEntryKey, MailboxACLRights> entries = aclResponse.getAcl().getEntries();
+        final MyRightsResponse aclResponse = (MyRightsResponse) acceptableMessage;
+        final MailboxACLRights myRights = aclResponse.getMyRights();
         composer.untagged();
-        composer.commandName(ImapConstants.ACL_RESPONSE_NAME);
+        composer.commandName(ImapConstants.MYRIGHTS_RESPONSE_NAME);
         
         String mailboxName = aclResponse.getMailboxName();
         composer.mailbox(mailboxName == null ? "" : mailboxName);
-        
-        if (entries != null) {
-            for (Entry<MailboxACLEntryKey, MailboxACLRights> entry : entries.entrySet()) {
-                String identifier = entry.getKey().serialize();
-                composer.quote(identifier);
-                String rights = entry.getValue().serialize();
-                composer.quote(rights == null ? "" : rights);
-            }
-        }
+        composer.quote(myRights == null ? "" : myRights.serialize());
         composer.end();
     }
 
@@ -78,6 +66,6 @@ public class ACLResponseEncoder extends AbstractChainedImapEncoder {
      * (org.apache.james.imap.api.ImapMessage)
      */
     public boolean isAcceptable(ImapMessage message) {
-        return message instanceof ACLResponse;
+        return message instanceof MyRightsResponse;
     }
 }

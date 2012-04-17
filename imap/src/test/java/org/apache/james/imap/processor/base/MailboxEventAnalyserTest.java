@@ -632,4 +632,11 @@ public class MailboxEventAnalyserTest {
         assertNotNull(iterator);
         assertFalse(iterator.hasNext());
     }
+
+    /**
+     * @see org.apache.james.mailbox.MessageManager#myRights(org.apache.james.mailbox.MailboxSession)
+     */
+    public MailboxACLRights myRights(MailboxSession session) throws MailboxException {
+        return null;
+    }
 }

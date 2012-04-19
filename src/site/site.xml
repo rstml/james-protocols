@@ -36,6 +36,9 @@
   
     <menu name="Documentation">
       <item name="Introduction" href="/index.html" />
+      <item name="SMTP" href="/smtp.html" />
+      <item name="POP3" href="/pop3.html" />
+      <item name="IMAP4" href="/imap4.html" />
       <item name="Source Code" href="/source-code.html" />
     </menu>  
      

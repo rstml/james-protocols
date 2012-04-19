@@ -35,10 +35,9 @@
        
   <section name="Apache James Protocols in Server and as Component">
     <p>The framework is currently used by James Server in conjunction with Netty to provide a 
-       high performance and extensible SMTP and POP3 Server.</p>
-    <p>At the moment only the SMTP and POP3 protocols are included, but others will follow such as IMAP.</p>
-    <p>You can read more about protocols used for SMTP in James Server 
-       on the <a href="http://james.apache.org/server/3/dev-extend-smtp-hook.html">SMTP Hooks</a> page.</p>
+       high performance and extensible <a href="smtp.html">SMTP</a>, 
+       <a href="pop3.html">POP3</a> and <a href="imap4.html">IMAP4</a> Server.</p>
+    <p>At the moment those 3 standard mail protocols are included, but others will follow.</p>
   </section>
 
   <section name='Develop with Apache James Protocols'>

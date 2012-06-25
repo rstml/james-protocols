@@ -32,30 +32,23 @@ import org.apache.james.protocols.smtp.SMTPSession;
 
 /**
  * {@link AbstractAddHeadersFilter} which adds the Received header for the message.
- * 
- *
  */
 public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
-    
     private static final String EHLO ="EHLO";
     private static final String SMTP = "SMTP";
     private static final String ESMTPA = "ESMTPA";
     private static final String ESMTP = "ESMTP";
     
     private static final ThreadLocal<DateFormat> DATEFORMAT = new ThreadLocal<DateFormat>() {
-
         @Override
         protected DateFormat initialValue() {
             // See RFC822 for the format
-            return new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss Z (zzz)", Locale.US);
+            return new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z (zzz)", Locale.US);
         }
-        
     };
 
-    
-    
     /**
-     * Return the service type which will be used in the Received headers
+     * Return the service type which will be used in the Received headers.
      * 
      * @param session
      * @param heloMode
@@ -91,11 +84,12 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
     }
 
     /**
-     * Return the Received header for the message
+     * Returns the Received header for the message.
      */
     @SuppressWarnings("unchecked")
     @Override
     protected Collection<Header> headers(SMTPSession session) {
+
         StringBuilder headerLineBuffer = new StringBuilder();
 
         String heloMode = (String) session.getAttachment(SMTPSession.CURRENT_HELO_MODE, State.Connection);
@@ -132,6 +126,9 @@ public class ReceivedDataLineFilter extends AbstractAddHeadersFilter {
         headerLineBuffer.append(DATEFORMAT.get().format(new Date()));
 
         header.add(headerLineBuffer.toString());
+        
         return Arrays.asList(header);
+    
     }
+    
 }

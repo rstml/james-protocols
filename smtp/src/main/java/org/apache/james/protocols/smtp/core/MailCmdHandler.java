@@ -247,7 +247,8 @@ public class MailCmdHandler extends AbstractHookableCmdHandler<MailHook> {
                     return SYNTAX_ERROR_ADDRESS;
                 }
             }
-            if (senderAddress == null) {
+            if ((senderAddress == null) || 
+                    ((senderAddress.getLocalPart().length() == 0) && (senderAddress.getDomain().length() == 0))) {
                 senderAddress = MailAddress.nullSender();
             }
             // Store the senderAddress in session map

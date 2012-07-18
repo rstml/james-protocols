@@ -176,7 +176,7 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
                     response.setEndSession(true);
                 }
                 return response;
-            } else if (rCode == HookReturnCode.DENYSOFT) {
+            } else if ((rCode & HookReturnCode.DENYSOFT) == HookReturnCode.DENYSOFT) {
                 if (smtpRetCode == null)
                     smtpRetCode = SMTPRetCode.LOCAL_ERROR;
                 if (smtpDesc == null)
@@ -199,7 +199,12 @@ public abstract class AbstractHookableCmdHandler<Hook extends org.apache.james.p
                 }
                 return response;
             } else if ((rCode & HookReturnCode.DISCONNECT) == HookReturnCode.DISCONNECT) {
-                SMTPResponse response = new SMTPResponse("");
+                if (smtpRetCode == null)
+                    smtpRetCode = SMTPRetCode.TRANSACTION_FAILED;
+                if (smtpDesc == null)
+                    smtpDesc = "Server disconnected";
+
+                SMTPResponse response =  new SMTPResponse(smtpRetCode, smtpDesc);
                 response.setEndSession(true);
                 return response;
             } else {

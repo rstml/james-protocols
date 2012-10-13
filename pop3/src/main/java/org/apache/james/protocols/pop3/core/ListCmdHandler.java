@@ -54,7 +54,7 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
     public Response onCommand(POP3Session session, Request request) {
         String parameters = request.getArgument();
         List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
-        List<Long> deletedUidList = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
+        List<String> deletedUidList = (List<String>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
 
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
             POP3Response response = null;
@@ -95,7 +95,6 @@ public class ListCmdHandler implements CommandHandler<POP3Session> {
                     }
                     
                     if (deletedUidList.contains(data.getUid()) == false) {
-
                         StringBuilder responseBuffer = new StringBuilder(64).append(num).append(" ").append(data.getSize());
                         response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
                     } else {

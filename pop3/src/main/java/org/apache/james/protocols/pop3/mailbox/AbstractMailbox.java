@@ -34,12 +34,11 @@ public abstract class AbstractMailbox implements Mailbox {
     /*
      * (non-Javadoc)
      * 
-     * @see org.apache.james.protocols.pop3.mailbox.Mailbox#getMessage(long)
+     * @see org.apache.james.protocols.pop3.mailbox.Mailbox#getMessage(String)
      */
-    public InputStream getMessage(long uid) throws IOException {
+    public InputStream getMessage(String uid) throws IOException {
         return new CombinedInputStream(getMessageHeaders(uid), getMessageBody(uid));
     }
-
 
     /**
      * Does nothing

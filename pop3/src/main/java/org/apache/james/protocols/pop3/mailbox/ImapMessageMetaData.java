@@ -18,53 +18,19 @@
  ****************************************************************/
 package org.apache.james.protocols.pop3.mailbox;
 
-import org.apache.james.protocols.pop3.core.MessageMetaDataUtils;
-
 /**
- * Hold meta data for a message
+ * Hold meta data for a IMAP message. Construct unique POP3 UIDL from IMAP UID.
+ * See JAMES-1264.
  */
-public class MessageMetaData {
+public final class ImapMessageMetaData extends MessageMetaData {
 
-    private final String uid;
-    private final long size;
-
-    public MessageMetaData(String uid, long size) {
-        this.uid = uid;
-        this.size = size;
-
-        if(!MessageMetaDataUtils.isRFC1939Compatible(uid)) {
-        	throw new IllegalArgumentException("UID is not RFC1939 compatible");
-        }
+    public ImapMessageMetaData(Long uid, long size) {
+		super(uid.toString(), size);
 	}
 
-	/**
-     * Return the uid of the message
-     * 
-     * @return uid
-     */
-    public String getUid() {
-    	return uid;
-    }
-
-    /**
-	 * Return the uid of the message. This method uses extra Mailbox ID argument to make
-	 * UID unique when it is not globally unique. By default assuming UID globally unique.
-	 * 
-	 * @param mailboxId
-	 *            Mailbox ID
-	 * @return
-	 */
+    @Override
     public String getUid(String mailboxId) {
-        return uid;
+        return mailboxId + "-" + super.getUid();
     }
 
-    /**
-     * Return the size of a message
-     * 
-     * @return size
-     */
-    public long getSize() {
-        return size;
-    }
-    
 }

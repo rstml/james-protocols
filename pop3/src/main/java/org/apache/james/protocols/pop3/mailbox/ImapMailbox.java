@@ -20,14 +20,14 @@ package org.apache.james.protocols.pop3.mailbox;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 /**
- * A Mailbox which is used in POP3 to retrieve messages
+ * An IMAP Mailbox adapter which is used in POP3 to retrieve messages
  * 
  * 
  */
-public interface Mailbox {
+@Deprecated
+public abstract class ImapMailbox implements Mailbox {
 
     /**
      * Returns the message body as {@link InputStream} or <code>null</code> if
@@ -37,7 +37,11 @@ public interface Mailbox {
      * @return body
      * @throws IOException
      */
-    InputStream getMessageBody(String uid) throws IOException;
+    public abstract InputStream getMessageBody(long uid) throws IOException;
+
+	public InputStream getMessageBody(String uid) throws NumberFormatException, IOException {
+		return this.getMessageBody(Long.parseLong(uid));
+	}
 
     /**
      * Returns the message headers as {@link InputStream} or <code>null</code>
@@ -47,7 +51,11 @@ public interface Mailbox {
      * @return headers
      * @throws IOException
      */
-    InputStream getMessageHeaders(String uid) throws IOException;
+    public abstract InputStream getMessageHeaders(long uid) throws IOException;
+
+	public InputStream getMessageHeaders(String uid) throws NumberFormatException, IOException {
+		return this.getMessageHeaders(Long.parseLong(uid));
+	}
 
     /**
      * Return the full message (headers + body) as {@link InputStream} or
@@ -58,38 +66,25 @@ public interface Mailbox {
      * @return message
      * @throws IOException
      */
-    InputStream getMessage(String uid) throws IOException;
+    public abstract InputStream getMessage(long uid) throws IOException;
 
-    /**
-     * Return a immutable {@link List} which holds the {@link MessageMetaData}
-     * for all messages in the {@link Mailbox}
-     * 
-     * @return messages
-     * @throws IOException
-     */
-    List<MessageMetaData> getMessages() throws IOException;
+	public InputStream getMessage(String uid) throws NumberFormatException, IOException {
+		return this.getMessage(Long.parseLong(uid));
+	}
 
     /**
      * Remove the messages with the given uids
      * 
      * @param uids
      */
-    void remove(String... uids) throws IOException;
+    public abstract void remove(long... uids) throws IOException;
 
-    /**
-     * Return the identifier for the mailbox. This MUST not change
-     * 
-     * @return identifer
-     * @throws IOException
-     */
-    String getIdentifier() throws IOException;
-
-    /**
-     * Close the mailbox, Any futher attempt to access or change the
-     * {@link Mailbox}'s content will fail
-     * 
-     * @throws IOException
-     */
-    void close() throws IOException;
+	public void remove(String... uids) throws NumberFormatException, IOException {
+        long imapUids[] = new long[uids.length];
+        for (int i = 0; i < uids.length; i++) {
+            imapUids[i] = Long.parseLong(uids[i]);
+        }
+        this.remove(imapUids);
+	}
 
 }

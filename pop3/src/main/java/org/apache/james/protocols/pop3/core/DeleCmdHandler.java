@@ -60,9 +60,9 @@ public class DeleCmdHandler implements CommandHandler<POP3Session> {
                     StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
                     return  new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                 }
-                List<Long> deletedUidList = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
+                List<String> deletedUidList = (List<String>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
 
-                Long uid = meta.getUid();
+                String uid = meta.getUid();
 
                 if (deletedUidList.contains(uid)) {
                     StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") already deleted.");

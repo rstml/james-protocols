@@ -88,9 +88,9 @@ public class TopCmdHandler extends RetrCmdHandler implements CapaCapability {
                     return  new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                 }
                 
-                List<Long> deletedUidList = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
+                List<String> deletedUidList = (List<String>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
 
-                Long uid = data.getUid();
+                String uid = data.getUid();
                 if (deletedUidList.contains(uid) == false) {
 
                     InputStream body = new CountingBodyInputStream(new ExtraDotInputStream(new CRLFTerminatedInputStream(session.getUserMailbox().getMessageBody(uid))), lines);

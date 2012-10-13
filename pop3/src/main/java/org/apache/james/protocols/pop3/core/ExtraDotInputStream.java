@@ -38,7 +38,6 @@ public class ExtraDotInputStream extends InputStream {
         this.in = new PushbackInputStream(in, 2);
         startLine = true;
     }
-
     
     @Override
     public int read() throws IOException {

@@ -45,7 +45,5 @@ public class WelcomeMessageHandler implements ConnectHandler<POP3Session> {
         POP3Response response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
         return response;
     }
-    
-   
-    
+
 }

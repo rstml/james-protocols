@@ -59,20 +59,16 @@ public class QuitCmdHandler implements CommandHandler<POP3Session> {
         if (session.getHandlerState() == POP3Session.AUTHENTICATION_READY || session.getHandlerState() == POP3Session.AUTHENTICATION_USERSET) {
             return SIGN_OFF;
         }
-        List<Long> toBeRemoved = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
+        List<String> toBeRemoved = (List<String>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
         Mailbox mailbox = session.getUserMailbox();
         try {
-            ;
-            long uids[] = new long[toBeRemoved.size()];
-            for (int i = 0;i < toBeRemoved.size(); i++) {
-                uids[i] = toBeRemoved.get(i);
-            }
+            String[] uids = toBeRemoved.toArray(new String[toBeRemoved.size()]);
             mailbox.remove(uids);
             response = SIGN_OFF;
         } catch (Exception ex) {
             response = SIGN_OFF_NOT_CLEAN;
             session.getLogger().error("Some deleted messages were not removed", ex);
-        }     
+        }
         try {
             mailbox.close();
         } catch (IOException e) {

@@ -28,10 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.james.protocols.pop3.mailbox.Mailbox;
+import org.apache.james.protocols.pop3.mailbox.ImapMailbox;
+import org.apache.james.protocols.pop3.mailbox.ImapMessageMetaData;
 import org.apache.james.protocols.pop3.mailbox.MessageMetaData;
 
-public class MockMailbox implements Mailbox {
+public class MockMailbox extends ImapMailbox {
 
     private final Map<Long, Message> messages = new HashMap<Long, Message>();
     private final String identifier;
@@ -39,13 +40,14 @@ public class MockMailbox implements Mailbox {
     public MockMailbox(String identifier, Message... messages) {
         this.identifier = identifier;
         for (Message m: messages) {
-            this.messages.put(m.meta.getUid(), m);
+            this.messages.put(Long.parseLong(m.meta.getUid()), m);
         }
     }
     
     public MockMailbox(String identifier) {
         this(identifier, new Message[0]);
     }
+
     public InputStream getMessageBody(long uid) throws IOException {
         Message m = messages.get(uid);
         if (m == null) {
@@ -102,7 +104,7 @@ public class MockMailbox implements Mailbox {
         public Message(String headers, String body) {
             this.headers = headers;
             this.body = body;
-            this.meta = new MessageMetaData(UIDS.incrementAndGet(), headers.length() + body.length() + 2);
+            this.meta = new ImapMessageMetaData(UIDS.incrementAndGet(), headers.length() + body.length() + 2);
         }
         
         public String toString() {

@@ -44,4 +44,24 @@ public class MessageMetaDataUtils {
             return uidList.get(number -1);
         }
     }
+
+    /**
+     * Check whether POP3 UID is compatible with RFC1939
+     * 
+     * @param uid
+     * @return
+     */
+    public static boolean isRFC1939Compatible(String uid) {
+    	if (uid == null) {
+            return false;
+        }
+
+        for (int i = 0; i < uid.length(); i++) {
+            if ((uid.charAt(i) >= 0x21 && uid.charAt(i) < 0x7E) == false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

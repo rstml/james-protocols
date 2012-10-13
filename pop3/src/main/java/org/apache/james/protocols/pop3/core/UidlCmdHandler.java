@@ -53,16 +53,16 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
         String parameters = request.getArgument();
         if (session.getHandlerState() == POP3Session.TRANSACTION) {
             List<MessageMetaData> uidList = (List<MessageMetaData>) session.getAttachment(POP3Session.UID_LIST, State.Transaction);
-            List<Long> deletedUidList = (List<Long>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
+            List<String> deletedUidList = (List<String>) session.getAttachment(POP3Session.DELETED_UID_LIST, State.Transaction);
             try {
                 String identifier = session.getUserMailbox().getIdentifier();
                 if (parameters == null) {
                     response = new POP3Response(POP3Response.OK_RESPONSE, "unique-id listing follows");
+
                     for (int i = 0; i < uidList.size(); i++) {
-                        Long uid = uidList.get(i).getUid();
-                        if (deletedUidList.contains(uid) == false) {
-                            // construct unique UIDL. See JAMES-1264
-                            StringBuilder responseBuffer = new StringBuilder(64).append(i + 1).append(" ").append(identifier).append("-").append(uid);
+                        MessageMetaData metadata = uidList.get(i);
+                        if (deletedUidList.contains(metadata.getUid()) == false) {
+                            StringBuilder responseBuffer = new StringBuilder().append(i + 1).append(" ").append(metadata.getUid(identifier));
                             response.appendLine(responseBuffer.toString());
                         }
                     }
@@ -73,18 +73,16 @@ public class UidlCmdHandler implements CommandHandler<POP3Session>, CapaCapabili
                     try {
                         num = Integer.parseInt(parameters);
                         
-                        MessageMetaData data = MessageMetaDataUtils.getMetaData(session, num);
-                        if (data == null) {
+                        MessageMetaData metadata = MessageMetaDataUtils.getMetaData(session, num);
+
+                        if (metadata == null) {
                             StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") does not exist.");
                             return  new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
                         }
-                        long uid = data.getUid();
-                        
-                        if (deletedUidList.contains(uid) == false) {
-                            // construct unique UIDL. See JAMES-1264
-                            StringBuilder responseBuffer = new StringBuilder(64).append(num).append(" ").append(identifier).append("-").append(uid);
-                            response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
 
+                        if (deletedUidList.contains(metadata.getUid()) == false) {
+                            StringBuilder responseBuffer = new StringBuilder(64).append(num).append(" ").append(metadata.getUid(identifier));
+                            response = new POP3Response(POP3Response.OK_RESPONSE, responseBuffer.toString());
                         } else {
                             StringBuilder responseBuffer = new StringBuilder(64).append("Message (").append(num).append(") already deleted.");
                             response = new POP3Response(POP3Response.ERR_RESPONSE, responseBuffer.toString());
